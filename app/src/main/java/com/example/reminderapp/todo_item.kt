@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,9 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +47,7 @@ data class todo_item(
     var description  : String
 )
 
-fun create_dummy_todo():List<todo_item> {
+fun CreateDummyTodo():List<todo_item> {
 
     return listOf(
         todo_item(
@@ -121,14 +124,13 @@ fun Item(modifier: Modifier = Modifier, todoItem: todo_item) {
         )
         Row(
             modifier = Modifier
-                .align(Alignment.CenterStart)
+                .align(Alignment.Center)
                 .matchParentSize()
         ) {
             Column(
                 modifier = Modifier
                     .padding(start = 15.dp)
-
-
+                    .weight(1f)
             ) {
                 Text(
                     text = todoItem.title,
@@ -138,32 +140,29 @@ fun Item(modifier: Modifier = Modifier, todoItem: todo_item) {
                         fontWeight = FontWeight.Bold))
 
                 Text(
-                    text = "Due by "+todoItem.dueDate.toString(), // TODO: Make this dynamic
+                    text = "Due by "+todoItem.dueDate.toString(),
                     color = Color.DarkGray,
                     style = TextStyle(
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold))
             }
+            Divider(modifier = Modifier
+                .height(50.dp)
+                .width(1.dp),
+                color = Color.Gray,
+                thickness = 2.dp
+            )
             LazyRow(
                 modifier = Modifier
                     .padding(start = 25.dp)
+                    .weight(1f)
             ) {
-                items(todoItem.tags.size){
-                    Text(
-                        text = todoItem.tags[0],
-                        color = Color.Black
-                    )
-
+                items(todoItem.tags) { tag ->
+                    Text(text = tag,
+                        modifier = Modifier
+                            .padding(start = 10.dp))
                 }
-
-
-
-
-
-
-
             }
-
         }
 
         // This is for the line on the left hand side.
@@ -179,8 +178,8 @@ fun Item(modifier: Modifier = Modifier, todoItem: todo_item) {
 @Preview(widthDp = 331, heightDp = 79)
 @Composable
 private fun ItemPreview() {
-    val todo_items = create_dummy_todo()
-    val item = todo_items[0]
+    val todoItems = CreateDummyTodo()
+    val item = todoItems[0]
     Item(Modifier, item)
 
 }
