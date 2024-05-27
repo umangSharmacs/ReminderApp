@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
@@ -17,11 +18,19 @@ import java.time.LocalDate
 import java.util.Date
 
 class TodoViewModel: ViewModel() {
-    private var _todoList = MutableLiveData<List<todo_item>>()
-    var todoList : LiveData<List<todo_item>> = _todoList
+    private var _todoList = MutableLiveData<SnapshotStateList<todo_item>>()
+    var todoList : LiveData<SnapshotStateList<todo_item>> = _todoList
+
+    init {
+        getAllToDo()
+    }
 
     fun getAllToDo(){
         _todoList.value = TodoManager.getAllToDo()
+    }
+
+    fun getToDoItem(id: Int):todo_item?{
+        return TodoManager.getToDoItem(id)
     }
 
     fun addTodoItem(
@@ -38,7 +47,7 @@ class TodoViewModel: ViewModel() {
             tags = tags
         )
         getAllToDo()
-        Log.d("TodoManager", "addTodoItem: ${_todoList.toString()}")
+        Log.d("TodoManager", "addTodoItem: ${todoList.value.toString()}")
 
     }
 
@@ -46,7 +55,14 @@ class TodoViewModel: ViewModel() {
 
         TodoManager.deleteTodoItem(id = id)
         getAllToDo()
+        Log.d("TodoManager", "deleteTodoItem: ${todoList.value.toString()}")
 
+    }
+
+    fun updateTodoItem(updatedTodoitem : todo_item){
+        TodoManager.updateTodoItem(updatedTodoitem)
+        getAllToDo()
+        Log.d("TodoManager", "updateTodoItem: ${todoList.value.toString()}")
     }
 
     fun createDummyTodo(){

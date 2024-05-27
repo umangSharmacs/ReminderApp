@@ -1,16 +1,21 @@
 package com.example.reminderapp
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import java.time.Instant
 import java.time.LocalDate
 import java.util.Date
 
 object TodoManager {
 
-    private var todoList = mutableListOf<todo_item>()
+    private var todoList = SnapshotStateList<todo_item>()
 
-    fun getAllToDo(): List<todo_item>{
+    fun getAllToDo(): SnapshotStateList<todo_item> {
 
         return todoList
+    }
+
+    fun getToDoItem(id: Int): todo_item? {
+        return todoList.find { it.id == id }
     }
 
     fun addTodoItem(
@@ -31,6 +36,18 @@ object TodoManager {
     fun deleteTodoItem(id : Int){
         todoList.removeIf{
             it.id == id
+        }
+
+    }
+
+    fun updateTodoItem(updatedTodoitem : todo_item){
+        val existingToDoItem = getToDoItem(updatedTodoitem.id)
+
+        if (existingToDoItem != null) {
+            existingToDoItem.title = updatedTodoitem.title
+            existingToDoItem.description = updatedTodoitem.description
+            existingToDoItem.dueDate = updatedTodoitem.dueDate
+            existingToDoItem.tags = updatedTodoitem.tags
         }
 
     }

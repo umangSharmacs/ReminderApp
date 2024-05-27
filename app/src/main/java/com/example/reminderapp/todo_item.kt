@@ -1,6 +1,7 @@
 package com.example.reminderapp
 
 import android.service.autofill.OnClickAction
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -44,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import java.time.Instant
 import java.time.LocalDate
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 
@@ -62,7 +65,7 @@ data class todo_item(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Item(modifier: Modifier = Modifier, todoItem: todo_item) {
+fun Item(modifier: Modifier = Modifier, todoItem: todo_item,  onDelete:() -> Unit , onEdit:() -> Unit) {
 
     var expandedState by remember {
         mutableStateOf(false)
@@ -125,14 +128,6 @@ fun Item(modifier: Modifier = Modifier, todoItem: todo_item) {
                 }
             }
 
-            // This is for the line on the left hand side.
-//            Box(
-//                modifier = Modifier
-//                    .requiredWidth(width = 9.dp)
-//                    .requiredHeight(height = 79.dp)
-//                    .clip(shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp))
-//                    .background(color = Color(0xff1b998b))  // TODO: Make this dynamic
-//            )
         }
 
     } else {
@@ -173,31 +168,49 @@ fun Item(modifier: Modifier = Modifier, todoItem: todo_item) {
                         thickness = 2.dp
                     )
                     Text(
-                        text = todoItem.description,
+                        text = todoItem.description + todoItem.id.toString(),
                         color = Color.Black,
                         style = TextStyle(
                             fontSize = 15.sp),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 3)
-                    ElevatedButton(onClick = { /*TODO*/ }) {
-                        Icon(painter = painterResource(id = R.drawable.edit),
-                            contentDescription = "edit",
+
+
+                    Row(modifier = Modifier
+                        .padding(top = 12.dp)){
+
+                        // Edit Button
+                        ElevatedButton(
+                            onClick = onEdit,
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.Primary)),
                             modifier = Modifier
-                                .background(color = Color(0xff1b998b)))
+                                .padding(end = 10.dp)
+                        ) {
+                            Icon(painter = painterResource(id = R.drawable.edit),
+                                contentDescription = "edit",
+                                modifier = Modifier
+                                    .background(color = colorResource(id = R.color.Primary)))
+                        }
+
+                        // Delete Button
+                        ElevatedButton(
+                            onClick = onDelete,
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.Primary)),
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+
+                        ) {
+                            Icon(painter = painterResource(id = R.drawable.delete),
+                                contentDescription = "delete",
+                                modifier = Modifier
+                                    .background(color = colorResource(id = R.color.Primary)))
+                        }
                     }
+
 
                 }
 
             }
-
-            // This is for the line on the left hand side.
-//            Box(
-//                modifier = Modifier
-//                    .requiredWidth(width = 9.dp)
-//                    .fillMaxHeight()
-//                    .clip(shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp))
-//                    .background(color = Color(0xff1b998b))  // TODO: Make this dynamic
-//            )
 
 
         }
