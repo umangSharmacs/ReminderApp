@@ -83,13 +83,14 @@ class MainActivity : ComponentActivity() {
 fun HomePage(modifier: Modifier = Modifier, todoViewModel: TodoViewModel, navController : NavHostController) {
 
     Scaffold(
+        topBar = @androidx.compose.runtime.Composable {
+            TopAppBarScaffold()
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("AdderScreen") }) {
-                Icon(Icons.Filled.Add, contentDescription = "Add")
-            }
+            FloatingActionButton(onClick = { navController.navigate("AdderScreen") })
         }
     ) {innerPadding ->
-        TodoListPage(viewModel = todoViewModel, modifier = Modifier.padding(innerPadding), navController)
+        TodoListPage(viewModel = todoViewModel, modifier = Modifier, navController, paddingValues = innerPadding)
     }
 
 }

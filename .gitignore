@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+KeyStore
+app/release/app-release.apk

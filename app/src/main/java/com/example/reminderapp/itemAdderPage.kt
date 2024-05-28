@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,12 +57,13 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdderScreen(
+fun AdderScreenContent(
     modifier: Modifier = Modifier,
     todoViewModel: TodoViewModel,
     navController: NavHostController,
     optionalTitle: String = "",
-    optionalDescription: String = "") {
+    optionalDescription: String = "",
+    paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)) {
 
     var titleInputText by remember {
         mutableStateOf(optionalTitle)
@@ -94,7 +97,8 @@ fun AdderScreen(
     )
 
     Surface( modifier = Modifier
-        .background( color = Color.White)
+        .background(color = Color.White)
+        .padding(top = paddingValues.calculateTopPadding())
     ){
         Column (
             modifier = Modifier
@@ -257,14 +261,35 @@ fun AdderScreen(
 
 }
 
+@Composable
+fun AdderScreen(modifier: Modifier = Modifier,
+                todoViewModel: TodoViewModel,
+                navController: NavHostController,
+                optionalTitle: String = "",
+                optionalDescription: String = "") {
+
+    Scaffold(
+        topBar = @androidx.compose.runtime.Composable {
+            TopAppBarScaffold()
+        })
+    {paddingValues ->
+            AdderScreenContent(
+                modifier,
+            todoViewModel,
+            navController,
+            optionalTitle,
+            optionalDescription,
+                paddingValues)
+        }
+
+}
 
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun AdderScreenPreview() {
-    AdderScreen(
+    AdderScreenContent(
         Modifier,
         TodoViewModel(),
-        NavHostController(LocalContext.current),
-        "Title",
-        "Description")
+        NavHostController(LocalContext.current)
+    )
 }
