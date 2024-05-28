@@ -69,4 +69,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.navigation)
+    implementation(libs.maxkeppler.core)
+    implementation(libs.maxkeppler.calendar)
+
 }
