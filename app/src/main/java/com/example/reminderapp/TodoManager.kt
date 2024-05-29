@@ -40,14 +40,20 @@ object TodoManager {
 
     }
 
-    fun updateTodoItem(updatedTodoitem : todo_item){
-        val existingToDoItem = getToDoItem(updatedTodoitem.id)
+    fun updateTodoItem(
+        updatedTodoTitle : String,
+        updatedTodoDescription : String,
+        updatedTodoDueDate : LocalDate,
+        updatedTodoTags : List<String>,
+        toUpdateTodoItemID: Int
+                       ){
+        val existingToDoItem = getToDoItem(toUpdateTodoItemID)
 
         if (existingToDoItem != null) {
-            existingToDoItem.title = updatedTodoitem.title
-            existingToDoItem.description = updatedTodoitem.description
-            existingToDoItem.dueDate = updatedTodoitem.dueDate
-            existingToDoItem.tags = updatedTodoitem.tags
+            existingToDoItem.title = updatedTodoTitle
+            existingToDoItem.description = updatedTodoDescription
+            existingToDoItem.dueDate = updatedTodoDueDate
+            existingToDoItem.tags = updatedTodoTags
         }
 
     }

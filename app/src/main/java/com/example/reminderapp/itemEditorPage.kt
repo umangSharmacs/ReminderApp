@@ -75,17 +75,13 @@ fun EditorScreen(
 
             ElevatedButton(
                 onClick =  {
-                    todoViewModel.addTodoItem(titleInputText, descriptionInputText)
                     if (originalTodoItem != null) {
                         todoViewModel.updateTodoItem(
-                            todo_item(
-                                id = originalTodoItem.id,
-                                title = titleInputText,
-                                description = descriptionInputText,
-                                dueDate = originalTodoItem.dueDate,
-                                createdOn = originalTodoItem.createdOn,
-                                tags = originalTodoItem.tags
-                            )
+                            updatedTodoTitle = titleInputText,
+                            updatedTodoDescription = descriptionInputText,
+                            updatedTodoDueDate = originalTodoItem.dueDate,
+                            updatedTodoTags = originalTodoItem.tags,
+                            toUpdateTodoItemID = originalTodoItem.id
                         )
                     }
                     navController.popBackStack()

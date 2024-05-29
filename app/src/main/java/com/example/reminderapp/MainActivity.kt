@@ -50,11 +50,15 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(
-                        route = "EditScreen/{title}/{description}/{id}",
+                        route = "EditScreen?title={title}&description={description}&id={id}",
                         arguments = listOf(
-                            navArgument("title"){type = NavType.StringType},
-                            navArgument("description"){type = NavType.StringType},
-                            navArgument("id"){type = NavType.IntType}
+                            navArgument("title"){
+                                type = NavType.StringType},
+                            navArgument("description"){
+                                type = NavType.StringType
+                                nullable=true},
+                            navArgument("id"){
+                                type = NavType.IntType}
                         )
                     ){
                         val title = it.arguments?.getString("title").toString()

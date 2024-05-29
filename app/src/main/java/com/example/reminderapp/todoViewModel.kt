@@ -59,8 +59,20 @@ class TodoViewModel: ViewModel() {
 
     }
 
-    fun updateTodoItem(updatedTodoitem : todo_item){
-        TodoManager.updateTodoItem(updatedTodoitem)
+    fun updateTodoItem(
+        updatedTodoTitle : String,
+        updatedTodoDescription : String,
+        updatedTodoDueDate : LocalDate,
+        updatedTodoTags : List<String>,
+        toUpdateTodoItemID: Int
+    ){
+        TodoManager.updateTodoItem(
+            updatedTodoTitle,
+            updatedTodoDescription,
+            updatedTodoDueDate,
+            updatedTodoTags,
+            toUpdateTodoItemID
+        )
         getAllToDo()
         Log.d("TodoManager", "updateTodoItem: ${todoList.value.toString()}")
     }

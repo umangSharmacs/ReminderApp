@@ -38,7 +38,7 @@ fun TodoListPage(viewModel: TodoViewModel, modifier: Modifier = Modifier, navHos
                         viewModel.deleteTodoItem(todoItem.id)
                                },
                     onEdit = {
-                        navHost.navigate(route = "EditScreen/${todoItem.title}/${todoItem.description}/${todoItem.id}")
+                        navHost.navigate(route = "EditScreen?title=${todoItem.title}&description=${todoItem.description}&id=${todoItem.id}")
                     })
             }
         }

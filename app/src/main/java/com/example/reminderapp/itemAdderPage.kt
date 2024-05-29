@@ -120,7 +120,7 @@ fun AdderScreenContent(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(id = R.color.Primary),
+                    focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                 ),
                 textStyle = TextStyle.Default.copy(fontSize = 25.sp)
@@ -218,14 +218,13 @@ fun AdderScreenContent(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = colorResource(id = R.color.Primary),
+                focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
             )
 
             )
 
             // Add button
-
 
             Column(
                 modifier = Modifier
