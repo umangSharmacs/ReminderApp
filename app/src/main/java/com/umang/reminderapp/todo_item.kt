@@ -1,4 +1,4 @@
-package com.example.reminderapp
+package com.umang.reminderapp
 
 import android.service.autofill.OnClickAction
 import android.util.Log
@@ -49,6 +49,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.umang.reminderapp.R
 
 import java.util.Date
 import kotlin.math.exp
@@ -65,7 +66,7 @@ data class todo_item(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Item(modifier: Modifier = Modifier, todoItem: todo_item,  onDelete:() -> Unit , onEdit:() -> Unit) {
+fun Item(modifier: Modifier = Modifier, todoItem: todo_item, onDelete:() -> Unit, onEdit:() -> Unit) {
 
     var expandedState by remember {
         mutableStateOf(false)

@@ -1,4 +1,4 @@
-package com.example.reminderapp
+package com.umang.reminderapp
 
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 @Composable
 fun TodoListPage(viewModel: TodoViewModel, modifier: Modifier = Modifier, navHost: NavHostController, paddingValues: PaddingValues) {

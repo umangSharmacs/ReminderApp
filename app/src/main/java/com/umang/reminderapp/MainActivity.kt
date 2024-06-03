@@ -1,4 +1,4 @@
-package com.example.reminderapp
+package com.umang.reminderapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,7 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

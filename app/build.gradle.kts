@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.reminderapp"
+    namespace = "com.umang.reminderapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.reminderapp"
+        applicationId = "com.umang.reminderapp"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -27,6 +27,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

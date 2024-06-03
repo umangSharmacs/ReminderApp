@@ -1,4 +1,4 @@
-package com.example.reminderapp
+package com.umang.reminderapp
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import java.time.Instant
@@ -24,13 +24,15 @@ object TodoManager {
         dueDate: LocalDate = LocalDate.now(),
         tags: List<String> = listOf("tag1","tag2")
     ){
-        todoList.add(todo_item(
+        todoList.add(
+            todo_item(
             id = System.currentTimeMillis().toInt(),
             title = title,
             createdOn = Date.from(Instant.now()),
             description = description,
             dueDate = dueDate,
-            tags = tags))
+            tags = tags)
+        )
     }
 
     fun deleteTodoItem(id : Int){

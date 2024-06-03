@@ -1,4 +1,4 @@
-package com.example.reminderapp
+package com.umang.reminderapp
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import java.time.Instant
 import java.time.LocalDate
 import java.util.Date
@@ -29,7 +29,7 @@ class TodoViewModel: ViewModel() {
         _todoList.value = TodoManager.getAllToDo()
     }
 
-    fun getToDoItem(id: Int):todo_item?{
+    fun getToDoItem(id: Int): todo_item?{
         return TodoManager.getToDoItem(id)
     }
 
