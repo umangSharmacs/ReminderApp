@@ -5,7 +5,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.umang.reminderapp.TodoManager
+import com.umang.reminderapp.singletons.TodoManager
 import com.umang.reminderapp.data.classes.TodoItem
 import java.time.LocalDate
 

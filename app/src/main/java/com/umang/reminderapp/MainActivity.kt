@@ -4,33 +4,37 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.firebase.FirebaseApp
+import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.screens.login.LogInScreen
 import com.umang.reminderapp.screens.login.SignUpLanding
 import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.EditorScreen
-import com.umang.reminderapp.screens.main.TodoListPage
-import com.umang.reminderapp.ui.components.FloatingActionButton
-import com.umang.reminderapp.ui.components.TopAppBarScaffold
+import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Start todoViewModel
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
         todoViewModel.createDummyTodo()
+
+        // Start AuthViewModel
+//        FirebaseApp.initializeApp(this)
+        val authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
+
         setContent {
             ReminderAppTheme {
 
@@ -44,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route="SignUpScreen"){
-                        SignUpScreen(navController = navController)
+                        SignUpScreen(navController = navController, AuthViewModel = authViewModel)
                     }
 
                     composable(route="LoginScreen"){
@@ -53,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
                     // Main
                     composable(route = "Home"){
-                        HomePage(todoViewModel = todoViewModel, navController = navController)
+                        HomePage(todoViewModel = todoViewModel, navController = navController, authViewModel = authViewModel)
                     }
 
                     composable(route = "AdderScreen"){
@@ -94,18 +98,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun HomePage(modifier: Modifier = Modifier, todoViewModel: TodoViewModel, navController : NavHostController) {
 
-    Scaffold(
-        topBar = @androidx.compose.runtime.Composable {
-            TopAppBarScaffold()
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("AdderScreen") })
-        }
-    ) {innerPadding ->
-        TodoListPage(viewModel = todoViewModel, modifier = Modifier, navController, paddingValues = innerPadding)
-    }
-
-}

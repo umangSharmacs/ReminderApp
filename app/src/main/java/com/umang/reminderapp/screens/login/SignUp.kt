@@ -1,5 +1,6 @@
 package com.umang.reminderapp.screens.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +20,13 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.data.models.AuthViewModel
 
 @Composable
 fun SignUpScreen(modifier: Modifier = Modifier,
-                 navController: NavHostController) {
+                 navController: NavHostController,
+                 AuthViewModel: AuthViewModel
+) {
 
     var emailText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
@@ -50,7 +54,12 @@ fun SignUpScreen(modifier: Modifier = Modifier,
                             .padding(15.dp)
             )
 
-            Button(onClick = { },
+            Button(onClick = {
+                AuthViewModel.register(emailText, passwordText)
+                if (AuthViewModel.isLoggedIn()){
+                    navController.navigate("Home")
+                }
+            },
                     modifier = Modifier
                             .padding(15.dp)) {
                 Text(text = "Sign Up")

@@ -1,4 +1,4 @@
-package com.umang.reminderapp
+package com.umang.reminderapp.singletons
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.umang.reminderapp.data.classes.TodoItem
