@@ -1,10 +1,8 @@
-package com.umang.reminderapp
+package com.umang.reminderapp.screens.main
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -17,6 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.data.classes.TodoItem
+import com.umang.reminderapp.data.models.TodoViewModel
+import com.umang.reminderapp.ui.components.Item
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 @Composable
@@ -31,7 +32,7 @@ fun TodoListPage(viewModel: TodoViewModel, modifier: Modifier = Modifier, navHos
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .padding(top = paddingValues.calculateTopPadding())
         ) {
-            itemsIndexed(it) { index:Int, todoItem: todo_item ->
+            itemsIndexed(it) { index:Int, todoItem: TodoItem ->
                 Item(Modifier.padding(15.dp),
                     todoItem,
                     onDelete = {

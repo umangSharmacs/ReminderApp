@@ -1,24 +1,14 @@
-package com.umang.reminderapp
+package com.umang.reminderapp.screens.main
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,9 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,25 +33,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
-import com.umang.reminderapp.R
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import com.umang.reminderapp.R
+import com.umang.reminderapp.data.models.TodoViewModel
+import com.umang.reminderapp.ui.components.TopAppBarScaffold
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdderScreenContent(
-    modifier: Modifier = Modifier,
-    todoViewModel: TodoViewModel,
-    navController: NavHostController,
-    optionalTitle: String = "",
-    optionalDescription: String = "",
-    paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)) {
+        modifier: Modifier = Modifier,
+        todoViewModel: TodoViewModel,
+        navController: NavHostController,
+        optionalTitle: String = "",
+        optionalDescription: String = "",
+        paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)) {
 
     var titleInputText by remember {
         mutableStateOf(optionalTitle)

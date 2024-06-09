@@ -1,4 +1,4 @@
-package com.umang.reminderapp
+package com.umang.reminderapp.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add

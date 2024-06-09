@@ -1,20 +1,22 @@
 package com.umang.reminderapp
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.umang.reminderapp.data.classes.TodoItem
+
 import java.time.Instant
 import java.time.LocalDate
 import java.util.Date
 
 object TodoManager {
 
-    private var todoList = SnapshotStateList<todo_item>()
+    private var todoList = SnapshotStateList<TodoItem>()
 
-    fun getAllToDo(): SnapshotStateList<todo_item> {
+    fun getAllToDo(): SnapshotStateList<TodoItem> {
 
         return todoList
     }
 
-    fun getToDoItem(id: Int): todo_item? {
+    fun getToDoItem(id: Int): TodoItem? {
         return todoList.find { it.id == id }
     }
 
@@ -25,7 +27,7 @@ object TodoManager {
         tags: List<String> = listOf("tag1","tag2")
     ){
         todoList.add(
-            todo_item(
+                TodoItem(
             id = System.currentTimeMillis().toInt(),
             title = title,
             createdOn = Date.from(Instant.now()),
