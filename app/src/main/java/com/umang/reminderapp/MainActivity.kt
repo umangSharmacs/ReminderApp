@@ -15,6 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.umang.reminderapp.data.models.TodoViewModel
+import com.umang.reminderapp.screens.login.LogInScreen
+import com.umang.reminderapp.screens.login.SignUpLanding
+import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.EditorScreen
 import com.umang.reminderapp.screens.main.TodoListPage
@@ -33,8 +36,22 @@ class MainActivity : ComponentActivity() {
 
                 // Navigation
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "Home"){
+                NavHost(navController = navController, startDestination = "SignUpLanding"){
 
+                    // Auth
+                    composable(route="SignUpLanding"){
+                        SignUpLanding(navController = navController)
+                    }
+
+                    composable(route="SignUpScreen"){
+                        SignUpScreen(navController = navController)
+                    }
+
+                    composable(route="LoginScreen"){
+                        LogInScreen(navController = navController)
+                    }
+
+                    // Main
                     composable(route = "Home"){
                         HomePage(todoViewModel = todoViewModel, navController = navController)
                     }
