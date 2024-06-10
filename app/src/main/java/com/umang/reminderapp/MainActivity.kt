@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
         // Start todoViewModel
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
-        todoViewModel.createDummyTodo()
+//        todoViewModel.createDummyTodo()
 
         // Start AuthViewModel
 //        FirebaseApp.initializeApp(this)

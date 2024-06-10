@@ -226,7 +226,7 @@ fun AdderScreenContent(
                         todoViewModel.addTodoItem(
                             title = titleInputText,
                             description =  descriptionInputText,
-                            dueDate = selectedDueDate)
+                            dueDate = selectedDueDate.toString())
                         navController.popBackStack()
                     },
                     modifier = Modifier

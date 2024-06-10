@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.umang.reminderapp.singletons.TodoManager
 import com.umang.reminderapp.data.classes.TodoItem
+import java.time.Instant
 import java.time.LocalDate
+import java.util.Date
 
 class TodoViewModel: ViewModel() {
     private var _todoList = MutableLiveData<SnapshotStateList<TodoItem>>()
@@ -19,6 +21,7 @@ class TodoViewModel: ViewModel() {
 
     fun getAllToDo(){
         _todoList.value = TodoManager.getAllToDo()
+        Log.d("TodoManager", "getAllToDo: ${todoList.value.toString()}")
     }
 
     fun getToDoItem(id: Int): TodoItem?{
@@ -28,7 +31,7 @@ class TodoViewModel: ViewModel() {
     fun addTodoItem(
         title: String = " ToDo",
         description: String = "Hello World. THis is a description",
-        dueDate: LocalDate = LocalDate.now(),
+        dueDate: String = LocalDate.now().toString(),
         tags: List<String> = listOf("tag1","tag2")
     ){
 
@@ -54,7 +57,7 @@ class TodoViewModel: ViewModel() {
     fun updateTodoItem(
         updatedTodoTitle : String,
         updatedTodoDescription : String,
-        updatedTodoDueDate : LocalDate,
+        updatedTodoDueDate : String,
         updatedTodoTags : List<String>,
         toUpdateTodoItemID: Int
     ){
@@ -69,9 +72,9 @@ class TodoViewModel: ViewModel() {
         Log.d("TodoManager", "updateTodoItem: ${todoList.value.toString()}")
     }
 
-    fun createDummyTodo(){
-        TodoManager.createDummyTodo()
-        getAllToDo()
-    }
+//    fun createDummyTodo(){
+//        TodoManager.createDummyTodo()
+//        getAllToDo()
+//    }
 
 }
