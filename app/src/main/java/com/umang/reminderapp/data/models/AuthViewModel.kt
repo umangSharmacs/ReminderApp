@@ -6,6 +6,12 @@ import com.umang.reminderapp.singletons.AuthManager
 
 class AuthViewModel: ViewModel() {
 
+    var user: FirebaseUser? = null
+
+    init{
+        user = getFirebaseUser()
+    }
+
     // Get User
     fun getFirebaseUser(): FirebaseUser? {
         return AuthManager.getFirebaseUser()
@@ -19,11 +25,19 @@ class AuthViewModel: ViewModel() {
     // Log in
     fun login(email: String, password: String) {
         AuthManager.login(email, password)
+        user = getFirebaseUser()
     }
 
     // Sign Up
     fun register(email: String, password: String) {
         AuthManager.register(email, password)
+        user = getFirebaseUser()
+    }
+
+    fun logout() {
+        AuthManager.logout()
+        user = null
+        //Todo Toast
     }
 
 }

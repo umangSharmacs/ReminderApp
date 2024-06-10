@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        var startDestination = "SignUpLanding"
+
         // Start todoViewModel
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
         todoViewModel.createDummyTodo()
@@ -35,12 +37,18 @@ class MainActivity : ComponentActivity() {
 //        FirebaseApp.initializeApp(this)
         val authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
+        if (authViewModel.user == null){
+            startDestination = "SignUpLanding"
+        } else {
+            startDestination = "Home"
+        }
+
         setContent {
             ReminderAppTheme {
 
                 // Navigation
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "SignUpLanding"){
+                NavHost(navController = navController, startDestination = startDestination){
 
                     // Auth
                     composable(route="SignUpLanding"){

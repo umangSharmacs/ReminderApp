@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,21 +31,24 @@ fun TodoListPage(viewModel: TodoViewModel,
                  modifier: Modifier = Modifier,
                  navHost: NavHostController,
                  paddingValues: PaddingValues,
-                 authViewModel: AuthViewModel) {
+                 authViewModel: AuthViewModel ) {
 
     val todoList by viewModel.todoList.observeAsState()
-    val user = authViewModel.getFirebaseUser()
+    val user = authViewModel.user
     Log.d("User", user?.email.toString())
 
-    if (user!=null){
-        Text(text = user.displayName.toString(), color = Color.Black)
-        Text(text = user.email.toString(), color = Color.Black)
-    } else {
-        Text(text = "Not Signed In", color = Color.Black)
-    }
 
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text("Hello world", color = Color.Black)
+
+    Column(modifier = modifier
+        .fillMaxWidth()
+        .padding(top = paddingValues.calculateTopPadding())
+    ) {
+        if (user!=null){
+            Text(text = user.displayName.toString(), color = Color.Black)
+            Text(text = user.email.toString(), color = Color.Black)
+        } else {
+            Text(text = "Not Signed In", color = Color.Black)
+        }
         todoList?.let {
             LazyColumn(
                 modifier = Modifier
@@ -64,16 +68,27 @@ fun TodoListPage(viewModel: TodoViewModel,
                 }
             }
         }
+        Button(onClick = {
+            authViewModel.logout()
+            navHost.navigate(route = "SignUpLanding")
+        }) {
+            Text(text = "Sign Out")
+        }
     }
 
 
 }
-//
+
+
 //@Preview(widthDp = 360, heightDp = 640)
 //@Composable
 //private fun TodoListPreview() {
 //    ReminderAppTheme {
-//        TodoListPage(viewModel = TodoViewModel(), navHost = NavHostController(LocalContext.current), paddingValues = PaddingValues(0.dp))
+//        TodoListPage(
+//            viewModel = TodoViewModel(),
+//            navHost = NavHostController(LocalContext.current),
+//            paddingValues = PaddingValues(0.dp),
+//            authViewModel = AuthViewModel())
 //    }
 //
 //}

@@ -1,6 +1,7 @@
 package com.umang.reminderapp.screens.login
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,10 +56,16 @@ fun SignUpScreen(modifier: Modifier = Modifier,
             )
 
             Button(onClick = {
-                AuthViewModel.register(emailText, passwordText)
-                if (AuthViewModel.isLoggedIn()){
-                    navController.navigate("Home")
+                if(emailText!="" && passwordText!=""){
+                    AuthViewModel.register(emailText, passwordText)
+                    if (AuthViewModel.isLoggedIn()){
+                        navController.navigate("Home")
+                    }
+                }else{
+                    //TODO
+//                    Toast.makeText( this@MainActivity,"Please fill all the fields", Toast.LENGTH_SHORT).show()
                 }
+
             },
                     modifier = Modifier
                             .padding(15.dp)) {
