@@ -1,8 +1,11 @@
 package com.umang.reminderapp.singletons
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import com.google.firebase.auth.EmailAuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
@@ -56,6 +59,28 @@ object AuthManager {
                 }
                 if (task.isCanceled) {
                     Toast.makeText(context, "Cancelled" + task.exception, Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    fun convertAnonymousUserToPermanentUserWithEmail(
+        email: String,
+        password: String,
+        context: Context) {
+        val credential = EmailAuthProvider.getCredential(email, password)
+
+        auth.currentUser!!.linkWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("TAG", "linkWithCredential:success")
+                    user = auth.currentUser
+                } else {
+                    Log.w("TAG", "linkWithCredential:failure", task.exception)
+                    Toast.makeText(
+                        context,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
             }
     }

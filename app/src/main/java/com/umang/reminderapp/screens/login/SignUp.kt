@@ -74,9 +74,20 @@ fun SignUpScreen(modifier: Modifier = Modifier,
             // Sign up Button
             Button(onClick = {
                 if(emailText!="" && passwordText!=""){
-                    AuthViewModel.register(emailText, passwordText, context)
-                    if (AuthViewModel.isLoggedIn()){
-                        navController.navigate("Home")
+                    if(AuthViewModel.user==null){
+                        AuthViewModel.register(emailText, passwordText, context)
+                        if (AuthViewModel.isLoggedIn()){
+                            navController.navigate("Home")
+                        }
+                    }else if(AuthViewModel.user!!.isAnonymous){
+                        AuthViewModel.convertAnonymousUserToPermanentUserWithEmail(
+                            emailText,
+                            passwordText,
+                            context
+                        )
+                        if (AuthViewModel.isLoggedIn()){
+                            navController.navigate("Home")
+                        }
                     }
                 }
             },

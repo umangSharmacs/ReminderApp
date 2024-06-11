@@ -82,15 +82,22 @@ fun TodoListPage(viewModel: TodoViewModel,
 
         Button(onClick = {
             authViewModel.logout()
-            navHost.navigate(route = "SignUpLanding")
+            navHost.navigate(route = "SignUpScreen")
         }) {
             Text(text = "Sign Out")
         }
-    }
 
+        if (user != null && user.isAnonymous) {
+
+                Button(onClick = {
+                    navHost.navigate(route = "SignUpScreen")
+                }) {
+                    Text(text = "Sign up ")
+                }
+            }
+        }
 
 }
-
 
 //@Preview(widthDp = 360, heightDp = 640)
 //@Composable

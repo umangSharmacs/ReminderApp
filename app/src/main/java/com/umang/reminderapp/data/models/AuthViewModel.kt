@@ -42,6 +42,15 @@ class AuthViewModel: ViewModel() {
         user = getFirebaseUser()
     }
 
+    fun convertAnonymousUserToPermanentUserWithEmail(
+        email: String,
+        password: String,
+        context: Context
+    ){
+        AuthManager.convertAnonymousUserToPermanentUserWithEmail(email, password, context)
+        user = getFirebaseUser()
+    }
+
     fun logout() {
         AuthManager.logout()
         user = null

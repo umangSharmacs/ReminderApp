@@ -1,6 +1,7 @@
 package com.umang.reminderapp.screens.main
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -68,7 +69,7 @@ fun AdderScreenContent(
     var dueDateSelectedCounter by remember {
         mutableIntStateOf(0)
     }
-
+    val context = LocalContext.current
     val calendarState = rememberSheetState()
     
     CalendarDialog(
@@ -223,11 +224,19 @@ fun AdderScreenContent(
 
                 ElevatedButton(
                     onClick =  {
-                        todoViewModel.addTodoItem(
-                            title = titleInputText,
-                            description =  descriptionInputText,
-                            dueDate = selectedDueDate.toString())
-                        navController.popBackStack()
+                        if (titleInputText==""){
+                            Toast.makeText(context,"Please enter a title", Toast.LENGTH_SHORT).show()
+                        } else if(selectedDueDate==LocalDate.now()){
+                            Toast.makeText(context,"Please select a due date", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            todoViewModel.addTodoItem(
+                                title = titleInputText,
+                                description =  descriptionInputText,
+                                dueDate = selectedDueDate.toString())
+                            navController.popBackStack()
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
