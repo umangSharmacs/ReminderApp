@@ -15,7 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.loader.content.Loader
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.models.AuthViewModel
 
@@ -27,6 +29,7 @@ fun LogInScreen(modifier: Modifier = Modifier,
 
     var emailText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Surface(modifier = modifier) {
 
@@ -53,14 +56,11 @@ fun LogInScreen(modifier: Modifier = Modifier,
 
             Button(onClick = {
                 if(emailText!="" && passwordText!=""){
-                    AuthViewModel.login(emailText, passwordText)
+                    AuthViewModel.login(emailText, passwordText, context)
                     if (AuthViewModel.isLoggedIn()){
                         navController.navigate("Home")
                     }
-                }else{
-                    //TODO
-//                    Toast.makeText( this@MainActivity,"Please fill all the fields", Toast.LENGTH_SHORT).show()
-                }},
+                } },
                     modifier = Modifier
                             .padding(15.dp)) {
                 Text(text = "Log In")

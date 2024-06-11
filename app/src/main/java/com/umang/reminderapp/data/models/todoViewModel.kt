@@ -21,7 +21,6 @@ class TodoViewModel: ViewModel() {
     var dataLoadingBoolean: Boolean = false
 
     init {
-        // Coroutine that will be canceled when the ViewModel is cleared.
         getAllToDo()
     }
 
@@ -55,7 +54,6 @@ class TodoViewModel: ViewModel() {
     }
 
     fun deleteTodoItem(id: Int){
-
         TodoManager.deleteTodoItem(id = id)
         this.viewModelScope.launch { getAllToDo() }
         Log.d("TodoManager", "deleteTodoItem: ${todoList.value.toString()}")

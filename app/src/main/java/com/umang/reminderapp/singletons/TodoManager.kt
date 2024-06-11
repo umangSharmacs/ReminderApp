@@ -6,6 +6,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.umang.reminderapp.data.classes.TodoItem
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
 import java.time.LocalDate
@@ -14,7 +15,6 @@ object TodoManager {
 
 
     private var todoList = SnapshotStateList<TodoItem>()
-    var dataLoadingBoolean: Boolean = false
 
     suspend fun getAllToDo(): SnapshotStateList<TodoItem> {
         val tempTodolist = SnapshotStateList<TodoItem>()
@@ -30,6 +30,7 @@ object TodoManager {
             todoList = tempTodolist
         } catch (e: Exception){
             Log.w("Firebase GET ERROR", "Error getting documents: ", e)
+            if (e is CancellationException) throw e
         }
         return todoList
     }

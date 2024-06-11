@@ -1,4 +1,4 @@
-package com.umang.reminderapp.screens.main
+package com.umang .reminderapp.screens.main
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -40,7 +40,6 @@ fun TodoListPage(viewModel: TodoViewModel,
         viewModel.getAllToDo()
     }
     val todoList by viewModel.todoList.observeAsState()
-//    val dataLoading by viewModel.dataLoadingBoolean.observeAsState()
 
     Log.d("TodoList", todoList?.toList().toString())
 
@@ -76,6 +75,11 @@ fun TodoListPage(viewModel: TodoViewModel,
                 }
             }
         }
+
+        if(todoList?.size==0){
+            Text(text = "No items")
+        }
+
         Button(onClick = {
             authViewModel.logout()
             navHost.navigate(route = "SignUpLanding")

@@ -33,18 +33,14 @@ class MainActivity : ComponentActivity() {
 
         // Start todoViewModel
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
-//        todoViewModel.createDummyTodo()
 
         // Start AuthViewModel
-//        FirebaseApp.initializeApp(this)
         val authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         if (authViewModel.user == null){
-            startDestination = "SignUpLanding"
+            startDestination = "SignUpScreen"
         } else {
             startDestination = "Home"
-
-//            viewModelScope.launch { todoViewModel.getAllToDo() }
         }
 
         setContent {
