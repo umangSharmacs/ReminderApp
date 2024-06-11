@@ -17,10 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.data.models.AuthViewModel
 
 @Composable
 fun LogInScreen(modifier: Modifier = Modifier,
-                navController: NavHostController) {
+                navController: NavHostController,
+                AuthViewModel: AuthViewModel
+) {
 
     var emailText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
@@ -48,7 +51,16 @@ fun LogInScreen(modifier: Modifier = Modifier,
                             .padding(15.dp)
             )
 
-            Button(onClick = { },
+            Button(onClick = {
+                if(emailText!="" && passwordText!=""){
+                    AuthViewModel.login(emailText, passwordText)
+                    if (AuthViewModel.isLoggedIn()){
+                        navController.navigate("Home")
+                    }
+                }else{
+                    //TODO
+//                    Toast.makeText( this@MainActivity,"Please fill all the fields", Toast.LENGTH_SHORT).show()
+                }},
                     modifier = Modifier
                             .padding(15.dp)) {
                 Text(text = "Log In")

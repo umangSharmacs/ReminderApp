@@ -6,6 +6,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.umang.reminderapp.data.classes.TodoItem
+import kotlinx.coroutines.tasks.await
 
 import java.time.LocalDate
 
@@ -13,31 +14,24 @@ object TodoManager {
 
 
     private var todoList = SnapshotStateList<TodoItem>()
+    var dataLoadingBoolean: Boolean = false
 
-    fun getAllToDo(): SnapshotStateList<TodoItem> {
-
-        val user = Firebase.auth.currentUser
-        val tempList = SnapshotStateList<TodoItem>()
-        user?.let {
-            Firebase.firestore.collection(it.uid).get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        val todoItem = document.toObject(TodoItem::class.java)
-                        tempList.add(todoItem)
-
-                    }
-                    Log.d("TempList", "$tempList")
-                    todoList = tempList
-                    Log.d("TodoList", "$todoList")
-
+    suspend fun getAllToDo(): SnapshotStateList<TodoItem> {
+        val tempTodolist = SnapshotStateList<TodoItem>()
+        try{
+            Firebase.firestore
+                .collection(Firebase.auth.currentUser!!.uid)
+                .get()
+                .await()
+                .map{
+                    val todoItem = it.toObject(TodoItem::class.java)
+                    tempTodolist.add(todoItem)
                 }
-                .addOnFailureListener { exception ->
-                    Log.w("TAG", "Error getting documents: ", exception)
-                }
+            todoList = tempTodolist
+        } catch (e: Exception){
+            Log.w("Firebase GET ERROR", "Error getting documents: ", e)
         }
-
         return todoList
-
     }
 
     fun getToDoItem(id: Int): TodoItem? {
@@ -53,7 +47,7 @@ object TodoManager {
 
         val user = Firebase.auth.currentUser
 
-        // Create todo item
+        // Create todo_item
         val todoItem = TodoItem(
             id = System.currentTimeMillis().toInt(),
             title = title,
@@ -112,20 +106,20 @@ object TodoManager {
 //    fun createDummyTodo(){
 //
 //        val item1 = addTodoItem(
-//            "First todo",
-//            "This is my first todo",
+//            "First_todo",
+//            "This is my first_todo",
 //            "2024-06-24",
 //            listOf("tag1","tag2")
 //        )
 //        val item2 = addTodoItem(
-//            "Second todo",
-//            "This is my second todo",
+//            "Second_todo",
+//            "This is my second_todo",
 //            "2024-07-24",
 //            listOf("tag1","tag2","tag3")
 //        )
 //
 //        val item3 = addTodoItem(
-//            "Third todo",
+//            "Third_todo",
 //            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
 //                    "Phasellus vitae enim id dolor rhoncus vehicula vel nec ligula." +
 //                    " Donec mollis leo interdum, condimentum dui a, pulvinar nulla.",

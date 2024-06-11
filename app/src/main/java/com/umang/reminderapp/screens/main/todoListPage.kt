@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -25,6 +27,7 @@ import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.Item
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import kotlin.coroutines.coroutineContext
 
 @Composable
 fun TodoListPage(viewModel: TodoViewModel,
@@ -33,19 +36,24 @@ fun TodoListPage(viewModel: TodoViewModel,
                  paddingValues: PaddingValues,
                  authViewModel: AuthViewModel ) {
 
+    LaunchedEffect(Unit) {
+        viewModel.getAllToDo()
+    }
     val todoList by viewModel.todoList.observeAsState()
+//    val dataLoading by viewModel.dataLoadingBoolean.observeAsState()
+
+    Log.d("TodoList", todoList?.toList().toString())
+
     val user = authViewModel.user
     Log.d("User", user?.email.toString())
 
-
-
     Column(modifier = modifier
         .fillMaxWidth()
-        .padding(top = paddingValues.calculateTopPadding())
+        .padding(top = paddingValues.calculateTopPadding()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (user!=null){
-            Text(text = user.displayName.toString(), color = Color.Black)
-            Text(text = user.email.toString(), color = Color.Black)
+            Text(text = "User email - "+user.email.toString(), color = Color.Black)
         } else {
             Text(text = "Not Signed In", color = Color.Black)
         }

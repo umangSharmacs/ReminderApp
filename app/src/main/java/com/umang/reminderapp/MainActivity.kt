@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,7 @@ import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.EditorScreen
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,8 @@ class MainActivity : ComponentActivity() {
             startDestination = "SignUpLanding"
         } else {
             startDestination = "Home"
+
+//            viewModelScope.launch { todoViewModel.getAllToDo() }
         }
 
         setContent {
@@ -60,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route="LoginScreen"){
-                        LogInScreen(navController = navController)
+                        LogInScreen(navController = navController, AuthViewModel = authViewModel)
                     }
 
                     // Main
