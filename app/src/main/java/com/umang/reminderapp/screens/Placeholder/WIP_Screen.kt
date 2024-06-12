@@ -1,22 +1,21 @@
-package com.umang.reminderapp.screens.main
+package com.umang.reminderapp.screens.Placeholder
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.umang.reminderapp.data.models.AuthViewModel
-import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.BottomBarScaffold
 import com.umang.reminderapp.ui.components.FloatingActionButton
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 
 @Composable
-fun HomePage(
-    modifier: Modifier = Modifier,
-    todoViewModel: TodoViewModel,
-    navController: NavHostController,
-    authViewModel: AuthViewModel
-) {
+fun ComingSoon(modifier: Modifier = Modifier,navController: NavHostController) {
 
     Scaffold(
         topBar = @Composable {
@@ -32,7 +31,16 @@ fun HomePage(
         }
 
     ) {innerPadding ->
-        TodoListPage(viewModel = todoViewModel, modifier = Modifier, navController, paddingValues = innerPadding, authViewModel = authViewModel)
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "COMING SOON")
+            }
+        }
     }
-
 }

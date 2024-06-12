@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,9 +20,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +33,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.R
 import com.umang.reminderapp.data.models.AuthViewModel
+import com.umang.reminderapp.ui.theme.robotoMonoFontFamily
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(modifier: Modifier = Modifier,
@@ -46,12 +55,39 @@ fun SignUpScreen(modifier: Modifier = Modifier,
     var passwordText by remember { mutableStateOf("") }
 
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val state = AuthViewModel.signUpState.collectAsState(initial = null)
 
     Surface(modifier = modifier) {
+
         Column(modifier = Modifier
-                .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
+            .fillMaxSize()
+            .padding(start=60.dp, top=75.dp),
+            horizontalAlignment = Alignment.Start,
+            ){
+            // Create an
+            Text(modifier = Modifier,
+                textAlign = TextAlign.Start,
+                fontFamily = robotoMonoFontFamily,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 25.sp,
+                text = "Create an")
+            //Account
+            Text(modifier = Modifier,
+                textAlign = TextAlign.Start,
+                fontFamily = robotoMonoFontFamily,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 40.sp,
+                text = "Account")
+        }
+
+        Column(modifier = Modifier
+            .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+
 
             // Email
             OutlinedTextField(
@@ -75,9 +111,8 @@ fun SignUpScreen(modifier: Modifier = Modifier,
             Button(onClick = {
                 if(emailText!="" && passwordText!=""){
                     if(AuthViewModel.user==null){
-                        AuthViewModel.register(emailText, passwordText, context)
-                        if (AuthViewModel.isLoggedIn()){
-                            navController.navigate("Home")
+                        scope.launch {
+                            AuthViewModel.register(emailText, passwordText, context)
                         }
                     }else if(AuthViewModel.user!!.isAnonymous){
                         AuthViewModel.convertAnonymousUserToPermanentUserWithEmail(
@@ -92,7 +127,11 @@ fun SignUpScreen(modifier: Modifier = Modifier,
                 }
             },
                 modifier = Modifier
-                    .padding(15.dp)
+                    .padding(15.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                )
             ) {
                 Text(text = "Sign Up")
             }
@@ -143,9 +182,8 @@ fun SignUpScreen(modifier: Modifier = Modifier,
                 IconButton(modifier = Modifier
                     .padding(5.dp),
                     onClick = {
-                        AuthViewModel.signInAnonymously(context)
-                        if(AuthViewModel.isLoggedIn()){
-                            navController.navigate("home")
+                        scope.launch {
+                            AuthViewModel.signInAnonymously(context)
                         }
                     }
                 ) {
@@ -174,6 +212,18 @@ fun SignUpScreen(modifier: Modifier = Modifier,
             }
 
 
+    }
+
+    // Effect for Signup
+    LaunchedEffect(key1 = state.value?.isSuccess) {
+        scope.launch {
+            if (state.value?.isSuccess?.isNotEmpty() == true) {
+                val success = state.value?.isSuccess
+                // TODO use Snackbar
+                Toast.makeText(context, state.value?.isSuccess.toString(), Toast.LENGTH_LONG).show()
+                navController.navigate("Home")
+            }
+        }
     }
 
 }}

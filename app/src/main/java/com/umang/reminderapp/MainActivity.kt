@@ -13,8 +13,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.FirebaseApp
+import com.umang.reminderapp.data.classes.BottomBarNavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
+import com.umang.reminderapp.screens.Placeholder.ComingSoon
 import com.umang.reminderapp.screens.login.LogInScreen
 import com.umang.reminderapp.screens.login.SignUpLanding
 import com.umang.reminderapp.screens.login.SignUpScreen
@@ -49,6 +51,23 @@ class MainActivity : ComponentActivity() {
                 // Navigation
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = startDestination){
+
+
+                    // HomePage
+                    composable(route = BottomBarNavigationItem.Home.navRoute){
+                        HomePage(todoViewModel = todoViewModel, navController = navController, authViewModel = authViewModel)
+                    }
+
+                    // All Reminders
+                    composable(route = BottomBarNavigationItem.AllReminders.navRoute){
+                        ComingSoon(Modifier, navController)
+                    }
+
+                    // Profile
+                    composable(route = BottomBarNavigationItem.Profile.navRoute){
+                        ComingSoon(Modifier, navController)
+                    }
+
 
                     // Auth
                     composable(route="SignUpLanding"){
@@ -98,9 +117,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
-
-
             }
         }
     }

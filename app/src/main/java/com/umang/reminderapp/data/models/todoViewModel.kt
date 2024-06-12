@@ -18,8 +18,6 @@ class TodoViewModel: ViewModel() {
     private var _todoList = MutableLiveData<SnapshotStateList<TodoItem>>()
     var todoList : LiveData<SnapshotStateList<TodoItem>> = _todoList
 
-    var dataLoadingBoolean: Boolean = false
-
     init {
         getAllToDo()
     }
@@ -77,10 +75,5 @@ class TodoViewModel: ViewModel() {
         this.viewModelScope.launch { getAllToDo() }
         Log.d("TodoManager", "updateTodoItem: ${todoList.value.toString()}")
     }
-
-//    fun createDummyTodo(){
-//        TodoManager.createDummyTodo()
-//        getAllToDo()
-//    }
 
 }
