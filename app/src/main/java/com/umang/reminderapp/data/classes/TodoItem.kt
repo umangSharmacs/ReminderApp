@@ -9,14 +9,22 @@ data class TodoItem(
         var createdOn : String,
         var dueDate : String,
         var tags : List<String>,
-        var description  : String
+        var description  : String,
+        var completed : Boolean,
+        var completedOn : String,
+        var reminders : List<String>,
+        var priority : Int
 ){
         constructor(): this(
                 id = 0,
-                title = "",
+                title = "Todo",
                 createdOn = "1900-01-01",
                 dueDate = "1900-01-01",
                 tags = emptyList(),
-                description = ""
+                description = "",
+                completed = false,
+                completedOn = "1900-01-01",
+                reminders = emptyList(),
+                priority = 0
         )
 }

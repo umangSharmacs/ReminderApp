@@ -35,16 +35,23 @@ class TodoViewModel: ViewModel() {
 
     fun addTodoItem(
         title: String = " ToDo",
-        description: String = "Hello World. THis is a description",
         dueDate: String = LocalDate.now().toString(),
-        tags: List<String> = listOf("tag1","tag2")
+        tags: List<String> = listOf("tag1","tag2"),
+        description: String = "Hello World. This is a description",
+        completed: Boolean = false,
+        completedOn: String = "1900-01-01",
+        reminders: List<String> = emptyList(),
+        priority: Int = 0
     ){
-
         TodoManager.addTodoItem(
-                title = title,
-                description = description,
-                dueDate = dueDate,
-                tags = tags
+            title = title,
+            dueDate = dueDate,
+            tags = tags,
+            description = description,
+            completed = completed,
+            completedOn = completedOn,
+            reminders = reminders,
+            priority = priority
         )
         this.viewModelScope.launch { getAllToDo() }
         Log.d("TodoManager", "addTodoItem: ${todoList.value.toString()}")

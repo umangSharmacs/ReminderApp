@@ -13,6 +13,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -242,7 +243,7 @@ fun AdderScreenContent(
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.Primary))
+                        containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(text = "Add",
                         color = Color.Black,

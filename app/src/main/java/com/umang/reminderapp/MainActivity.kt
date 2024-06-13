@@ -17,6 +17,7 @@ import com.umang.reminderapp.data.classes.BottomBarNavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.screens.Placeholder.ComingSoon
+import com.umang.reminderapp.screens.bottomBarScreens.ProfileScreen
 import com.umang.reminderapp.screens.login.LogInScreen
 import com.umang.reminderapp.screens.login.SignUpLanding
 import com.umang.reminderapp.screens.login.SignUpScreen
@@ -65,9 +66,8 @@ class MainActivity : ComponentActivity() {
 
                     // Profile
                     composable(route = BottomBarNavigationItem.Profile.navRoute){
-                        ComingSoon(Modifier, navController)
+                        ProfileScreen(Modifier, navController, authViewModel)
                     }
-
 
                     // Auth
                     composable(route="SignUpLanding"){

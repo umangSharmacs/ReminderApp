@@ -41,9 +41,13 @@ object TodoManager {
 
     fun addTodoItem(
         title: String = " ToDo",
-        description: String = "Hello World. THis is a description",
         dueDate: String = LocalDate.now().toString(),
-        tags: List<String> = listOf("tag1","tag2")
+        tags: List<String> = listOf("tag1","tag2"),
+        description: String = "Hello World. This is a description",
+        completed: Boolean = false,
+        completedOn: String = "1900-01-01",
+        reminders: List<String> = emptyList(),
+        priority: Int = 0
     ){
 
         val user = Firebase.auth.currentUser
@@ -53,9 +57,14 @@ object TodoManager {
             id = System.currentTimeMillis().toInt(),
             title = title,
             createdOn = LocalDate.now().toString(),
-            description = description,
             dueDate = dueDate,
-            tags = tags)
+            tags = tags,
+            description = description,
+            completed = completed,
+            completedOn = completedOn,
+            reminders = reminders,
+            priority = priority
+        )
 
         todoList.add(todoItem)
 

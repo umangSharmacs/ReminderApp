@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -159,20 +160,20 @@ fun Item(modifier: Modifier = Modifier, todoItem: TodoItem, onDelete:() -> Unit,
                         // Edit Button
                         ElevatedButton(
                             onClick = onEdit,
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.Primary)),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .padding(end = 10.dp)
                         ) {
                             Icon(painter = painterResource(id = R.drawable.edit),
                                 contentDescription = "edit",
                                 modifier = Modifier
-                                    .background(color = colorResource(id = R.color.Primary)))
+                                    .background(color = MaterialTheme.colorScheme.primary))
                         }
 
                         // Delete Button
                         ElevatedButton(
                             onClick = onDelete,
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.Primary)),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .padding(end = 10.dp)
 
@@ -180,7 +181,7 @@ fun Item(modifier: Modifier = Modifier, todoItem: TodoItem, onDelete:() -> Unit,
                             Icon(painter = painterResource(id = R.drawable.delete),
                                 contentDescription = "delete",
                                 modifier = Modifier
-                                    .background(color = colorResource(id = R.color.Primary)))
+                                    .background(color = MaterialTheme.colorScheme.primary))
                         }
                     }
 

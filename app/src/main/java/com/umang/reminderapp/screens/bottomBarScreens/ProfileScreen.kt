@@ -1,45 +1,43 @@
-package com.umang.reminderapp.screens.main
+package com.umang.reminderapp.screens.bottomBarScreens
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.models.AuthViewModel
-import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.BottomBarScaffold
 import com.umang.reminderapp.ui.components.FloatingActionButton
-import com.umang.reminderapp.ui.components.TodoList
+import com.umang.reminderapp.ui.components.ProfilePage
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 
 @Composable
-fun HomePage(
+fun ProfileScreen(
     modifier: Modifier = Modifier,
-    todoViewModel: TodoViewModel,
-    navController: NavHostController,
+    navHost: NavHostController,
     authViewModel: AuthViewModel
 ) {
+
 
     Scaffold(
         topBar = @Composable {
             TopAppBarScaffold()
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("AdderScreen") })
+            FloatingActionButton(onClick = { navHost.navigate("AdderScreen") })
         },
         bottomBar = {
             BottomBarScaffold(
-                navHost = navController
+                navHost = navHost
             )
         }
 
     ) {innerPadding ->
-        TodoList(
-            viewModel = todoViewModel,
+        ProfilePage(
             modifier = Modifier,
-            navController,
             paddingValues = innerPadding,
+            navHost = navHost,
             authViewModel = authViewModel
         )
     }
-
 }

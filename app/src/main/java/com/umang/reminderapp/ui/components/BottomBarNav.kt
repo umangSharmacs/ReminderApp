@@ -39,7 +39,7 @@ fun BottomBarScaffold(modifier: Modifier = Modifier,
     val navStackBackEntry by navHost.currentBackStackEntryAsState()
     val currentDestination = navStackBackEntry?.destination
 
-    NavigationBar {
+    NavigationBar() {
         bottomBarNavigationItems.forEachIndexed { index,item ->
             var isSelected = currentDestination?.hierarchy?.any{
                 it.route==item.navRoute

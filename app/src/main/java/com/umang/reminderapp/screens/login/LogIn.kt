@@ -70,7 +70,7 @@ fun LogInScreen(modifier: Modifier = Modifier,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 40.sp,
                 text = "Log in",
-                color = colorResource(id = R.color.Secondary)
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -86,8 +86,8 @@ fun LogInScreen(modifier: Modifier = Modifier,
                 modifier = Modifier
                         .padding(15.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(id = R.color.Primary),
-                    unfocusedBorderColor = colorResource(id = R.color.Primary)
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -98,8 +98,8 @@ fun LogInScreen(modifier: Modifier = Modifier,
                 modifier = Modifier
                         .padding(15.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(id = R.color.Primary),
-                    unfocusedBorderColor = colorResource(id = R.color.Primary)
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -116,7 +116,7 @@ fun LogInScreen(modifier: Modifier = Modifier,
                 modifier = Modifier
                     .padding(15.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.Primary),
+                    containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = Color.White
                 )
 

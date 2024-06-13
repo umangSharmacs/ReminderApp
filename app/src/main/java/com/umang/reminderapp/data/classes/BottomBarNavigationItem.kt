@@ -29,7 +29,7 @@ sealed class BottomBarNavigationItem(
         title = "Profile",
         selectedIcon = R.drawable.user,
         unselectedIcon = R.drawable.outlined_user,
-        navRoute = "Placeholder"
+        navRoute = "ProfileScreen"
     )
 
 }

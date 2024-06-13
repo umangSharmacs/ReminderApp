@@ -12,14 +12,16 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.umang.reminderapp.R
+import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarScaffold(modifier: Modifier = Modifier) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
-            titleContentColor = colorResource(R.color.Primary)
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp),
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+            titleContentColor = MaterialTheme.colorScheme.onSurface
         ),
         title = {
             Text(text = "Reminder App")
@@ -30,5 +32,7 @@ fun TopAppBarScaffold(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun TopAppBarPreview() {
-    TopAppBarScaffold()
+    ReminderAppTheme {
+        TopAppBarScaffold()
+    }
 }
