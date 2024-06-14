@@ -1,5 +1,8 @@
 package com.umang.reminderapp.ui.components.ToDoItemCards
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -30,7 +33,13 @@ fun ToDoItemCard(modifier: Modifier = Modifier, item: TodoItem,
                  onClick: () -> Unit) {
 
     OutlinedCard(
-        modifier = modifier,
+        modifier = modifier
+            .animateContentSize(
+            animationSpec = tween(
+                durationMillis = 3000,
+                easing = LinearOutSlowInEasing
+            )
+        ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             contentColor = MaterialTheme.colorScheme.onSurface,
