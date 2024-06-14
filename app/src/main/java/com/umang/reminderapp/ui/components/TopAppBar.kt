@@ -24,7 +24,7 @@ fun TopAppBarScaffold(modifier: Modifier = Modifier) {
             titleContentColor = MaterialTheme.colorScheme.onSurface
         ),
         title = {
-            Text(text = "Reminder App")
+            Text(text = "Memento")
         }
     )
 }

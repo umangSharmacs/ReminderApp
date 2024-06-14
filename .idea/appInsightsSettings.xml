@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.umang.reminderapp" />
+                  <option name="mobileSdkAppId" value="1:136714251741:android:b60c567292939805729a34" />
+                  <option name="projectId" value="reminderapp-9e67a" />
+                  <option name="projectNumber" value="136714251741" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
