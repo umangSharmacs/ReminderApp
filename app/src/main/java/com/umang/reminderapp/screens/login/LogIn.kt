@@ -63,6 +63,26 @@ fun LogInScreen(modifier: Modifier = Modifier,
             .padding(start=60.dp, top=75.dp),
             horizontalAlignment = Alignment.Start,
         ){
+            // Memento
+            Text(modifier = Modifier,
+                textAlign = TextAlign.Start,
+                fontFamily = robotoMonoFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 40.sp,
+                text = "Memento",
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            // Conquer Chaos
+            Text(modifier = Modifier,
+                textAlign = TextAlign.Start,
+                fontFamily = robotoMonoFontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 20.sp,
+                text = "Conquer Chaos",
+                color = MaterialTheme.colorScheme.primary
+            )
+
             // Log in
             Text(modifier = Modifier,
                 textAlign = TextAlign.Start,

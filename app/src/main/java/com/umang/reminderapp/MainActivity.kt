@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.FirebaseApp
+import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.BottomBarNavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
@@ -24,6 +25,7 @@ import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.EditorScreen
 import com.umang.reminderapp.screens.main.HomePage
+import com.umang.reminderapp.ui.components.AlarmPage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import kotlinx.coroutines.launch
 
@@ -39,6 +41,9 @@ class MainActivity : ComponentActivity() {
 
         // Start AuthViewModel
         val authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
+
+        // Start AlarmScheduler
+        val scheduler = AndroidAlarmSchedulerImpl(this)
 
         if (authViewModel.user == null){
             startDestination = "SignUpScreen"
@@ -66,7 +71,8 @@ class MainActivity : ComponentActivity() {
 
                     // Profile
                     composable(route = BottomBarNavigationItem.Profile.navRoute){
-                        ProfileScreen(Modifier, navController, authViewModel)
+                        //ProfileScreen(Modifier, navController, authViewModel)
+                        AlarmPage(scheduler = scheduler)
                     }
 
                     // Auth

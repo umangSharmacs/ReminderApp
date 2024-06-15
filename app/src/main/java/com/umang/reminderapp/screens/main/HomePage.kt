@@ -18,7 +18,6 @@ fun HomePage(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-
     Scaffold(
         topBar = @Composable {
             TopAppBarScaffold()
@@ -31,8 +30,8 @@ fun HomePage(
                 navHost = navController
             )
         }
-
-    ) {innerPadding ->
+    ) {
+        innerPadding ->
         TodoList(
             viewModel = todoViewModel,
             modifier = Modifier,
