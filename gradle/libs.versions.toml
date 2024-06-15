@@ -1,5 +1,7 @@
 [versions]
 agp = "8.4.2"
+composeMaterial3DatetimePickers = "0.7.2"
+datetime = "0.8.1-rc"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -20,6 +22,8 @@ firebaseFirestore = "25.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+compose-material3-datetime-pickers = { module = "com.marosseleng.android:compose-material3-datetime-pickers", version.ref = "composeMaterial3DatetimePickers" }
+datetime = { module = "io.github.vanpra.compose-material-dialogs:datetime", version.ref = "datetime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -38,6 +42,8 @@ androidx-runtime-livedata = {group = "androidx.compose.runtime", name = "runtime
 androidx-navigation = {group = "androidx.navigation", name="navigation-compose", version.ref = "navigation"}
 maxkeppler-core = {group = "com.maxkeppeler.sheets-compose-dialogs", name = "core", version.ref = "maxkepplerCore" }
 maxkeppler-calendar = {group = "com.maxkeppeler.sheets-compose-dialogs", name = "calendar", version.ref = "maxkepplerCalendar"}
+maxkeppler-clock = {group = "com.maxkeppeler.sheets-compose-dialogs", name = "clock", version.ref = "maxkepplerCalendar"}
+maxkeppler-date-time = {group = "com.maxkeppeler.sheets-compose-dialogs", name = "date-time", version.ref = "maxkepplerCalendar"}
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }

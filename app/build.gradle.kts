@@ -76,5 +76,9 @@ dependencies {
     implementation(libs.androidx.navigation)
     implementation(libs.maxkeppler.core)
     implementation(libs.maxkeppler.calendar)
+    implementation(libs.maxkeppler.clock)
+    implementation(libs.maxkeppler.date.time)
+//    implementation(libs.compose.material3.datetime.pickers)
+    implementation(libs.datetime)
 
 }

@@ -60,14 +60,14 @@ fun LogInScreen(modifier: Modifier = Modifier,
 
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(start=60.dp, top=75.dp),
+            .padding(start = 60.dp, top = 75.dp),
             horizontalAlignment = Alignment.Start,
         ){
             // Memento
             Text(modifier = Modifier,
                 textAlign = TextAlign.Start,
                 fontFamily = robotoMonoFontFamily,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Black,
                 fontSize = 40.sp,
                 text = "Memento",
                 color = MaterialTheme.colorScheme.primary
@@ -84,7 +84,7 @@ fun LogInScreen(modifier: Modifier = Modifier,
             )
 
             // Log in
-            Text(modifier = Modifier,
+            Text(modifier = Modifier.padding(top=20.dp),
                 textAlign = TextAlign.Start,
                 fontFamily = robotoMonoFontFamily,
                 fontWeight = FontWeight.ExtraBold,
@@ -107,7 +107,10 @@ fun LogInScreen(modifier: Modifier = Modifier,
                         .padding(15.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.primary
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White
                 )
             )
 
@@ -119,7 +122,10 @@ fun LogInScreen(modifier: Modifier = Modifier,
                         .padding(15.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.primary
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White
                 )
             )
 
@@ -159,7 +165,7 @@ fun LogInScreen(modifier: Modifier = Modifier,
             // Or
             Row(modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom=10.dp),
+                .padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {

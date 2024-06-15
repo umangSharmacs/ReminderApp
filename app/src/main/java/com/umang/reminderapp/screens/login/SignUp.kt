@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -65,8 +66,28 @@ fun SignUpScreen(modifier: Modifier = Modifier,
             .padding(start=60.dp, top=75.dp),
             horizontalAlignment = Alignment.Start,
             ){
-            // Create an
+            // Memento
             Text(modifier = Modifier,
+                textAlign = TextAlign.Start,
+                fontFamily = robotoMonoFontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 40.sp,
+                text = "Memento",
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            // Conquer Chaos
+            Text(modifier = Modifier,
+                textAlign = TextAlign.Start,
+                fontFamily = robotoMonoFontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 20.sp,
+                text = "Conquer Chaos",
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            // Create an
+            Text(modifier = Modifier.padding(top=15.dp),
                 textAlign = TextAlign.Start,
                 fontFamily = robotoMonoFontFamily,
                 fontWeight = FontWeight.ExtraBold,
