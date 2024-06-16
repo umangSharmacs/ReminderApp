@@ -47,8 +47,8 @@ object TodoManager {
         completed: Boolean = false,
         completedOn: String = "1900-01-01",
         reminders: List<String> = emptyList(),
-        priority: Int = 0
-    ){
+        priority: Int = 3
+    ): TodoItem {
 
         val user = Firebase.auth.currentUser
 
@@ -78,6 +78,7 @@ object TodoManager {
                     Log.d("TAG", "DocumentSnapshot successfully written!")
             }
         }
+        return todoItem
     }
 
     fun deleteTodoItem(id : Int){
@@ -112,31 +113,5 @@ object TodoManager {
         }
 
     }
-
-//    fun createDummyTodo(){
-//
-//        val item1 = addTodoItem(
-//            "First_todo",
-//            "This is my first_todo",
-//            "2024-06-24",
-//            listOf("tag1","tag2")
-//        )
-//        val item2 = addTodoItem(
-//            "Second_todo",
-//            "This is my second_todo",
-//            "2024-07-24",
-//            listOf("tag1","tag2","tag3")
-//        )
-//
-//        val item3 = addTodoItem(
-//            "Third_todo",
-//            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-//                    "Phasellus vitae enim id dolor rhoncus vehicula vel nec ligula." +
-//                    " Donec mollis leo interdum, condimentum dui a, pulvinar nulla.",
-//            "2025-06-24",
-//            listOf("tag3","tag2")
-//        )
-//
-//    }
 
 }

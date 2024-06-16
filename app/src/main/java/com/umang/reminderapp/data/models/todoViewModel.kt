@@ -5,14 +5,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.umang.reminderapp.singletons.TodoManager
 import com.umang.reminderapp.data.classes.TodoItem
 import kotlinx.coroutines.launch
-import java.time.Instant
 import java.time.LocalDate
-import java.util.Date
 
 class TodoViewModel: ViewModel() {
     private var _todoList = MutableLiveData<SnapshotStateList<TodoItem>>()
@@ -41,9 +38,10 @@ class TodoViewModel: ViewModel() {
         completed: Boolean = false,
         completedOn: String = "1900-01-01",
         reminders: List<String> = emptyList(),
-        priority: Int = 0
-    ){
-        TodoManager.addTodoItem(
+        priority: Int = 3
+    ): TodoItem {
+
+        val todoItem = TodoManager.addTodoItem(
             title = title,
             dueDate = dueDate,
             tags = tags,
@@ -51,11 +49,11 @@ class TodoViewModel: ViewModel() {
             completed = completed,
             completedOn = completedOn,
             reminders = reminders,
-            priority = priority
+            priority = 3
         )
         this.viewModelScope.launch { getAllToDo() }
         Log.d("TodoManager", "addTodoItem: ${todoList.value.toString()}")
-
+        return todoItem
     }
 
     fun deleteTodoItem(id: Int){

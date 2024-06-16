@@ -1,19 +1,17 @@
 package com.umang.reminderapp.data.classes
 
-import java.time.LocalDate
-
 
 data class TodoItem(
-        var id : Int,
+        var id: Int,
         var title: String,
-        var createdOn : String,
-        var dueDate : String,
-        var tags : List<String>,
-        var description  : String,
-        var completed : Boolean,
-        var completedOn : String,
-        var reminders : List<String>,
-        var priority : Int
+        var createdOn: String,
+        var dueDate: String,
+        var tags: List<String>,
+        var description: String,
+        var completed: Boolean,
+        var completedOn: String,
+        var reminders: List<String>,
+        var priority: Int
 ){
         constructor(): this(
                 id = 0,
@@ -25,6 +23,7 @@ data class TodoItem(
                 completed = false,
                 completedOn = "1900-01-01",
                 reminders = emptyList(),
-                priority = 0
+                priority = 3
         )
 }
+

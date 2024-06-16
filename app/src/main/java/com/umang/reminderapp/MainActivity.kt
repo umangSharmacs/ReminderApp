@@ -94,7 +94,12 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = "AdderScreen"){
-                        AdderScreen(modifier = Modifier, todoViewModel, navController)
+                        AdderScreen(
+                            modifier = Modifier,
+                            todoViewModel,
+                            navController,
+                            scheduler = scheduler
+                        )
                     }
 
                     composable(

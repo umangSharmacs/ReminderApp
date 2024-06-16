@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -27,11 +28,13 @@ class AlarmReceiver: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
+        Log.d("Alarm Receiver","Alarm Received")
+
         // Check if User has notification Permission
         val hasNotificationPermission = context?.let { NotificationManagerCompat.from(it).areNotificationsEnabled() }
 
         val message = intent?.getStringExtra("EXTRA_MESSAGE") ?: return
-        val dueDate = intent?.getStringExtra("EXTRA_DUEDATE") ?: return
+        val dueDate = intent.getStringExtra("EXTRA_DUEDATE") ?: return
         println("ALARM TRIGGERED: $message")
 
         if(hasNotificationPermission == true){
