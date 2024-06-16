@@ -20,7 +20,7 @@ import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.ui.components.HomePageComponents.ListedToDoItem
+import com.umang.reminderapp.ui.components.toDoItemCards.ToDoItemCard
 
 @Composable
 fun TodoList(
@@ -55,12 +55,13 @@ fun TodoList(
                 contentPadding = PaddingValues(top=15.dp, bottom = 15.dp)
             ) {
                 itemsIndexed(it) { index:Int, todoItem: TodoItem ->
-//
-                    ListedToDoItem(
+
+                    ToDoItemCard(
                         Modifier.padding(top = 10.dp, bottom = 10.dp),
                         item = todoItem,
                         viewModel = viewModel,
-                        navHost
+                        navHostController = navHost,
+                        onClick = {}
                     )
                 }
             }

@@ -24,10 +24,14 @@ object TodoManager {
                 .get()
                 .await()
                 .map{
-                    val todoItem = it.toObject(TodoItem::class.java)
-                    tempTodolist.add(todoItem)
+                    if(it.id!="tags"){
+                        val todoItem = it.toObject(TodoItem::class.java)
+                        Log.d("TodoManager","$todoItem")
+                        tempTodolist.add(todoItem)
+                    }
                 }
             todoList = tempTodolist
+            Log.d("TodoManager","$todoList)")
         } catch (e: Exception){
             Log.w("Firebase GET ERROR", "Error getting documents: ", e)
             if (e is CancellationException) throw e
@@ -40,9 +44,9 @@ object TodoManager {
     }
 
     fun addTodoItem(
-        title: String = " ToDo",
+        title: String,
         dueDate: String = LocalDate.now().toString(),
-        tags: List<String> = listOf("tag1","tag2"),
+        tags: List<String> = emptyList(),
         description: String = "Hello World. This is a description",
         completed: Boolean = false,
         completedOn: String = "1900-01-01",

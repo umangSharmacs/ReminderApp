@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
@@ -31,12 +34,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,7 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
+import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
+import com.umang.reminderapp.ui.components.TagDialog
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -68,6 +76,7 @@ import java.time.format.DateTimeFormatter
 fun AdderScreenContent(
         modifier: Modifier = Modifier,
         todoViewModel: TodoViewModel,
+        tagViewModel: TagViewModel,
         navController: NavHostController,
         scheduler: AndroidAlarmSchedulerImpl,
         optionalTitle: String = "",
@@ -92,7 +101,7 @@ fun AdderScreenContent(
 
     // Reminder Dates variables
     var remindersList = remember { mutableStateListOf<LocalDateTime>() }
-//    var reminderSelectedCounter by remember { mutableIntStateOf(0) }
+    //  var reminderSelectedCounter by remember { mutableIntStateOf(0) }
     var reminderDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
     var reminderDate by remember { mutableStateOf<LocalDate?>(null) }
     var reminderTime by remember { mutableStateOf<LocalTime?>(null) }
@@ -101,10 +110,28 @@ fun AdderScreenContent(
     var reminderTimeState = rememberMaterialDialogState()
 
 
-    //
+    // Tags variables
+    LaunchedEffect(Unit) {
+        tagViewModel.getAllTags()
+    }
+    val tagList by tagViewModel.tagList.observeAsState()
+    Log.d("AdderPage", "TagList: $tagList")
+
+    var tagDialogState = remember { mutableStateOf(false)}
+    var selectedTagsList = remember { mutableStateListOf<String>() }
+
+    fun onDialogConfirm(data: List<String>) {
+//        selectedTagsList.clear()
+        for(tag in data){
+            if (selectedTagsList.contains(tag)) continue
+            else selectedTagsList.add(tag)
+        }
+
+    }
+
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a")
 
-        // UI
+    // UI
 
     Surface(
         modifier = Modifier
@@ -183,20 +210,41 @@ fun AdderScreenContent(
                 )
             }
 
-            // 2. TAGS (Placeholders)
+            // 2. TAGS
             Row(
                 modifier = Modifier
                     .padding(start = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(text = "Tags", modifier = Modifier.weight(1f))
-                TextButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .weight(2f)
-                ) {
-                    Text(text = "Tags")
+
+                Column(
+                    modifier = Modifier.weight(2f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2)
+                    ) {
+                        items(selectedTagsList.size) {index ->
+                            AssistChip(
+                                modifier = Modifier.padding(5.dp),
+                                onClick = { },
+                                label = { Text(selectedTagsList[index]) })
+                        }
+                    }
+                    TextButton(
+                        onClick = { tagDialogState.value=true },
+                        modifier = Modifier
+                    ) {
+                        if(selectedTagsList.isEmpty()){
+                            Text(text = "Add a Tag")
+                        }else{
+                            Text(text = "Change Tags")
+                        }
+                    }
                 }
+
             }
 
             // 3. REMINDERS (Placeholders)
@@ -387,7 +435,6 @@ fun AdderScreenContent(
                         else if (
                             reminderCheck.isNotEmpty()
                         ){
-
                             Toast.makeText(
                                 context,
                                 "Reminder is after the due date",
@@ -400,6 +447,7 @@ fun AdderScreenContent(
                                 description = descriptionInputText,
                                 dueDate = selectedDateTime.toString(),
                                 reminders = remindersList.map{it.toString()},
+                                tags = selectedTagsList,
                                 priority = priority
                             )
                             println(todoItem)
@@ -484,7 +532,6 @@ fun AdderScreenContent(
         ) {
             selectedTime = it
         }
-
     }
 
     // Reminder Date Dialog
@@ -545,9 +592,16 @@ fun AdderScreenContent(
 
     }
 
+    // Tag Dialog
 
-
-
+    if(tagDialogState.value){
+        TagDialog(
+            onDismissRequest = { tagDialogState.value = false },
+            tagViewModel = tagViewModel,
+            onConfirmation = ::onDialogConfirm ,
+            selectedTagsList = selectedTagsList
+        )
+    }
 
 }
 
@@ -555,6 +609,7 @@ fun AdderScreenContent(
 fun AdderScreen(
     modifier: Modifier = Modifier,
     todoViewModel: TodoViewModel,
+    tagViewModel: TagViewModel,
     navController: NavHostController,
     scheduler: AndroidAlarmSchedulerImpl,
     optionalTitle: String = "",
@@ -569,6 +624,7 @@ fun AdderScreen(
         AdderScreenContent(
             modifier,
             todoViewModel,
+            tagViewModel,
             navController,
             scheduler,
             optionalTitle,

@@ -16,6 +16,7 @@ import com.google.firebase.FirebaseApp
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.BottomBarNavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
+import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.screens.Placeholder.ComingSoon
 import com.umang.reminderapp.screens.bottomBarScreens.ProfileScreen
@@ -38,6 +39,8 @@ class MainActivity : ComponentActivity() {
 
         // Start todoViewModel
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
+
+        val tagViewModel = ViewModelProvider(this)[TagViewModel::class.java]
 
         // Start AuthViewModel
         val authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
@@ -97,6 +100,7 @@ class MainActivity : ComponentActivity() {
                         AdderScreen(
                             modifier = Modifier,
                             todoViewModel,
+                            tagViewModel,
                             navController,
                             scheduler = scheduler
                         )

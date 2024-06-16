@@ -33,7 +33,7 @@ class TodoViewModel: ViewModel() {
     fun addTodoItem(
         title: String = " ToDo",
         dueDate: String = LocalDate.now().toString(),
-        tags: List<String> = listOf("tag1","tag2"),
+        tags: List<String> = emptyList(),
         description: String = "Hello World. This is a description",
         completed: Boolean = false,
         completedOn: String = "1900-01-01",
