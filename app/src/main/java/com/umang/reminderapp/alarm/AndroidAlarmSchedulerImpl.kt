@@ -67,16 +67,51 @@ class AndroidAlarmSchedulerImpl(
 
     }
 
-    override fun cancelAlarm(item: TodoItem) {
+    override fun cancelAlarm(item: TodoItem, hashcode: Int) {
+
+
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.hashCode(),
+                hashcode,
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
 
             )
 
         )
+    }
+
+    override fun cancelAllAlarms(item: TodoItem) {
+
+        val intent = Intent(
+            context,
+            AlarmReceiver::class.java
+        ).apply {
+            putExtra("EXTRA_MESSAGE", item.title)
+                .putExtra("EXTRA_DUEDATE", item.dueDate)
+        }
+
+        for(reminder in item.reminders){
+            alarmManager.cancel(
+                PendingIntent.getBroadcast(
+                    context,
+                    item.hashCode()+reminder.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT+PendingIntent.FLAG_MUTABLE
+                )
+            )
+        }
+
+        alarmManager.cancel(
+            PendingIntent.getBroadcast(
+                context,
+                item.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        )
+        Log.d("AlarmScheduler", "Cancelled all alarms for ${item.title}")
+
     }
 }

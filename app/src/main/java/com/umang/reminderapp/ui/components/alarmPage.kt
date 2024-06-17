@@ -68,7 +68,7 @@ fun AlarmPage(
             }) {
                 Text(text = "Set Alarm")
             }
-            Button(onClick = { todoItem.let(scheduler::cancelAlarm) }) {
+            Button(onClick = { scheduler.cancelAllAlarms(todoItem) }) {
                 Text(text = "Cancel Alarm")
             }
         }

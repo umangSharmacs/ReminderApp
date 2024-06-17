@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
@@ -47,6 +48,7 @@ fun ToDoItemCard(
     item: TodoItem,
     viewModel: TodoViewModel,
     navHostController: NavHostController,
+    scheduler: AndroidAlarmSchedulerImpl,
     onClick: () -> Unit
 ) {
 
@@ -54,16 +56,22 @@ fun ToDoItemCard(
 
     var expandedState by remember { mutableStateOf(false) }
     var checkBoxState by remember { mutableStateOf(item.completed) }
+    var expandedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
 
     //Animation States
-//    var backGroundColor = remember { animateColorAsState(targetValue = Color.White)}
+    val backgroundColor =  animateColorAsState( if(!expandedState) Color.White else expandedBackgroundColor,
+        label = "Container Color"
+    )
+    val contentColor = animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onPrimary,
+        label = "Content Color"
+    )
+
 
     OutlinedCard(
-        modifier = modifier
-            ,
+        modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = backgroundColor.value,
+            contentColor = contentColor.value,
         ),
         shape = MaterialTheme.shapes.large,
         onClick = { expandedState = !expandedState }
@@ -196,7 +204,11 @@ fun ToDoItemCard(
                     onClick = { },
                     onEdit = { navHostController
                         .navigate(route = "EditScreen?title=${item.title}&description=${item.description}&id=${item.id}") },
-                    onDelete = {  viewModel.deleteTodoItem(item.id) }
+                    onDelete = {
+                        // Cancel it's alarms
+                        scheduler.cancelAllAlarms(item)
+                        viewModel.deleteTodoItem(item.id)
+                    }
                 )
             }
 

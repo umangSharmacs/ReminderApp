@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
@@ -27,6 +28,7 @@ fun TodoList(
     viewModel: TodoViewModel,
     modifier: Modifier = Modifier,
     navHost: NavHostController,
+    scheduler: AndroidAlarmSchedulerImpl,
     paddingValues: PaddingValues,
     authViewModel: AuthViewModel
 ) {
@@ -61,6 +63,7 @@ fun TodoList(
                         item = todoItem,
                         viewModel = viewModel,
                         navHostController = navHost,
+                        scheduler = scheduler,
                         onClick = {}
                     )
                 }

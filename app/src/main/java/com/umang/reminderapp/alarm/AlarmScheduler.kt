@@ -6,6 +6,9 @@ interface AlarmScheduler {
 
     fun scheduleAlarm(item:TodoItem)
 
-    fun cancelAlarm(item:TodoItem)
+    fun cancelAlarm(item:TodoItem, hashcode: Int)
+
+    fun cancelAllAlarms(item:TodoItem)
+
 }
 

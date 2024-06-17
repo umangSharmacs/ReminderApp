@@ -64,7 +64,12 @@ class MainActivity : ComponentActivity() {
 
                     // HomePage
                     composable(route = BottomBarNavigationItem.Home.navRoute){
-                        HomePage(todoViewModel = todoViewModel, navController = navController, authViewModel = authViewModel)
+                        HomePage(
+                            todoViewModel = todoViewModel,
+                            navController = navController,
+                            scheduler = scheduler,
+                            authViewModel = authViewModel
+                        )
                     }
 
                     // All Reminders
@@ -93,7 +98,11 @@ class MainActivity : ComponentActivity() {
 
                     // Main
                     composable(route = "Home"){
-                        HomePage(todoViewModel = todoViewModel, navController = navController, authViewModel = authViewModel)
+                        HomePage(
+                            todoViewModel = todoViewModel,
+                            navController = navController,
+                            scheduler = scheduler,
+                            authViewModel = authViewModel)
                     }
 
                     composable(route = "AdderScreen"){
