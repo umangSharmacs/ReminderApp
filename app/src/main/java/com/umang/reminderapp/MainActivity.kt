@@ -79,8 +79,8 @@ class MainActivity : ComponentActivity() {
 
                     // Profile
                     composable(route = BottomBarNavigationItem.Profile.navRoute){
-                        //ProfileScreen(Modifier, navController, authViewModel)
-                        AlarmPage(scheduler = scheduler)
+                        ProfileScreen(Modifier, navController, authViewModel)
+//                        AlarmPage(scheduler = scheduler)
                     }
 
                     // Auth

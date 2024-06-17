@@ -52,14 +52,14 @@ fun ToDoItemCard(
     onClick: () -> Unit
 ) {
 
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yy, h:mma")
 
     var expandedState by remember { mutableStateOf(false) }
     var checkBoxState by remember { mutableStateOf(item.completed) }
     var expandedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
 
     //Animation States
-    val backgroundColor =  animateColorAsState( if(!expandedState) Color.White else expandedBackgroundColor,
+    val backgroundColor =  animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.background else expandedBackgroundColor,
         label = "Container Color"
     )
     val contentColor = animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onPrimary,
@@ -121,7 +121,8 @@ fun ToDoItemCard(
                             fontSize = MaterialTheme.typography.bodySmall.fontSize,
                             fontWeight = MaterialTheme.typography.bodySmall.fontWeight,
                             textAlign = TextAlign.Center
-                        )
+                        ),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
 
                     Text(
@@ -145,7 +146,8 @@ fun ToDoItemCard(
                             fontSize = MaterialTheme.typography.bodySmall.fontSize,
                             fontWeight = MaterialTheme.typography.bodySmall.fontWeight,
                             textAlign = TextAlign.Center
-                        )
+                        ),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
 
                 }

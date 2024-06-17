@@ -13,31 +13,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = cyan10,
-    onPrimary = cyan80,
-    primaryContainer = cyan30,
-    onPrimaryContainer = cyan90,
-    inversePrimary = cyan40,
-    secondary = darkblue10,
-    onSecondary = darkblue80,
-    secondaryContainer = darkblue30,
-    onSecondaryContainer = darkblue90,
-    tertiary = lightflesh80,
-    onTertiary = lightflesh20,
-    tertiaryContainer = lightflesh30,
-    onTertiaryContainer = lightflesh90,
+    primary = Color(0xFF267e9b),
+    onPrimary = Color(0xFFe8fcfd),
+
+    primaryContainer = Color(0xFF144352),
+    onPrimaryContainer = Color(0xFFd6edf5),
+
+    inversePrimary = Color(0xFF0a2129),
+
+    secondary = Color(0xFF70a8b0),
+    onSecondary = Color(0xFF2d4d52),
+
+    secondaryContainer = Color(0xFF121f21),
+    onSecondaryContainer = Color(0xFFd6edf5),
+
+    tertiary = Color(0xFFee5c53),
+    onTertiary = Color(0xFFfad3d1),
+    tertiaryContainer = Color(0xFF8b140e),
+    onTertiaryContainer = Color(0xFFfad3d1),
+
     error = red40,
     onError = red10,
     errorContainer = red30,
     onErrorContainer = red90,
-    background = grey20,
-    onBackground = grey90,
-    surface = grey30,
-    onSurface = grey80,
-    inverseSurface = grey90,
-    inverseOnSurface = grey20,
-    surfaceVariant = grey30,
-    onSurfaceVariant = grey80,
+
+    background = Color(0xFF0c2535),
+    onBackground = Color(0xFF70a8b0),
+
+    surface = Color(0xFF184968),
+    onSurface = Color(0xFFe8fcfd),
+    inverseSurface = Color(0xFF0c2535),
+    inverseOnSurface = Color(0xFFe8fcfd),
+    surfaceVariant = Color(0xFF1c587d),
+    onSurfaceVariant = Color(0xFFeaf4fa),
     outline = grey80
 )
 

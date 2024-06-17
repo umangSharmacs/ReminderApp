@@ -20,6 +20,9 @@ fun HomePage(
     scheduler: AndroidAlarmSchedulerImpl,
     authViewModel: AuthViewModel
 ) {
+
+
+
     Scaffold(
         topBar = @Composable {
             TopAppBarScaffold()

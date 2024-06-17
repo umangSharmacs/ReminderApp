@@ -2,6 +2,8 @@ package com.umang.reminderapp.screens.main
 
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
@@ -84,6 +87,18 @@ fun AdderScreenContent(
         paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)
 ) {
 
+    // Check Notifications Permission
+    var hasNotificationPermission = false
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {isGranted ->
+            hasNotificationPermission = isGranted
+//            if(!isGranted){
+//                shouldShowRequestPermissionRationale(MainActivity)
+//            }
+        }
+    )
+
     val context = LocalContext.current
     var titleInputText by remember { mutableStateOf(optionalTitle) }
     var descriptionInputText by remember { mutableStateOf(optionalDescription) }
@@ -129,13 +144,13 @@ fun AdderScreenContent(
 
     }
 
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yy, h:mma")
 
     // UI
 
     Surface(
         modifier = Modifier
-            .background(color = Color.White)
+//            .background(color = Color.White)
             .padding(top = paddingValues.calculateTopPadding())
     ) {
         Column(
@@ -184,6 +199,10 @@ fun AdderScreenContent(
                     onClick = {
                         dueDateState.show()
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
                     modifier = Modifier.weight(2f)
                 ) {
                     Text(
@@ -235,7 +254,11 @@ fun AdderScreenContent(
                     }
                     TextButton(
                         onClick = { tagDialogState.value=true },
-                        modifier = Modifier
+                        modifier = Modifier,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     ) {
                         if(selectedTagsList.isEmpty()){
                             Text(text = "Add a Tag")
@@ -276,8 +299,8 @@ fun AdderScreenContent(
                                     fontSize = 15.sp,
                                     color = when {
                                         (selectedDateTime != null && remindersList[it] > selectedDateTime )-> MaterialTheme.colorScheme.error
-                                        (remindersList[it] < LocalDateTime.now()) -> MaterialTheme.colorScheme.onBackground
-                                        else -> Color.Black
+                                        (remindersList[it] < LocalDateTime.now()) -> MaterialTheme.colorScheme.errorContainer
+                                        else -> MaterialTheme.colorScheme.onBackground
                                     },
                                     style = if( remindersList[it] < LocalDateTime.now()) {
                                         TextStyle(
@@ -296,7 +319,14 @@ fun AdderScreenContent(
                     TextButton(
                         onClick = {
                             reminderDateState.show()
-                        }
+                            if(!hasNotificationPermission){
+                                permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     ) {
                         if ( remindersList.size==0){
                             Text(text = "Add a Reminder")
