@@ -24,6 +24,7 @@ import com.umang.reminderapp.screens.login.LogInScreen
 import com.umang.reminderapp.screens.login.SignUpLanding
 import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
+import com.umang.reminderapp.screens.main.AllRemindersPage
 import com.umang.reminderapp.screens.main.EditorScreen
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.ui.components.AlarmPage
@@ -66,6 +67,7 @@ class MainActivity : ComponentActivity() {
                     composable(route = BottomBarNavigationItem.Home.navRoute){
                         HomePage(
                             todoViewModel = todoViewModel,
+                            tagViewModel = tagViewModel,
                             navController = navController,
                             scheduler = scheduler,
                             authViewModel = authViewModel
@@ -74,7 +76,12 @@ class MainActivity : ComponentActivity() {
 
                     // All Reminders
                     composable(route = BottomBarNavigationItem.AllReminders.navRoute){
-                        ComingSoon(Modifier, navController)
+                        AllRemindersPage(
+                            todoViewModel = todoViewModel,
+                            navController = navController,
+                            scheduler = scheduler,
+                            authViewModel = authViewModel
+                        )
                     }
 
                     // Profile
@@ -100,9 +107,11 @@ class MainActivity : ComponentActivity() {
                     composable(route = "Home"){
                         HomePage(
                             todoViewModel = todoViewModel,
+                            tagViewModel = tagViewModel,
                             navController = navController,
                             scheduler = scheduler,
-                            authViewModel = authViewModel)
+                            authViewModel = authViewModel
+                        )
                     }
 
                     composable(route = "AdderScreen"){

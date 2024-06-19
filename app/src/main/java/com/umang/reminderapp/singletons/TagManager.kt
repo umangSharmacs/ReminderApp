@@ -20,7 +20,7 @@ object TagManager {
 
         try{
             val documentSnapshot = Firebase.firestore
-                .collection(Firebase.auth.currentUser!!.uid)
+                .collection("tags_"+Firebase.auth.currentUser!!.uid)
                 .document("tags")
                 .get()
                 .await()
@@ -48,7 +48,7 @@ object TagManager {
         val user = Firebase.auth.currentUser
         TagManager.tags.add(name)
         if (user != null) {
-            Firebase.firestore.collection(user.uid)
+            Firebase.firestore.collection("tags_"+user.uid)
                 .document("tags")
                 .set(
                     hashMapOf("tags" to tags.toList())
@@ -70,7 +70,7 @@ object TagManager {
         val user = Firebase.auth.currentUser
 
         if (user!=null){
-            Firebase.firestore.collection(user.uid)
+            Firebase.firestore.collection("tags_"+user.uid)
                 .document("tags")
                 .set(
                     "tags" to tags.toList()

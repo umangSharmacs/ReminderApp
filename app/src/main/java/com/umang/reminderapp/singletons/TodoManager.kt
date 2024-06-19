@@ -20,7 +20,7 @@ object TodoManager {
         val tempTodolist = SnapshotStateList<TodoItem>()
         try{
             Firebase.firestore
-                .collection(Firebase.auth.currentUser!!.uid)
+                .collection( "todo_"+Firebase.auth.currentUser!!.uid)
                 .get()
                 .await()
                 .map{
@@ -75,7 +75,7 @@ object TodoManager {
         // Add item to Firestore to the user collection
 
         if (user != null) {
-            Firebase.firestore.collection(user.uid)
+            Firebase.firestore.collection("todo_"+user.uid)
                 .document(todoItem.id.toString())
                 .set(todoItem)
                 .addOnSuccessListener {
@@ -91,7 +91,7 @@ object TodoManager {
         }
 
         // Delete from firestore.
-        Firebase.firestore.collection(Firebase.auth.currentUser!!.uid)
+        Firebase.firestore.collection("todo_"+Firebase.auth.currentUser!!.uid)
             .document(id.toString()).delete()
 
     }
@@ -111,7 +111,7 @@ object TodoManager {
             existingToDoItem.dueDate = updatedTodoDueDate
             existingToDoItem.tags = updatedTodoTags
 
-            Firebase.firestore.collection(Firebase.auth.currentUser!!.uid)
+            Firebase.firestore.collection("todo_"+Firebase.auth.currentUser!!.uid)
                 .document(toUpdateTodoItemID.toString()).set(existingToDoItem)
 
         }
