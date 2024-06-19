@@ -1,9 +1,13 @@
 package com.umang.reminderapp.screens.main
 
+import android.app.TimePickerDialog
+import android.os.Build
 import android.util.Log
+import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +23,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerColors
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +38,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -37,6 +47,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,17 +79,22 @@ import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.TagDialog
+import com.umang.reminderapp.ui.components.TimePickerDialog
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+//import com.vanpra.composematerialdialogs.MaterialDialog
+//import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
+//import com.vanpra.composematerialdialogs.datetime.date.datepicker
+//import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
+//import com.vanpra.composematerialdialogs.datetime.time.timepicker
+//import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,24 +130,55 @@ fun AdderScreenContent(
     var selectedPriority by remember { mutableStateOf(3) }
 
     // Due Date variables
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = Instant.now().toEpochMilli()
+    )
+
+    val dueTimePickerState = rememberTimePickerState(
+        initialHour = 12,
+        initialMinute = 0
+    )
+
     var selectedDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedTime by remember { mutableStateOf(LocalTime.now()) }
     var dueDateSelectedCounter by remember {
         mutableIntStateOf(0)
     }
-    val dueDateState = rememberMaterialDialogState()
-    val dueTimeState = rememberMaterialDialogState()
+
+    var showDueDatePicker by remember {
+        mutableStateOf(false)
+    }
+
+    var showDueTimePicker by remember {
+        mutableStateOf(false)
+    }
 
     // Reminder Dates variables
+
+    var showReminderDatePicker by remember {
+        mutableStateOf(false)
+    }
+
+    var showReminderTimePicker by remember {
+        mutableStateOf(false)
+    }
+
+    val reminderDatePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = Instant.now().toEpochMilli()
+    )
+
+    val reminderTimePickerState = rememberTimePickerState(
+        initialHour = 12,
+        initialMinute = 0
+    )
+
     var remindersList = remember { mutableStateListOf<LocalDateTime>() }
     //  var reminderSelectedCounter by remember { mutableIntStateOf(0) }
     var reminderDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
     var reminderDate by remember { mutableStateOf<LocalDate?>(null) }
     var reminderTime by remember { mutableStateOf<LocalTime?>(null) }
-
-    var reminderDateState = rememberMaterialDialogState()
-    var reminderTimeState = rememberMaterialDialogState()
 
 
     // Tags variables
@@ -201,7 +253,9 @@ fun AdderScreenContent(
                 Text(text = "Due Date", modifier = Modifier.weight(1f))
                 TextButton(
                     onClick = {
-                        dueDateState.show()
+                              // TODO Uncomment
+//                        dueDateState.show()
+                              showDueDatePicker = true
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent,
@@ -274,7 +328,7 @@ fun AdderScreenContent(
 
             }
 
-            // 3. REMINDERS (Placeholders)
+            // 3. REMINDERS
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -322,7 +376,7 @@ fun AdderScreenContent(
                     }
                     TextButton(
                         onClick = {
-                            reminderDateState.show()
+                            showReminderDatePicker = true
                             if(!hasNotificationPermission){
                                 permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                             }
@@ -513,118 +567,199 @@ fun AdderScreenContent(
 
     }
 
-    // Due Date Dialog
-    MaterialDialog(
-        dialogState = dueDateState,
-        buttons = {
-            positiveButton(
-                text = "Submit"
-            ){
-                dueDateState.hide()
-                dueTimeState.show()
+
+
+    if(showDueDatePicker){
+        DatePickerDialog(
+            onDismissRequest = { showDueDatePicker = false },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showDueDatePicker = false },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    )
+
+                ) {
+                    Text("Back")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    selectedDate = Date(datePickerState.selectedDateMillis!!)
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+
+                    showDueDatePicker = false
+                    showDueTimePicker = true
+                    dueDateSelectedCounter++
+                }
+                ) {
+                    Text("Confirm")
+                }
             }
-            negativeButton(text = "Cancel")
-        },
-        backgroundColor = MaterialTheme.colorScheme.background
-    ) {
-        datepicker(
-            initialDate = LocalDate.now(),
-            title = "Pick a Due date",
-            colors = DatePickerDefaults.colors(
-                headerBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+        ) {
+
+            DatePicker(
+                state = datePickerState
             )
 
-        ) {
-            selectedDate = it
         }
-
     }
-    // Due Time Dialog
-    MaterialDialog(
-        dialogState = dueTimeState,
-        buttons = {
-            positiveButton(text = "Submit"){
-                dueDateSelectedCounter++
-            }
-            negativeButton(text = "Cancel")
-        },
-        backgroundColor = MaterialTheme.colorScheme.background
 
-    ) {
-        timepicker(
-            initialTime = LocalTime.now(),
-            title = "Pick a Due Time",
-            colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.primaryContainer,
-                selectorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                activeBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.background
-            )
+    if(showDueTimePicker){
+        TimePickerDialog(
+            title = "Select Time",
+            onCancel = { showDueTimePicker = false },
+            onConfirm = {
+                selectedTime = LocalTime.of(dueTimePickerState.hour, dueTimePickerState.minute)
+                showDueTimePicker = false
+            }
         ) {
-            selectedTime = it
+            TimePicker(
+                state = dueTimePickerState,
+                colors = TimePickerDefaults.colors(
+
+                    periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    periodSelectorUnselectedContainerColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondary,
+                    periodSelectorUnselectedContentColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondary,
+                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                    timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    timeSelectorUnselectedContainerColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondary,
+                    timeSelectorUnselectedContentColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondary
+                )
+            )
         }
     }
 
     // Reminder Date Dialog
-    MaterialDialog(
-        dialogState = reminderDateState,
-        buttons = {
-            positiveButton(text = "Submit"){
-                reminderDateState.hide()
-                reminderTimeState.show()
-            }
-            negativeButton(text = "Cancel")
-        },
-        backgroundColor = MaterialTheme.colorScheme.background
 
-    ) {
-        datepicker(
-            initialDate = LocalDate.now(),
-            allowedDateValidator = { it > LocalDate.now() },
-            title = "Pick a Reminder date",
-            colors = DatePickerDefaults.colors(
-                headerBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
-            )
+    if(showReminderDatePicker){
+        DatePickerDialog(
+            onDismissRequest = { showReminderDatePicker = false },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showReminderDatePicker = false },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    )
+
+                ) {
+                    Text("Back")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    reminderDate = Date(reminderDatePickerState.selectedDateMillis!!)
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                    showReminderDatePicker = false
+                    showReminderTimePicker = true
+                }
+                ) {
+                    Text("Confirm")
+                }
+            }
         ) {
-            reminderDate = it
-        }
 
-    }
-    // Reminder Time Dialog
-    MaterialDialog(
-        dialogState = reminderTimeState,
-        buttons = {
-            positiveButton(text = "Submit"){
-                // Make Reminder datetime
-                reminderDateTime = reminderDate?.atTime(reminderTime)
-                // Add to list
-                reminderDateTime?.let { remindersList.add(it) }
-            }
-            negativeButton(text = "Cancel")
-        },
-        backgroundColor = MaterialTheme.colorScheme.background
-
-    ) {
-        timepicker(
-            initialTime = LocalTime.now(),
-            title = "Pick a reminder time",
-            colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.primaryContainer,
-                selectorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                activeBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.background
+            DatePicker(
+                state = reminderDatePickerState
             )
-            ) {
-            reminderTime = it
         }
-
     }
+
+    if(showReminderTimePicker){
+        TimePickerDialog(
+            title = "Select Reminder Time",
+            onCancel = { showReminderTimePicker = false },
+            onConfirm = {
+                reminderTime = LocalTime.of(reminderTimePickerState.hour, reminderTimePickerState.minute)
+                reminderDateTime = reminderDate?.atTime(reminderTime)
+                // Add to List
+                reminderDateTime?.let { remindersList.add(it) }
+                showReminderTimePicker = false
+            }
+        ) {
+            TimePicker(
+                state = reminderTimePickerState,
+                colors = TimePickerDefaults.colors(
+                    periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    periodSelectorUnselectedContainerColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondary,
+                    periodSelectorUnselectedContentColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondary,
+                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                    timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    timeSelectorUnselectedContainerColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondary,
+                    timeSelectorUnselectedContentColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondary
+                )
+            )
+        }
+    }
+
+
+//    MaterialDialog(
+//        dialogState = reminderDateState,
+//        buttons = {
+//            positiveButton(text = "Submit"){
+//                reminderDateState.hide()
+//                reminderTimeState.show()
+//            }
+//            negativeButton(text = "Cancel")
+//        },
+//        backgroundColor = MaterialTheme.colorScheme.background
+//
+//    ) {
+//        datepicker(
+//            initialDate = LocalDate.now(),
+//            allowedDateValidator = { it > LocalDate.now() },
+//            title = "Pick a Reminder date",
+//            colors = DatePickerDefaults.colors(
+//                headerBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
+//                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                dateActiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
+//                dateActiveTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                dateInactiveTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
+//                calendarHeaderTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
+//            )
+//        ) {
+//            reminderDate = it
+//        }
+//    }
+
+    // Reminder Time Dialog
+//    MaterialDialog(
+//        dialogState = reminderTimeState,
+//        buttons = {
+//            positiveButton(text = "Submit"){
+//                // Make Reminder datetime
+//                reminderDateTime = reminderDate?.atTime(reminderTime)
+//                // Add to list
+//                reminderDateTime?.let { remindersList.add(it) }
+//            }
+//            negativeButton(text = "Cancel")
+//        },
+//        backgroundColor = MaterialTheme.colorScheme.background
+//
+//    ) {
+//        timepicker(
+//            initialTime = LocalTime.now(),
+//            title = "Pick a reminder time",
+//            colors = TimePickerDefaults.colors(
+//                selectorColor = MaterialTheme.colorScheme.primaryContainer,
+//                selectorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                activeBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
+//                inactiveBackgroundColor = MaterialTheme.colorScheme.background,
+//                activeTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
+//                inactiveTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
+//            )
+//        ) {
+//            reminderTime = it
+//        }
+//
+//    }
 
     // Tag Dialog
 
