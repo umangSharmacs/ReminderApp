@@ -49,7 +49,7 @@ class TodoViewModel: ViewModel() {
             completed = completed,
             completedOn = completedOn,
             reminders = reminders,
-            priority = 3
+            priority = priority
         )
         this.viewModelScope.launch { getAllToDo() }
         Log.d("TodoManager", "addTodoItem: ${todoList.value.toString()}")

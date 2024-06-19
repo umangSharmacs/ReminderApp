@@ -103,7 +103,10 @@ fun AdderScreenContent(
     val context = LocalContext.current
     var titleInputText by remember { mutableStateOf(optionalTitle) }
     var descriptionInputText by remember { mutableStateOf(optionalDescription) }
-    var priority by remember { mutableStateOf(3) }
+
+    // Priority
+
+    var selectedPriority by remember { mutableStateOf(3) }
 
     // Due Date variables
     var selectedDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
@@ -381,7 +384,7 @@ fun AdderScreenContent(
                             text = { Text("High") },
                             onClick = {
                                 selectedText="High"
-                                priority = 1
+                                selectedPriority = 1
                                 expandedDropdown = !expandedDropdown
                             }
                         )
@@ -389,7 +392,7 @@ fun AdderScreenContent(
                             text = { Text("Medium") },
                             onClick = {
                                 selectedText = "Medium"
-                                priority = 2
+                                selectedPriority = 2
                                 expandedDropdown = !expandedDropdown
                             }
                         )
@@ -397,7 +400,7 @@ fun AdderScreenContent(
                             text = { Text("Low") },
                             onClick = {
                                 selectedText = "Low"
-                                priority = 3
+                                selectedPriority = 3
                                 expandedDropdown = !expandedDropdown
                             }
                         )
@@ -479,7 +482,7 @@ fun AdderScreenContent(
                                 dueDate = selectedDateTime.toString(),
                                 reminders = remindersList.map{it.toString()},
                                 tags = selectedTagsList,
-                                priority = priority
+                                priority = selectedPriority
                             )
                             println(todoItem)
                             // Add alarms for the reminders
