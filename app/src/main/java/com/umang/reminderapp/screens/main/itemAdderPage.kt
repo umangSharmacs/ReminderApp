@@ -1,14 +1,9 @@
 package com.umang.reminderapp.screens.main
 
-import android.app.TimePickerDialog
-import android.os.Build
 import android.util.Log
-import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,11 +19,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
@@ -47,9 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -62,7 +52,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -92,22 +81,49 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdderScreenContent(
-        modifier: Modifier = Modifier,
-        todoViewModel: TodoViewModel,
-        tagViewModel: TagViewModel,
-        navController: NavHostController,
-        scheduler: AndroidAlarmSchedulerImpl,
-        optionalTitle: String = "",
-        optionalDescription: String = "",
-        paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)
+    modifier: Modifier = Modifier,
+    todoViewModel: TodoViewModel,
+    tagViewModel: TagViewModel,
+    navController: NavHostController,
+    scheduler: AndroidAlarmSchedulerImpl,
+    optionalID: Int? = null,
+    optionalTitle: String = "",
+    optionalDescription: String = "",
+    optionalPriority: Int = 3,
+    optionalDueDate: LocalDateTime? = null,
+    optionalReminders: List<LocalDateTime> = emptyList(),
+    optionalTags: List<String> = emptyList(),
+    editMode: Boolean = false,
+    paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)
 ) {
+
+    Log.d("EditorPage","Recomposed")
+
+//    var optionalTitle: String = ""
+//    var optionalDescription: String = ""
+//    var optionalPriority: Int = 3
+//    var optionalDueDate: LocalDateTime? = null
+//    var optionalReminders: List<LocalDateTime> = emptyList()
+//    var optionalTags: List<String> = emptyList()
+//    if(editMode && optionalID != null) {
+//
+//        val todoItem = optionalID.let { todoViewModel.getToDoItem(it) }
+//        todoItem?.let {
+//            optionalTitle = it.title
+//            optionalDescription = it.description
+//            optionalPriority = it.priority
+//            optionalDueDate = LocalDateTime.parse(it.dueDate)
+//            optionalReminders = it.reminders.map{ reminder -> LocalDateTime.parse(reminder) }
+//            optionalTags = it.tags
+//        }
+//    }
+
 
     // Check Notifications Permission
     var hasNotificationPermission = false
@@ -126,11 +142,9 @@ fun AdderScreenContent(
     var descriptionInputText by remember { mutableStateOf(optionalDescription) }
 
     // Priority
-
-    var selectedPriority by remember { mutableStateOf(3) }
+    var selectedPriority by remember { mutableIntStateOf(optionalPriority) }
 
     // Due Date variables
-
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
@@ -140,12 +154,24 @@ fun AdderScreenContent(
         initialMinute = 0
     )
 
-    var selectedDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var selectedTime by remember { mutableStateOf(LocalTime.now()) }
+    var selectedDateTime by remember { mutableStateOf(optionalDueDate) }
+    if (selectedDateTime==null){
+        selectedDateTime = LocalDateTime.now()
+    }
+
+    var selectedDate by remember { mutableStateOf(selectedDateTime!!.toLocalDate()) }
+
+    var selectedTime by remember { mutableStateOf(selectedDateTime!!.toLocalTime()) }
+
     var dueDateSelectedCounter by remember {
         mutableIntStateOf(0)
     }
+    if (editMode){
+        dueDateSelectedCounter = 1
+    }
+
+
+    // Due date variables
 
     var showDueDatePicker by remember {
         mutableStateOf(false)
@@ -175,7 +201,25 @@ fun AdderScreenContent(
     )
 
     var remindersList = remember { mutableStateListOf<LocalDateTime>() }
-    //  var reminderSelectedCounter by remember { mutableIntStateOf(0) }
+
+    var remindersSelectedCounter by remember {
+        mutableIntStateOf(0)
+    }
+
+    var reminderInteracted by remember { mutableStateOf(false) }
+
+    if( optionalReminders.isNotEmpty() && !reminderInteracted ){
+        for(reminder in optionalReminders){
+            if(reminder !in remindersList){
+                remindersList.add(reminder)
+            }
+        }
+//        optionalReminders = emptyList()
+        Log.d("Editor Page","Optional Reminders")
+    }
+
+
+
     var reminderDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
     var reminderDate by remember { mutableStateOf<LocalDate?>(null) }
     var reminderTime by remember { mutableStateOf<LocalTime?>(null) }
@@ -185,14 +229,18 @@ fun AdderScreenContent(
     LaunchedEffect(Unit) {
         tagViewModel.getAllTags()
     }
-    val tagList by tagViewModel.tagList.observeAsState()
-    Log.d("AdderPage", "TagList: $tagList")
 
-    var tagDialogState = remember { mutableStateOf(false)}
+//    val tagList by tagViewModel.tagList.observeAsState()
+
+    var tagDialogState by remember { mutableStateOf(false)}
+    var tagSelectedCounter by remember {
+        mutableIntStateOf(0)
+    }
+
     var selectedTagsList = remember { mutableStateListOf<String>() }
 
     fun onDialogConfirm(data: List<String>) {
-//        selectedTagsList.clear()
+        selectedTagsList.clear()
         for(tag in data){
             if (selectedTagsList.contains(tag)) continue
             else selectedTagsList.add(tag)
@@ -303,25 +351,63 @@ fun AdderScreenContent(
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2)
                     ) {
-                        items(selectedTagsList.size) {index ->
-                            AssistChip(
-                                modifier = Modifier.padding(5.dp),
-                                onClick = { },
-                                label = { Text(selectedTagsList[index]) })
+
+                        // If in edit mode
+                        if(editMode){
+                            // If optionalTags are available and selectedTagsList is empty
+                            if(optionalTags.isNotEmpty() && tagSelectedCounter==0){
+                                items(optionalTags.size) {index ->
+                                    AssistChip(
+                                        modifier = Modifier.padding(5.dp),
+                                        onClick = { },
+                                        label = { Text(optionalTags[index]) }
+                                    )
+                                }
+                            }
+                            // Else if selectedTags are not empty
+                            else if(selectedTagsList.isNotEmpty()) {
+                                items(selectedTagsList.size) {index ->
+                                    AssistChip(
+                                        modifier = Modifier.padding(5.dp),
+                                        onClick = { },
+                                        label = { Text(selectedTagsList[index]) })
+                                }
+                            }
+                        } else {
+                            items(selectedTagsList.size) {index ->
+                                AssistChip(
+                                    modifier = Modifier.padding(5.dp),
+                                    onClick = { },
+                                    label = { Text(selectedTagsList[index]) })
+                            }
                         }
+
                     }
                     TextButton(
-                        onClick = { tagDialogState.value=true },
+                        onClick = { tagDialogState=true },
                         modifier = Modifier,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
                             contentColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
                         )
                     ) {
-                        if(selectedTagsList.isEmpty()){
-                            Text(text = "Add a Tag")
-                        }else{
-                            Text(text = "Change Tags")
+
+                        if(editMode){
+                            if(optionalTags.isNotEmpty() && tagSelectedCounter==0){
+                                Text(text = "Change Tags")
+                            } else if(optionalTags.isEmpty() && tagSelectedCounter==0){
+                                Text(text = "Add a Tag")
+                            } else if(tagSelectedCounter>0 && selectedTagsList.isEmpty()){
+                                Text(text = "Add a Tag")
+                            } else if(tagSelectedCounter>0 && selectedTagsList.isNotEmpty()){
+                                Text(text = "Change Tags")
+                            }
+                        } else {
+                            if(selectedTagsList.isEmpty()){
+                                Text(text = "Add a Tag")
+                            } else if(selectedTagsList.isNotEmpty()){
+                                Text(text = "Change Tags")
+                            }
                         }
                     }
                 }
@@ -368,7 +454,11 @@ fun AdderScreenContent(
                                         TextStyle.Default
                                     }
                                 )
-                                IconButton(onClick = { remindersList.removeAt(it) }) {
+                                IconButton(onClick = {
+                                    remindersList.removeAt(it)
+                                    reminderInteracted = true
+                                }
+                                ) {
                                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                                 }
                             }
@@ -377,6 +467,7 @@ fun AdderScreenContent(
                     TextButton(
                         onClick = {
                             showReminderDatePicker = true
+                            reminderInteracted = true
                             if(!hasNotificationPermission){
                                 permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                             }
@@ -496,71 +587,148 @@ fun AdderScreenContent(
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if(!editMode){
+                    ElevatedButton(
+                        onClick = {
+                            val reminderCheck = remindersList.filter{it-> it > selectedDateTime}
+                            // Checks
+                            if (titleInputText == "") {
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a title",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if (selectedDateTime == null) {
+                                Toast.makeText(
+                                    context,
+                                    "Please select a due date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if (remindersList.isEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "Please add a reminder",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            else if (
+                                reminderCheck.isNotEmpty()
+                            ){
+                                Toast.makeText(
+                                    context,
+                                    "Reminder is after the due date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
 
-                ElevatedButton(
-                    onClick = {
-                        val reminderCheck = remindersList.filter{it-> it > selectedDateTime}
-                        // Checks
-                        if (titleInputText == "") {
-                            Toast.makeText(
-                                context,
-                                "Please enter a title",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else if (selectedDateTime == null) {
-                            Toast.makeText(
-                                context,
-                                "Please select a due date",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else if (remindersList.isEmpty()) {
-                            Toast.makeText(
-                                context,
-                                "Please add a reminder",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        else if (
-                            reminderCheck.isNotEmpty()
-                        ){
-                            Toast.makeText(
-                                context,
-                                "Reminder is after the due date",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-
-                            val todoItem = todoViewModel.addTodoItem(
-                                title = titleInputText,
-                                description = descriptionInputText,
-                                dueDate = selectedDateTime.toString(),
-                                reminders = remindersList.map{it.toString()},
-                                tags = selectedTagsList,
-                                priority = selectedPriority
-                            )
-                            println(todoItem)
-                            // Add alarms for the reminders
-                            todoItem.let(scheduler::scheduleAlarm)
-                            Log.d("AdderPage","ScheduleAlarm called")
+                                val todoItem = todoViewModel.addTodoItem(
+                                    title = titleInputText,
+                                    description = descriptionInputText,
+                                    dueDate = selectedDateTime.toString(),
+                                    reminders = remindersList.map{it.toString()},
+                                    tags = selectedTagsList,
+                                    priority = selectedPriority
+                                )
+                                println(todoItem)
+                                // Add alarms for the reminders
+                                todoItem.let(scheduler::scheduleAlarm)
+                                Log.d("AdderPage","ScheduleAlarm called")
 //                            todoItem.let(scheduler::scheduleAlarm)
 
-                            navController.popBackStack()
-                        }
+                                navController.popBackStack()
+                            }
 
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    Text(
-                        text = "Add",
-                    )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Text(
+                            text = "Add",
+                        )
+
+                    }
+                } else{
+                    ElevatedButton(
+                        onClick = {
+                            val reminderCheck = remindersList.filter{it-> it > selectedDateTime}
+                            // Checks
+                            if (titleInputText == "") {
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a title",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if (selectedDateTime == null) {
+                                Toast.makeText(
+                                    context,
+                                    "Please select a due date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if (remindersList.isEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "Please add a reminder",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            else if (
+                                reminderCheck.isNotEmpty()
+                            ){
+                                Toast.makeText(
+                                    context,
+                                    "Reminder is after the due date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                // Edit TodoItem
+
+                                // Cancel all Current alarms for this item
+                                if (optionalID != null) {
+                                    todoViewModel.getToDoItem(optionalID)
+                                        ?.let { scheduler.cancelAllAlarms(it) }
+                                }
+
+                                val updatedTodoItem = optionalID?.let {
+                                    todoViewModel.updateTodoItem(
+                                        updatedTodoTitle = titleInputText,
+                                        updatedTodoDescription = descriptionInputText,
+                                        updatedTodoDueDate = selectedDateTime.toString(),
+                                        updatedReminders = remindersList.map{it.toString()},
+                                        updatedTodoTags = selectedTagsList,
+                                        updatedPriority = selectedPriority,
+                                        toUpdateTodoItemID = it
+                                    )
+                                }
+//                                // Set alarms for the reminders again
+
+                                if (updatedTodoItem != null) {
+                                    scheduler.scheduleAlarm(updatedTodoItem)
+                                }
+                                Log.d("EditorPage","ScheduleAlarm called")
+                                navController.popBackStack()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Text(
+                            text = "Edit",
+                        )
+
+                    }
 
                 }
+
 
             }
         }
@@ -698,78 +866,16 @@ fun AdderScreenContent(
         }
     }
 
-
-//    MaterialDialog(
-//        dialogState = reminderDateState,
-//        buttons = {
-//            positiveButton(text = "Submit"){
-//                reminderDateState.hide()
-//                reminderTimeState.show()
-//            }
-//            negativeButton(text = "Cancel")
-//        },
-//        backgroundColor = MaterialTheme.colorScheme.background
-//
-//    ) {
-//        datepicker(
-//            initialDate = LocalDate.now(),
-//            allowedDateValidator = { it > LocalDate.now() },
-//            title = "Pick a Reminder date",
-//            colors = DatePickerDefaults.colors(
-//                headerBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-//                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                dateActiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-//                dateActiveTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                dateInactiveTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
-//                calendarHeaderTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
-//            )
-//        ) {
-//            reminderDate = it
-//        }
-//    }
-
-    // Reminder Time Dialog
-//    MaterialDialog(
-//        dialogState = reminderTimeState,
-//        buttons = {
-//            positiveButton(text = "Submit"){
-//                // Make Reminder datetime
-//                reminderDateTime = reminderDate?.atTime(reminderTime)
-//                // Add to list
-//                reminderDateTime?.let { remindersList.add(it) }
-//            }
-//            negativeButton(text = "Cancel")
-//        },
-//        backgroundColor = MaterialTheme.colorScheme.background
-//
-//    ) {
-//        timepicker(
-//            initialTime = LocalTime.now(),
-//            title = "Pick a reminder time",
-//            colors = TimePickerDefaults.colors(
-//                selectorColor = MaterialTheme.colorScheme.primaryContainer,
-//                selectorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                headerTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                activeBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-//                inactiveBackgroundColor = MaterialTheme.colorScheme.background,
-//                activeTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
-//                inactiveTextColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
-//            )
-//        ) {
-//            reminderTime = it
-//        }
-//
-//    }
-
     // Tag Dialog
 
-    if(tagDialogState.value){
+    if(tagDialogState){
         TagDialog(
-            onDismissRequest = { tagDialogState.value = false },
+            onDismissRequest = { tagDialogState = false },
             tagViewModel = tagViewModel,
             onConfirmation = ::onDialogConfirm ,
             selectedTagsList = selectedTagsList
         )
+        tagSelectedCounter+=1
     }
 
 }
@@ -781,9 +887,28 @@ fun AdderScreen(
     tagViewModel: TagViewModel,
     navController: NavHostController,
     scheduler: AndroidAlarmSchedulerImpl,
-    optionalTitle: String = "",
-    optionalDescription: String = ""
+    optionalID: Int? = null,
+    editMode: Boolean = false
 ) {
+
+    var optionalTitle: String = ""
+    var optionalDescription: String = ""
+    var optionalPriority: Int = 3
+    var optionalDueDate: LocalDateTime? = null
+    var optionalReminders: List<LocalDateTime> = emptyList()
+    var optionalTags: List<String> = emptyList()
+    if(editMode && optionalID != null) {
+
+        val todoItem = optionalID.let { todoViewModel.getToDoItem(it) }
+        todoItem?.let {
+            optionalTitle = it.title
+            optionalDescription = it.description
+            optionalPriority = it.priority
+            optionalDueDate = LocalDateTime.parse(it.dueDate)
+            optionalReminders = it.reminders.map{ reminder -> LocalDateTime.parse(reminder) }
+            optionalTags = it.tags
+        }
+    }
 
     Scaffold(
         topBar = @Composable {
@@ -796,21 +921,16 @@ fun AdderScreen(
             tagViewModel,
             navController,
             scheduler,
+            optionalID,
             optionalTitle,
             optionalDescription,
+            optionalPriority,
+            optionalDueDate,
+            optionalReminders,
+            optionalTags,
+            editMode,
             paddingValues
         )
     }
 
 }
-
-//@Preview(widthDp = 360, heightDp = 640)
-//@Composable
-//fun AdderScreenPreview() {
-//    AdderScreenContent(
-//        Modifier,
-//        TodoViewModel(),
-//        NavHostController(LocalContext.current),
-//        scheduler: AndroidAlarmSchedulerImpl
-//    )
-//}

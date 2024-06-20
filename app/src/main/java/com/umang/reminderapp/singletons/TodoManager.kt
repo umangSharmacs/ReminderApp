@@ -101,8 +101,10 @@ object TodoManager {
         updatedTodoDescription : String,
         updatedTodoDueDate : String,
         updatedTodoTags : List<String>,
+        updatedPriority : Int,
+        updatedReminders : List<String>,
         toUpdateTodoItemID: Int
-                       ){
+    ): TodoItem? {
         val existingToDoItem = getToDoItem(toUpdateTodoItemID)
 
         if (existingToDoItem != null) {
@@ -110,12 +112,14 @@ object TodoManager {
             existingToDoItem.description = updatedTodoDescription
             existingToDoItem.dueDate = updatedTodoDueDate
             existingToDoItem.tags = updatedTodoTags
+            existingToDoItem.priority = updatedPriority
+            existingToDoItem.reminders = updatedReminders
 
             Firebase.firestore.collection("todo_"+Firebase.auth.currentUser!!.uid)
                 .document(toUpdateTodoItemID.toString()).set(existingToDoItem)
 
         }
-
+        return existingToDoItem
     }
 
 }

@@ -20,13 +20,14 @@ import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.data.models.AuthViewModel
+import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.toDoItemCards.ToDoItemCard
 
 @Composable
 fun TodoList(
-    viewModel: TodoViewModel,
     modifier: Modifier = Modifier,
+    viewModel: TodoViewModel,
     navHost: NavHostController,
     scheduler: AndroidAlarmSchedulerImpl,
     paddingValues: PaddingValues,

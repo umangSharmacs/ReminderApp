@@ -1,6 +1,7 @@
 package com.umang.reminderapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,11 +26,11 @@ import com.umang.reminderapp.screens.login.SignUpLanding
 import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.AllRemindersPage
-import com.umang.reminderapp.screens.main.EditorScreen
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.ui.components.AlarmPage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,36 +118,123 @@ class MainActivity : ComponentActivity() {
                     composable(route = "AdderScreen"){
                         AdderScreen(
                             modifier = Modifier,
-                            todoViewModel,
-                            tagViewModel,
-                            navController,
+                            todoViewModel = todoViewModel,
+                            tagViewModel = tagViewModel,
+                            navController = navController,
                             scheduler = scheduler
                         )
                     }
 
+//                    composable(
+//                        route = "EditScreen?title={title}&description={description}&id={id}",
+//                        arguments = listOf(
+//                            navArgument("title"){
+//                                type = NavType.StringType},
+//                            navArgument("description"){
+//                                type = NavType.StringType
+//                                nullable=true},
+//                            navArgument("id"){
+//                                type = NavType.IntType}
+//                        )
+//                    ){
+//                        val title = it.arguments?.getString("title").toString()
+//                        val description = it.arguments?.getString("description").toString()
+//                        val id = it.arguments?.getInt("id")?.toInt()
+//                        if (id != null) {
+//                            EditorScreen(
+//                                modifier = Modifier,
+//                                todoViewModel,
+//                                navController,
+//                                title = title,
+//                                description = description,
+//                                id = id)
+//                        }
+//                    }
+
                     composable(
-                        route = "EditScreen?title={title}&description={description}&id={id}",
+                        route = "EditScreen?id={id}",
                         arguments = listOf(
-                            navArgument("title"){
-                                type = NavType.StringType},
-                            navArgument("description"){
-                                type = NavType.StringType
-                                nullable=true},
                             navArgument("id"){
                                 type = NavType.IntType}
+//                            navArgument("title"){
+//                                type = NavType.StringType},
+//                            navArgument("description"){
+//                                type = NavType.StringType
+//                                nullable=true},
+//                            navArgument("priority"){
+//                                type = NavType.IntType},
+//                            navArgument("dueDate"){
+//                                type = NavType.StringType},
+//                            navArgument("reminders"){
+//                                type = NavType.StringArrayType},
+//                            navArgument("tags"){
+//                                type = NavType.StringArrayType }
                         )
                     ){
-                        val title = it.arguments?.getString("title").toString()
-                        val description = it.arguments?.getString("description").toString()
-                        val id = it.arguments?.getInt("id")?.toInt()
+                        val id = it.arguments?.getInt("id")
+//                        val title = it.arguments?.getString("title").toString()
+//                        val description = it.arguments?.getString("description").toString()
+//                        var priority = it.arguments?.getInt("priority")
+//                        var dueDate = LocalDateTime.parse(it.arguments?.getString("dueDate").toString())
+//                        val tempReminders = it.arguments?.getStringArray("reminders")
+//                        var tempTags = it.arguments?.getStringArray("tags")
+//
+//                        // Convert to lists
+//                        var tags = tempTags?.toList()
+
+
+                        val tempDateReminders = mutableListOf<LocalDateTime>()
+
+//                        if (tempReminders != null) {
+//                            for(reminder in tempReminders){
+//                                Log.d("Reminders", tempReminders.toString())
+//                                tempDateReminders.add(LocalDateTime.parse(reminder))
+//                            }
+//                        }
+//
+//                        var reminders = tempDateReminders.toList()
+
+                        // Null checks
+//                        if(priority==null){
+//                            priority = 3
+//                        }
+//                        if(tags==null){
+//                            tags = emptyList()
+//                        }
+//                        if (dueDate == null) {
+//                            dueDate = LocalDateTime.now()
+//                        }
+//
+//                        if (reminders == null) {
+//                            reminders = emptyList()
+//                        }
+
                         if (id != null) {
-                            EditorScreen(
-                                modifier = Modifier,
-                                todoViewModel,
-                                navController,
-                                title = title,
-                                description = description,
-                                id = id)
+
+                            AdderScreen(
+                                todoViewModel = todoViewModel,
+                                tagViewModel = tagViewModel,
+                                navController = navController,
+                                scheduler = scheduler,
+                                optionalID = id,
+//                                optionalTitle = title,
+//                                optionalDescription = description,
+//                                optionalPriority = priority,
+//                                optionalDueDate = dueDate,
+//                                optionalReminders = reminders,
+//                                optionalTags = tags,
+                                editMode = true
+
+                            )
+
+//                            EditorScreen(
+//                                modifier = Modifier,
+//                                todoViewModel,
+//                                navController,
+//                                title = title,
+//                                description = description,
+//                                id = id
+//                            )
                         }
                     }
                 }

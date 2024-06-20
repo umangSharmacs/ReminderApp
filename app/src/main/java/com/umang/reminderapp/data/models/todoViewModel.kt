@@ -68,17 +68,24 @@ class TodoViewModel: ViewModel() {
         updatedTodoDescription : String,
         updatedTodoDueDate : String,
         updatedTodoTags : List<String>,
+        updatedPriority : Int,
+        updatedReminders : List<String>,
         toUpdateTodoItemID: Int
-    ){
-        TodoManager.updateTodoItem(
-                updatedTodoTitle,
-                updatedTodoDescription,
-                updatedTodoDueDate,
-                updatedTodoTags,
-                toUpdateTodoItemID
+    ): TodoItem? {
+        val updatedItem = TodoManager.updateTodoItem(
+            updatedTodoTitle = updatedTodoTitle,
+            updatedTodoDescription = updatedTodoDescription,
+            updatedTodoDueDate = updatedTodoDueDate,
+            updatedTodoTags = updatedTodoTags,
+            updatedPriority = updatedPriority,
+            updatedReminders = updatedReminders,
+            toUpdateTodoItemID = toUpdateTodoItemID
         )
         this.viewModelScope.launch { getAllToDo() }
         Log.d("TodoManager", "updateTodoItem: ${todoList.value.toString()}")
+
+        return updatedItem
+
     }
 
 }

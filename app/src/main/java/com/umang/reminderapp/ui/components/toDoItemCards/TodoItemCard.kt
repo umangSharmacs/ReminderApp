@@ -1,5 +1,6 @@
 package com.umang.reminderapp.ui.components.toDoItemCards
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -204,8 +205,10 @@ fun ToDoItemCard(
                 ToDoItemCardExpand(
                     item = item,
                     onClick = { },
-                    onEdit = { navHostController
-                        .navigate(route = "EditScreen?title=${item.title}&description=${item.description}&id=${item.id}") },
+                    onEdit = {
+//                        Log.d("Edit Screen","EditScreen?id=${item.id}&title=${item.title}&description=${item.description}&priority=${item.priority}&dueDate=${item.dueDate}&reminders=${item.reminders}&tags=${item.tags}")
+                        navHostController.navigate(route = "EditScreen?id=${item.id}")
+                             },
                     onDelete = {
                         // Cancel it's alarms
                         scheduler.cancelAllAlarms(item)

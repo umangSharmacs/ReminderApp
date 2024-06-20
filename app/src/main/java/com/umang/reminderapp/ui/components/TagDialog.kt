@@ -55,9 +55,10 @@ fun TagDialog(
     }
     val tagList by tagViewModel.tagList.observeAsState()
 
-    var selectedTags = remember { mutableStateListOf<String>()}
-    selectedTags = selectedTagsList
+//    var selectedTags = remember { mutableStateListOf<String>()}
+    var selectedTags = selectedTagsList.distinct().toMutableList()
 
+    Log.d("TagDialog-parameterList",selectedTagsList.toList().toString())
     var newTag by remember { mutableStateOf("") }
 
     Dialog(

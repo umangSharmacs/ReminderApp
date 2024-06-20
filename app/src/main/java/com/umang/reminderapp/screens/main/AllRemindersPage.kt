@@ -38,7 +38,7 @@ fun AllRemindersPage(
         TodoList(
             viewModel = todoViewModel,
             modifier = Modifier,
-            navController,
+            navHost = navController,
             paddingValues = innerPadding,
             scheduler = scheduler,
             authViewModel = authViewModel
