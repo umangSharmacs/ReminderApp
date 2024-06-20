@@ -6,11 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 @Composable
-fun TodayItemList(modifier: Modifier = Modifier, todoItemList: List<TodoItem>) {
+fun TodayItemList(
+    modifier: Modifier = Modifier,
+    todoItemList: List<TodoItem>,
+    navHostController: NavHostController
+) {
 
     LazyRow(
         modifier = modifier,
@@ -20,20 +25,10 @@ fun TodayItemList(modifier: Modifier = Modifier, todoItemList: List<TodoItem>) {
         )
     ) {
         items(todoItemList.size){ index->
-            MinimalItemRectangle(item = todoItemList[index])
+            MinimalItemRectangle(
+                item = todoItemList[index],
+                onClick = { navHostController.navigate(route = "EditScreen?id=${todoItemList[index].id}") }
+            )
         }
-    }
-}
-
-@Preview
-@Composable
-fun TodayItemListPreview(){
-
-    val itemList = listOf(
-        TodoItem(),TodoItem(),TodoItem(),TodoItem()
-    )
-
-    ReminderAppTheme {
-        TodayItemList(todoItemList = itemList)
     }
 }

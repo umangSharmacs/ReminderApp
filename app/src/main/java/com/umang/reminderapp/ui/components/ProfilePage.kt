@@ -21,7 +21,6 @@ import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.models.AuthViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun ProfilePage(
     modifier: Modifier = Modifier,

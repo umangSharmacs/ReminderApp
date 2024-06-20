@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -57,13 +58,12 @@ fun ToDoItemCard(
 
     var expandedState by remember { mutableStateOf(false) }
     var checkBoxState by remember { mutableStateOf(item.completed) }
-    var expandedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
 
     //Animation States
-    val backgroundColor =  animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.background else expandedBackgroundColor,
+    val backgroundColor =  animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primaryContainer,
         label = "Container Color"
     )
-    val contentColor = animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onPrimary,
+    val contentColor = animateColorAsState( if(!expandedState) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onPrimary,
         label = "Content Color"
     )
 
@@ -93,23 +93,27 @@ fun ToDoItemCard(
                         checkBoxState = !checkBoxState
                         item.completed = checkBoxState
                         // TODO Update Item Completion
-                    }
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        checkmarkColor = MaterialTheme.colorScheme.onPrimary,
+                        uncheckedColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
                 )
 
                 // Centre Column
                 Column(
                     modifier = Modifier.weight(5f)
                 ) {
-                    Text(text = item.title, color = MaterialTheme.colorScheme.onSecondaryContainer)
-
-
+//                    Text(text = item.title, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    Text(text = item.title)
                 }
 
                 Column(modifier = Modifier.weight(3f)) {
                     Text(
                         modifier = Modifier.padding(top=10.dp, start = 5.dp, end = 5.dp),
                         text = "Due By",
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+//                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = TextStyle.Default.copy(
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                             fontWeight = MaterialTheme.typography.bodyMedium.fontWeight,
@@ -123,13 +127,13 @@ fun ToDoItemCard(
                             fontWeight = MaterialTheme.typography.bodySmall.fontWeight,
                             textAlign = TextAlign.Center
                         ),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+//                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
 
                     Text(
                         modifier = Modifier.padding(top=10.dp,start = 5.dp, end = 5.dp),
                         text = "Priority",
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+//                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = TextStyle.Default.copy(
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                             fontWeight = MaterialTheme.typography.bodyMedium.fontWeight
@@ -148,7 +152,7 @@ fun ToDoItemCard(
                             fontWeight = MaterialTheme.typography.bodySmall.fontWeight,
                             textAlign = TextAlign.Center
                         ),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+//                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
 
                 }
@@ -171,7 +175,7 @@ fun ToDoItemCard(
                         AssistChip(
                             modifier = Modifier.padding(2.dp),
                             onClick = { },
-                            label = { Text(text = item.tags[index],color = MaterialTheme.colorScheme.onSecondaryContainer) }
+                            label = { Text(text = item.tags[index]) }
                         )
                     }
                 }
@@ -195,7 +199,8 @@ fun ToDoItemCard(
                             label = {
                                 Text(
                                     text = LocalDateTime.parse(item.reminders[index]).format(dateFormatter),
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer)
+//                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
                             }
                         )
                     }

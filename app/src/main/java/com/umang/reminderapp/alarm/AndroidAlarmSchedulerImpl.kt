@@ -35,6 +35,11 @@ class AndroidAlarmSchedulerImpl(
         // Schedule the alarm for all reminders
 
         for (reminder in reminders){
+            // if alarm date time before current time, don't set
+            if(LocalDateTime.parse(reminder).isBefore(LocalDateTime.now())){
+                continue
+            }
+
             // Set alarm
             Log.d("AlarmScheduler", "Scheduling reminder for ${item.title} at ${LocalDateTime.parse(reminder).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000}")
             alarmManager.setExactAndAllowWhileIdle(
@@ -52,19 +57,19 @@ class AndroidAlarmSchedulerImpl(
 
 
         // Due Date Alarm
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            LocalDateTime.parse(item.dueDate).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            PendingIntent.getBroadcast(
-                context,
-                item.hashCode(),
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        if(LocalDateTime.parse(item.dueDate).isAfter(LocalDateTime.now())){
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                LocalDateTime.parse(item.dueDate).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                PendingIntent.getBroadcast(
+                    context,
+                    item.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
 
+                )
             )
-        )
-
-
+        }
     }
 
     override fun cancelAlarm(item: TodoItem, hashcode: Int) {

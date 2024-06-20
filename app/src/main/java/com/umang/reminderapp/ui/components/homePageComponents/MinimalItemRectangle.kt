@@ -23,10 +23,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Composable
-fun MinimalItemRectangle(modifier: Modifier = Modifier, item: TodoItem) {
+fun MinimalItemRectangle(
+    modifier: Modifier = Modifier,
+    item: TodoItem,
+    onClick: () -> Unit = {}
+) {
 
     Card(
         modifier = Modifier
@@ -35,10 +41,10 @@ fun MinimalItemRectangle(modifier: Modifier = Modifier, item: TodoItem) {
             .height(150.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = if(LocalDateTime.parse(item.dueDate).toLocalDate() == LocalDate.now()) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
         ),
         shape = MaterialTheme.shapes.extraLarge,
-        onClick = {/*TODO*/}
+        onClick = onClick
     ){
         Column(
             modifier = Modifier
@@ -52,25 +58,18 @@ fun MinimalItemRectangle(modifier: Modifier = Modifier, item: TodoItem) {
                 text = item.title,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 35.sp,
+                fontSize = 20.sp,
                 overflow = TextOverflow.Ellipsis,
             )
 
             Text(
-                text = "Due Today",
+                text = if(LocalDateTime.parse(item.dueDate).toLocalDate() == LocalDate.now()) "Due Today" else "Reminder Today",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 20.sp,
+                fontSize = 15.sp,
                 overflow = TextOverflow.Ellipsis
             )
         }
-//        Box(
-//            modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally).fillMaxSize(),
-//            contentAlignment = Alignment.Center,
-//        ){
-//
-//
-//        }
     }
 }
 
@@ -80,6 +79,7 @@ fun MinimalItemRectangle(modifier: Modifier = Modifier, item: TodoItem) {
 fun MinimalItemRectanglePreview() {
 
     val item = TodoItem()
+    item.dueDate = LocalDateTime.now().toString()
 
     ReminderAppTheme {
         MinimalItemRectangle(Modifier, item)

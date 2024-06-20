@@ -912,7 +912,11 @@ fun AdderScreen(
 
     Scaffold(
         topBar = @Composable {
-            TopAppBarScaffold()
+            TopAppBarScaffold(
+                header = if(editMode) "Edit" else "Add",
+                navigateBack = {navController.popBackStack()}
+            )
+
         })
     { paddingValues ->
         AdderScreenContent(

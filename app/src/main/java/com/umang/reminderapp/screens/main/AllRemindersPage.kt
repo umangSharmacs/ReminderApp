@@ -23,7 +23,9 @@ fun AllRemindersPage(
 
     Scaffold(
         topBar = @Composable {
-            TopAppBarScaffold()
+            TopAppBarScaffold(
+                navigateBack = {navController.popBackStack()}
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("AdderScreen") })

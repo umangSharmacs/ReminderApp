@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -59,7 +60,7 @@ fun MinimalItemCard(
             contentColor = contentColor.value,
         ),
         shape = MaterialTheme.shapes.large,
-        onClick = { /*TODO*/ }
+        onClick = { navHostController.navigate(route = "EditScreen?id=${item.id}") }
     ) {
         Column() {
             Row(
@@ -77,7 +78,10 @@ fun MinimalItemCard(
                         checkBoxState = !checkBoxState
                         item.completed = checkBoxState
                         // TODO Update Item Completion
-                    }
+                    },
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
 
                 // Centre Column

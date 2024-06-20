@@ -3,6 +3,7 @@ package com.umang.reminderapp.screens.Placeholder
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,7 +20,9 @@ fun ComingSoon(modifier: Modifier = Modifier,navController: NavHostController) {
 
     Scaffold(
         topBar = @Composable {
-            TopAppBarScaffold()
+            TopAppBarScaffold(
+                navigateBack = {navController.popBackStack()}
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("AdderScreen") })
@@ -36,6 +39,7 @@ fun ComingSoon(modifier: Modifier = Modifier,navController: NavHostController) {
                 .fillMaxSize()
         ) {
             Column(
+                modifier = modifier.padding(innerPadding),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

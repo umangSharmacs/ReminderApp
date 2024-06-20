@@ -3,10 +3,12 @@ package com.umang.reminderapp.screens.login
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,192 +62,222 @@ fun SignUpScreen(modifier: Modifier = Modifier,
     val scope = rememberCoroutineScope()
     val state = AuthViewModel.signUpState.collectAsState(initial = null)
 
-    Surface(modifier = modifier) {
+    Surface(modifier = modifier.fillMaxSize()) {
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(start=60.dp, top=75.dp),
-            horizontalAlignment = Alignment.Start,
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.SpaceEvenly
+
+        ){
+
+            Column(modifier = Modifier
+                .padding(start=60.dp, top=75.dp),
+                horizontalAlignment = Alignment.Start,
             ){
-            // Memento
-            Text(modifier = Modifier,
-                textAlign = TextAlign.Start,
-                fontFamily = robotoMonoFontFamily,
-                fontWeight = FontWeight.Black,
-                fontSize = 40.sp,
-                text = "Memento",
-                color = MaterialTheme.colorScheme.primary
-            )
+                // Memento
+                Text(modifier = Modifier,
+                    textAlign = TextAlign.Start,
+                    fontFamily = robotoMonoFontFamily,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 40.sp,
+                    text = "Memento",
+                    color = if(!isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
+                )
 
-            // Conquer Chaos
-            Text(modifier = Modifier,
-                textAlign = TextAlign.Start,
-                fontFamily = robotoMonoFontFamily,
-                fontWeight = FontWeight.Black,
-                fontSize = 20.sp,
-                text = "Conquer Chaos",
-                color = MaterialTheme.colorScheme.primary
-            )
+                // Conquer Chaos
+                Text(modifier = Modifier,
+                    textAlign = TextAlign.Start,
+                    fontFamily = robotoMonoFontFamily,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 20.sp,
+                    text = "Conquer Chaos",
+                    color = if(!isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
+                )
 
-            // Create an
-            Text(modifier = Modifier.padding(top=15.dp),
-                textAlign = TextAlign.Start,
-                fontFamily = robotoMonoFontFamily,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 25.sp,
-                text = "Create an")
-            //Account
-            Text(modifier = Modifier,
-                textAlign = TextAlign.Start,
-                fontFamily = robotoMonoFontFamily,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 40.sp,
-                text = "Account")
-        }
+                // Create an
+                Text(modifier = Modifier.padding(top=15.dp),
+                    textAlign = TextAlign.Start,
+                    fontFamily = robotoMonoFontFamily,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 25.sp,
+                    text = "Create an")
+                //Account
+                Text(modifier = Modifier,
+                    textAlign = TextAlign.Start,
+                    fontFamily = robotoMonoFontFamily,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 40.sp,
+                    text = "Account")
+            }
 
-        Column(modifier = Modifier
-            .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            Column(modifier = Modifier
+                .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
 
 
-            // Email
-            OutlinedTextField(
+                // Email
+                OutlinedTextField(
                     value = emailText,
                     onValueChange = {emailText = it},
-                    label = { Text(text = "Email") },
+                    placeholder = { Text(text = "Email") },
                     modifier = Modifier
-                            .padding(15.dp)
-            )
+                        .padding(15.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary
+                    )
+                )
 
-            // Password
-            OutlinedTextField(
+                // Password
+                OutlinedTextField(
                     value = passwordText,
                     onValueChange = {passwordText = it},
-                    label = { Text(text = "Password") },
+                    placeholder = { Text(text = "Password") },
                     modifier = Modifier
-                            .padding(15.dp)
-            )
+                        .padding(15.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary
 
-            // Sign up Button
-            Button(onClick = {
-                if(emailText!="" && passwordText!=""){
-                    if(AuthViewModel.user==null){
-                        scope.launch {
-                            AuthViewModel.register(emailText, passwordText, context)
-                        }
-                    }else if(AuthViewModel.user!!.isAnonymous){
-                        AuthViewModel.convertAnonymousUserToPermanentUserWithEmail(
-                            emailText,
-                            passwordText,
-                            context
-                        )
-                        if (AuthViewModel.isLoggedIn()){
-                            navController.navigate("Home")
-                        }
-                    }
-                }
-            },
-                modifier = Modifier
-                    .padding(15.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White
+                    )
                 )
-            ) {
-                Text(text = "Sign Up")
-            }
 
-            // Already have an account
-            Row(modifier = Modifier
-                .align(Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(text = "Already have an account?")
-                TextButton(onClick = { navController.navigate("LoginScreen") }) {
-                    Text(text = "Login")
-                }
-            }
-
-            // Or
-            Row(modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom=10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Divider(modifier = Modifier
-                    .width(50.dp)
-                    .padding(end = 5.dp),
-                    thickness = 1.dp )
-                Text(text = "OR")
-                Divider(modifier = Modifier
-                    .width(50.dp)
-                    .padding(start = 5.dp),
-                    thickness = 1.dp )
-
-            }
-
-            // Text
-            Text(text = "Sign in using other methods")
-
-            // Other Sign in Options
-            Row(modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-
-                // Anonymous Sign in 
-                IconButton(modifier = Modifier
-                    .padding(5.dp),
-                    onClick = {
-                        scope.launch {
-                            AuthViewModel.signInAnonymously(context)
+                // Sign up Button
+                Button(onClick = {
+                    if(emailText!="" && passwordText!=""){
+                        if(AuthViewModel.user==null){
+                            scope.launch {
+                                AuthViewModel.register(emailText, passwordText, context)
+                            }
+                        }else if(AuthViewModel.user!!.isAnonymous){
+                            AuthViewModel.convertAnonymousUserToPermanentUserWithEmail(
+                                emailText,
+                                passwordText,
+                                context
+                            )
+                            if (AuthViewModel.isLoggedIn()){
+                                navController.navigate("Home")
+                            }
                         }
                     }
+                },
+                    modifier = Modifier
+                        .padding(15.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.user),
-                        contentDescription = "Anonymous User",
-                        tint = Color.Unspecified
-                    )
+                    Text(text = "Sign Up")
                 }
-                //Divider
-                Divider(modifier = Modifier
-                    .height(50.dp)
-                    .width(1.dp),
-                    thickness = 2.dp )
-                // Google Sign in 
-                IconButton(modifier = Modifier
-                    .padding(5.dp),
-                    onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.google_logo),
-                        contentDescription = "Google",
-                        tint = Color.Unspecified
-                    )
+
+                // Already have an account
+                Row(modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Text(text = "Already have an account?")
+                    TextButton(onClick = { navController.navigate("LoginScreen") }) {
+                        Text(text = "Login")
+                    }
                 }
+
+                // Or
+                Row(modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Divider(modifier = Modifier
+                        .width(50.dp)
+                        .padding(end = 5.dp),
+                        thickness = 1.dp )
+                    Text(text = "OR")
+                    Divider(modifier = Modifier
+                        .width(50.dp)
+                        .padding(start = 5.dp),
+                        thickness = 1.dp )
+
+                }
+
+                // Text
+                Text(text = "Sign in using other methods")
+
+                // Other Sign in Options
+                Row(modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+
+                    // Anonymous Sign in
+                    IconButton(modifier = Modifier
+                        .padding(5.dp),
+                        onClick = {
+                            scope.launch {
+                                AuthViewModel.signInAnonymously(context)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.user),
+                            contentDescription = "Anonymous User",
+                            tint = Color.Unspecified
+                        )
+                    }
+                    //Divider
+                    Divider(modifier = Modifier
+                        .height(50.dp)
+                        .width(1.dp),
+                        thickness = 2.dp )
+                    // Google Sign in
+                    IconButton(modifier = Modifier
+                        .padding(5.dp),
+                        onClick = { /*TODO*/ }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.google_logo),
+                            contentDescription = "Google",
+                            tint = Color.Unspecified
+                        )
+                    }
+
+                }
+
 
             }
 
+        }
 
-    }
-
-    // Effect for Signup
-    LaunchedEffect(key1 = state.value?.isSuccess) {
-        scope.launch {
-            if (state.value?.isSuccess?.isNotEmpty() == true) {
-                val success = state.value?.isSuccess
-                // TODO use Snackbar
-                Toast.makeText(context, state.value?.isSuccess.toString(), Toast.LENGTH_LONG).show()
-                navController.navigate("Home")
+        // Effect for Signup
+        LaunchedEffect(key1 = state.value?.isSuccess) {
+            scope.launch {
+                if (state.value?.isSuccess?.isNotEmpty() == true) {
+                    val success = state.value?.isSuccess
+                    // TODO use Snackbar
+                    Toast.makeText(context, state.value?.isSuccess.toString(), Toast.LENGTH_LONG).show()
+                    navController.navigate("Home")
+                }
             }
         }
     }
-
-}}
+}

@@ -21,7 +21,9 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = @Composable {
-            TopAppBarScaffold()
+            TopAppBarScaffold(
+                navigateBack = {navHost.navigate("Home")}
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navHost.navigate("AdderScreen") })

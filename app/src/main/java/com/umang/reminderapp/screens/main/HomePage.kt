@@ -1,5 +1,6 @@
 package com.umang.reminderapp.screens.main
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +37,8 @@ import com.umang.reminderapp.ui.components.MinimalToDoList
 import com.umang.reminderapp.ui.components.TagGrid
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 import com.umang.reminderapp.ui.components.homePageComponents.TodayItemList
+import com.umang.reminderapp.util.filterReminders
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Composable
@@ -49,7 +53,10 @@ fun HomePage(
 
     Scaffold(
         topBar = @Composable {
-            TopAppBarScaffold()
+            TopAppBarScaffold(
+                header = "Memento",
+                navigateBack = {navController.popBackStack()}
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("AdderScreen") })
@@ -61,7 +68,6 @@ fun HomePage(
         }
     ) {
         innerPadding ->
-
 
         val todoList by todoViewModel.todoList.observeAsState()
         // Filter for this month's items
@@ -76,7 +82,31 @@ fun HomePage(
                 .verticalScroll(rememberScrollState())
         ){
             // Today's Due items and Reminders
-            todoList?.let { TodayItemList(Modifier, it.toList()) }
+            var dueTodayList = todoList?.filter { LocalDateTime.parse(it.dueDate).toLocalDate() == LocalDate.now() }
+            // convert dueTodayList to mutable
+            dueTodayList = dueTodayList?.toMutableStateList()
+
+            val remindersTodayList = todoList?.let { filterReminders(it) }
+            Log.d("Reminders",remindersTodayList.toString())
+            if (remindersTodayList != null) {
+
+                dueTodayList?.addAll(remindersTodayList)
+                Log.d("Today's Items-",dueTodayList.toString())
+            }
+
+            if (dueTodayList != null && remindersTodayList != null) {
+                TodayItemList(Modifier,  dueTodayList, navController)
+            }
+
+            if (dueTodayList != null && remindersTodayList != null) {
+                if(dueTodayList.isEmpty() && remindersTodayList.isEmpty()){
+                    Text(
+                        text = "Wohoo! No reminders or deadlines today",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding( 15.dp )
+                    )
+                }
+            }
 
             // Divider
             HorizontalDivider(
@@ -130,9 +160,9 @@ fun HomePage(
 
             val tags = tagViewModel.tagList.observeAsState()
             val tagsList = tags.value?.toMutableList()
-            if (tagsList != null) {
-                while(tagsList.size < 9) tagsList.add("")
-            }
+//            if (tagsList != null) {
+//                while(tagsList.size < 9) tagsList.add("")
+//            }
 
             Column(
                 modifier = Modifier.padding(
@@ -149,7 +179,7 @@ fun HomePage(
                         start = 15.dp
                     )
                 )
-                tagsList?.let { TagGrid(Modifier, it.toList()) }
+                tagsList?.let { TagGrid(Modifier, it) }
             }
 
             // Divider
@@ -161,23 +191,6 @@ fun HomePage(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            Column(
-                modifier = Modifier.padding(
-                    start = 15.dp,
-                    end = 15.dp
-                )
-//                    .height(100.dp)
-            ) {
-                Text(
-                    text = "Your Tags",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(
-                        top = 5.dp,
-                        start = 15.dp
-                    )
-                )
-                tagsList?.let { TagGrid(Modifier, it.toList()) }
-            }
         }
     }
 
