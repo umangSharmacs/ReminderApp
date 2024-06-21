@@ -16,21 +16,19 @@ object TagManager {
     private var tags = SnapshotStateList<String>()
 
     suspend fun getAllTags():SnapshotStateList<String> {
-        val tempList: SnapshotStateList<String> = SnapshotStateList()
+        val tempList = SnapshotStateList<String>()
 
         try{
-            val documentSnapshot = Firebase.firestore
+            Firebase.firestore
                 .collection("tags_"+Firebase.auth.currentUser!!.uid)
-                .document("tags")
                 .get()
                 .await()
-
-                val tagsArray = documentSnapshot.get("tags") as List<*>
-                for(tag in tagsArray){
-                    tempList.add(tag.toString())
+                .map{
+                    val tag = it["tag"].toString()
+                    tempList.add(tag)
                 }
             tags = tempList
-
+            Log.d("TagManager",tags.toList().toString())
         } catch (e: Exception) {
             println("Error getting document: ${e.message}")
         }
@@ -46,18 +44,17 @@ object TagManager {
     ) {
 
         val user = Firebase.auth.currentUser
-        TagManager.tags.add(name)
+        tags.add(name)
         if (user != null) {
             Firebase.firestore.collection("tags_"+user.uid)
-                .document("tags")
+                .document(name)
                 .set(
-                    hashMapOf("tags" to tags.toList())
+                    hashMapOf("tag" to name)
                 )
                 .addOnSuccessListener {
                     Log.d("TAGS", "DocumentSnapshot successfully written!")
                 }
         }
-
     }
 
     fun deleteTag(name : String){
@@ -71,15 +68,11 @@ object TagManager {
 
         if (user!=null){
             Firebase.firestore.collection("tags_"+user.uid)
-                .document("tags")
-                .set(
-                    "tags" to tags.toList()
-                )
-                .addOnSuccessListener {
-                    Log.d("TAGS", "DocumentSnapshot successfully written!")
-                }
+                .document(name)
+                .delete()
         }
     }
+
 //
 //    fun updateTag(
 //        updatedName : String,

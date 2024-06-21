@@ -47,7 +47,10 @@ fun BottomBarScaffold(modifier: Modifier = Modifier,
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    navHost.navigate(item.navRoute)
+                    navHost.navigate(item.navRoute){
+                        popUpTo("Home")
+                        launchSingleTop = true
+                    }
                     Log.d("BottomBarScaffold", "BottomBarScaffold: $item.navRoute")
                           },
                 icon = {

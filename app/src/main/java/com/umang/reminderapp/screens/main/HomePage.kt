@@ -73,6 +73,11 @@ fun HomePage(
         // Filter for this month's items
         val thisMonthsItems = todoList?.filter { LocalDateTime.parse(it.dueDate).month == LocalDateTime.now().month }
 
+        val tags by tagViewModel.tagList.observeAsState()
+        val tagsList = tags?.toMutableList()
+//        Log.d("Tags", tagsList!!.toList().toString())
+//        Log.d("Tags List", tagsList.toString())
+
         Column(
             modifier = Modifier
                 .padding(
@@ -158,8 +163,6 @@ fun HomePage(
 
             // Your Tags
 
-            val tags = tagViewModel.tagList.observeAsState()
-            val tagsList = tags.value?.toMutableList()
 //            if (tagsList != null) {
 //                while(tagsList.size < 9) tagsList.add("")
 //            }

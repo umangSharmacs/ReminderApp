@@ -4,12 +4,14 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.models.AuthViewModel
 
@@ -43,7 +46,8 @@ fun ProfilePage(
     Column(modifier = modifier
         .fillMaxSize()
         .padding(top = paddingValues.calculateTopPadding()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ){
 
         if (user!=null){
@@ -54,7 +58,10 @@ fun ProfilePage(
 
         Button(onClick = {
             authViewModel.logout()
-            navHost.navigate(route = "SignUpScreen")
+            navHost.navigate(route = "SignUpScreen"){
+                popUpTo("Auth")
+                launchSingleTop = true
+            }
         }) {
             Text(text = "Sign Out")
         }
@@ -68,9 +75,16 @@ fun ProfilePage(
             }
         }
 
+        // Request Permission Button
+
         Button(onClick = {
             permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-        }) {
+        },
+            enabled = !hasNotificationPermission,
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = Color.Gray
+            )
+        ) {
             Text(text = "Request Permission")
         }
     }

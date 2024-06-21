@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.FirebaseApp
@@ -22,7 +23,6 @@ import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.screens.Placeholder.ComingSoon
 import com.umang.reminderapp.screens.bottomBarScreens.ProfileScreen
 import com.umang.reminderapp.screens.login.LogInScreen
-import com.umang.reminderapp.screens.login.SignUpLanding
 import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.AllRemindersPage
@@ -51,9 +51,9 @@ class MainActivity : ComponentActivity() {
         val scheduler = AndroidAlarmSchedulerImpl(this)
 
         if (authViewModel.user == null){
-            startDestination = "SignUpScreen"
+            startDestination = "Auth"
         } else {
-            startDestination = "Home"
+            startDestination = "Main"
         }
 
         setContent {
@@ -63,178 +63,96 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = startDestination){
 
-
-                    // HomePage
-                    composable(route = BottomBarNavigationItem.Home.navRoute){
-                        HomePage(
-                            todoViewModel = todoViewModel,
-                            tagViewModel = tagViewModel,
-                            navController = navController,
-                            scheduler = scheduler,
-                            authViewModel = authViewModel
-                        )
-                    }
-
-                    // All Reminders
-                    composable(route = BottomBarNavigationItem.AllReminders.navRoute){
-                        AllRemindersPage(
-                            todoViewModel = todoViewModel,
-                            navController = navController,
-                            scheduler = scheduler,
-                            authViewModel = authViewModel
-                        )
-                    }
-
-                    // Profile
-                    composable(route = BottomBarNavigationItem.Profile.navRoute){
-                        ProfileScreen(Modifier, navController, authViewModel)
-//                        AlarmPage(scheduler = scheduler)
-                    }
-
-                    // Auth
-                    composable(route="SignUpLanding"){
-                        SignUpLanding(navController = navController)
-                    }
-
-                    composable(route="SignUpScreen"){
-                        SignUpScreen(navController = navController, AuthViewModel = authViewModel)
-                    }
-
-                    composable(route="LoginScreen"){
-                        LogInScreen(navController = navController, AuthViewModel = authViewModel)
-                    }
-
-                    // Main
-                    composable(route = "Home"){
-                        HomePage(
-                            todoViewModel = todoViewModel,
-                            tagViewModel = tagViewModel,
-                            navController = navController,
-                            scheduler = scheduler,
-                            authViewModel = authViewModel
-                        )
-                    }
-
-                    composable(route = "AdderScreen"){
-                        AdderScreen(
-                            modifier = Modifier,
-                            todoViewModel = todoViewModel,
-                            tagViewModel = tagViewModel,
-                            navController = navController,
-                            scheduler = scheduler
-                        )
-                    }
-
-//                    composable(
-//                        route = "EditScreen?title={title}&description={description}&id={id}",
-//                        arguments = listOf(
-//                            navArgument("title"){
-//                                type = NavType.StringType},
-//                            navArgument("description"){
-//                                type = NavType.StringType
-//                                nullable=true},
-//                            navArgument("id"){
-//                                type = NavType.IntType}
-//                        )
-//                    ){
-//                        val title = it.arguments?.getString("title").toString()
-//                        val description = it.arguments?.getString("description").toString()
-//                        val id = it.arguments?.getInt("id")?.toInt()
-//                        if (id != null) {
-//                            EditorScreen(
-//                                modifier = Modifier,
-//                                todoViewModel,
-//                                navController,
-//                                title = title,
-//                                description = description,
-//                                id = id)
-//                        }
-//                    }
-
-                    composable(
-                        route = "EditScreen?id={id}",
-                        arguments = listOf(
-                            navArgument("id"){
-                                type = NavType.IntType}
-//                            navArgument("title"){
-//                                type = NavType.StringType},
-//                            navArgument("description"){
-//                                type = NavType.StringType
-//                                nullable=true},
-//                            navArgument("priority"){
-//                                type = NavType.IntType},
-//                            navArgument("dueDate"){
-//                                type = NavType.StringType},
-//                            navArgument("reminders"){
-//                                type = NavType.StringArrayType},
-//                            navArgument("tags"){
-//                                type = NavType.StringArrayType }
-                        )
+                    // AUTH
+                    navigation(
+                        startDestination = "SignUpScreen",
+                        route = "Auth"
                     ){
-                        val id = it.arguments?.getInt("id")
-//                        val title = it.arguments?.getString("title").toString()
-//                        val description = it.arguments?.getString("description").toString()
-//                        var priority = it.arguments?.getInt("priority")
-//                        var dueDate = LocalDateTime.parse(it.arguments?.getString("dueDate").toString())
-//                        val tempReminders = it.arguments?.getStringArray("reminders")
-//                        var tempTags = it.arguments?.getStringArray("tags")
-//
-//                        // Convert to lists
-//                        var tags = tempTags?.toList()
 
+                        composable(route="SignUpScreen"){
+                            SignUpScreen(navController = navController, AuthViewModel = authViewModel)
+                        }
 
-                        val tempDateReminders = mutableListOf<LocalDateTime>()
+                        composable(route="LoginScreen"){
+                            LogInScreen(navController = navController, AuthViewModel = authViewModel)
+                        }
+                    }
 
-//                        if (tempReminders != null) {
-//                            for(reminder in tempReminders){
-//                                Log.d("Reminders", tempReminders.toString())
-//                                tempDateReminders.add(LocalDateTime.parse(reminder))
-//                            }
-//                        }
-//
-//                        var reminders = tempDateReminders.toList()
-
-                        // Null checks
-//                        if(priority==null){
-//                            priority = 3
-//                        }
-//                        if(tags==null){
-//                            tags = emptyList()
-//                        }
-//                        if (dueDate == null) {
-//                            dueDate = LocalDateTime.now()
-//                        }
-//
-//                        if (reminders == null) {
-//                            reminders = emptyList()
-//                        }
-
-                        if (id != null) {
-
-                            AdderScreen(
+                    // MAIN
+                    navigation(
+                        startDestination = "Home",
+                        route = "Main"
+                    ){
+                        // HomePage
+                        composable(route = BottomBarNavigationItem.Home.navRoute){
+                            HomePage(
                                 todoViewModel = todoViewModel,
                                 tagViewModel = tagViewModel,
                                 navController = navController,
                                 scheduler = scheduler,
-                                optionalID = id,
-//                                optionalTitle = title,
-//                                optionalDescription = description,
-//                                optionalPriority = priority,
-//                                optionalDueDate = dueDate,
-//                                optionalReminders = reminders,
-//                                optionalTags = tags,
-                                editMode = true
-
+                                authViewModel = authViewModel
                             )
+                        }
 
-//                            EditorScreen(
-//                                modifier = Modifier,
-//                                todoViewModel,
-//                                navController,
-//                                title = title,
-//                                description = description,
-//                                id = id
-//                            )
+                        // All Reminders
+                        composable(route = BottomBarNavigationItem.AllReminders.navRoute){
+                            AllRemindersPage(
+                                todoViewModel = todoViewModel,
+                                navController = navController,
+                                scheduler = scheduler,
+                                authViewModel = authViewModel
+                            )
+                        }
+
+                        // Profile
+                        composable(route = BottomBarNavigationItem.Profile.navRoute){
+                            ProfileScreen(Modifier, navController, authViewModel)
+//                        AlarmPage(scheduler = scheduler)
+                        }
+
+
+
+                        // Main
+                        composable(route = "Home"){
+                            HomePage(
+                                todoViewModel = todoViewModel,
+                                tagViewModel = tagViewModel,
+                                navController = navController,
+                                scheduler = scheduler,
+                                authViewModel = authViewModel
+                            )
+                        }
+
+                        composable(route = "AdderScreen"){
+                            AdderScreen(
+                                modifier = Modifier,
+                                todoViewModel = todoViewModel,
+                                tagViewModel = tagViewModel,
+                                navController = navController,
+                                scheduler = scheduler
+                            )
+                        }
+
+                        // Edit Screen
+                        composable(
+                            route = "EditScreen?id={id}",
+                            arguments = listOf(
+                                navArgument("id"){
+                                    type = NavType.IntType}
+                            )
+                        ){
+                            val id = it.arguments?.getInt("id")
+                            if (id != null) {
+                                AdderScreen(
+                                    todoViewModel = todoViewModel,
+                                    tagViewModel = tagViewModel,
+                                    navController = navController,
+                                    scheduler = scheduler,
+                                    optionalID = id,
+
+                                    editMode = true
+                                )
+                            }
                         }
                     }
                 }

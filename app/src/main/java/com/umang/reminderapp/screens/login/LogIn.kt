@@ -231,7 +231,10 @@ fun LogInScreen(modifier: Modifier = Modifier,
                 val success = state.value?.isSuccess
                 // TODO use Snackbar
                 Toast.makeText(context, state.value?.isSuccess.toString(), Toast.LENGTH_LONG).show()
-                navController.navigate("Home")
+                navController.navigate("Home"){
+                    popUpTo("Home")
+                    launchSingleTop = true
+                }
             }
         }
     }

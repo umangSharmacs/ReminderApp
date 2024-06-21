@@ -22,7 +22,7 @@ sealed class BottomBarNavigationItem(
         title = "All Reminders",
         selectedIcon = R.drawable.tag_filled,
         unselectedIcon = R.drawable.tag_filled,
-        navRoute = "Placeholder"
+        navRoute = "All Reminders"
     )
 
     data object Profile : BottomBarNavigationItem(

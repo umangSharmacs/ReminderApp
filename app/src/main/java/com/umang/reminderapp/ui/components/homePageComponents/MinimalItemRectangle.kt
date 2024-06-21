@@ -36,9 +36,9 @@ fun MinimalItemRectangle(
 
     Card(
         modifier = Modifier
-            .aspectRatio(0.7f)
             .padding(8.dp)
-            .height(150.dp),
+            .height(150.dp)
+            .width(150.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = if(LocalDateTime.parse(item.dueDate).toLocalDate() == LocalDate.now()) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
@@ -48,10 +48,10 @@ fun MinimalItemRectangle(
     ){
         Column(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(10.dp)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
 
         ){
             Text(
@@ -59,7 +59,7 @@ fun MinimalItemRectangle(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 20.sp,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Visible,
             )
 
             Text(
