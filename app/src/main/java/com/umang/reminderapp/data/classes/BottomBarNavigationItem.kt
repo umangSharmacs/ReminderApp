@@ -19,10 +19,17 @@ sealed class BottomBarNavigationItem(
     )
 
     data object AllReminders : BottomBarNavigationItem(
-        title = "All Reminders",
+        title = "Reminders",
         selectedIcon = R.drawable.tag_filled,
         unselectedIcon = R.drawable.tag_filled,
         navRoute = "All Reminders"
+    )
+
+    data object Subscriptions : BottomBarNavigationItem(
+        title = "Subscriptions",
+        selectedIcon = R.drawable.baseline_subscription_filled,
+        unselectedIcon = R.drawable.outline_subsriptions,
+        navRoute = "Subscriptions"
     )
 
     data object Profile : BottomBarNavigationItem(

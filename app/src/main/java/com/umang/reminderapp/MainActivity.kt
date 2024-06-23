@@ -26,6 +26,7 @@ import com.umang.reminderapp.screens.login.LogInScreen
 import com.umang.reminderapp.screens.login.SignUpScreen
 import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.AllRemindersPage
+import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.ui.components.AlarmPage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
@@ -94,7 +95,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // All Reminders
+                        // Reminders
                         composable(route = BottomBarNavigationItem.AllReminders.navRoute){
                             AllRemindersPage(
                                 todoViewModel = todoViewModel,
@@ -102,6 +103,11 @@ class MainActivity : ComponentActivity() {
                                 scheduler = scheduler,
                                 authViewModel = authViewModel
                             )
+                        }
+
+                        // Subscriptions
+                        composable(route = BottomBarNavigationItem.Subscriptions.navRoute){
+                            AllSubscriptionsPage(Modifier, navController)
                         }
 
                         // Profile

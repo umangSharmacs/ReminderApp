@@ -79,7 +79,7 @@ object TodoManager {
                 .document(todoItem.id.toString())
                 .set(todoItem)
                 .addOnSuccessListener {
-                    Log.d("TAG", "DocumentSnapshot successfully written!")
+                    Log.d("Reminder", "DocumentSnapshot successfully written!")
             }
         }
         return todoItem

@@ -52,15 +52,12 @@ class TodoViewModel: ViewModel() {
             priority = priority
         )
         this.viewModelScope.launch { getAllToDo() }
-        Log.d("TodoManager", "addTodoItem: ${todoList.value.toString()}")
         return todoItem
     }
 
     fun deleteTodoItem(id: Int){
         TodoManager.deleteTodoItem(id = id)
         this.viewModelScope.launch { getAllToDo() }
-        Log.d("TodoManager", "deleteTodoItem: ${todoList.value.toString()}")
-
     }
 
     fun updateTodoItem(
@@ -82,10 +79,7 @@ class TodoViewModel: ViewModel() {
             toUpdateTodoItemID = toUpdateTodoItemID
         )
         this.viewModelScope.launch { getAllToDo() }
-        Log.d("TodoManager", "updateTodoItem: ${todoList.value.toString()}")
-
         return updatedItem
-
     }
 
 }

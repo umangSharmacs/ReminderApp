@@ -33,6 +33,7 @@ fun BottomBarScaffold(modifier: Modifier = Modifier,
     val bottomBarNavigationItems = listOf(
         BottomBarNavigationItem.Home,
         BottomBarNavigationItem.AllReminders,
+        BottomBarNavigationItem.Subscriptions,
         BottomBarNavigationItem.Profile
     )
 
