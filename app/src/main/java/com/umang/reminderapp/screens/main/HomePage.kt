@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -32,6 +34,7 @@ import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.singletons.TagManager
 import com.umang.reminderapp.ui.components.BottomBarScaffold
+import com.umang.reminderapp.ui.components.CustomFloatingActionButton
 import com.umang.reminderapp.ui.components.FloatingActionButton
 import com.umang.reminderapp.ui.components.MinimalToDoList
 import com.umang.reminderapp.ui.components.TagGrid
@@ -59,7 +62,18 @@ fun HomePage(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("AdderScreen") })
+//            FloatingActionButton(onClick = { navController.navigate("AdderScreen") } )
+            CustomFloatingActionButton(
+                expandable = true,
+                onFabClick = { /*TODO*/ },
+                fabIcon = Icons.Filled.Add,
+                onSubscriptionClick = { navController.navigate("SubscriptionAdderScreen") },
+                onTagClick = { },
+                onMedicineClick = { },
+                onReminderClick = {navController.navigate("AdderScreen")}
+
+
+            )
         },
         bottomBar = {
             BottomBarScaffold(

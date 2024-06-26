@@ -39,12 +39,12 @@ fun subscriptionCard(modifier: Modifier = Modifier, subscriptionItem: Subscripti
 
 }
 
-@Preview
-@Composable
-fun subscriptionCardPreview() {
-
-    ReminderAppTheme {
-        subscriptionCard(subscriptionItem = SubscriptionItem(System.currentTimeMillis().toInt()))
-    }
-
-}
+//@Preview
+//@Composable
+//fun subscriptionCardPreview() {
+//
+//    ReminderAppTheme {
+//        subscriptionCard(subscriptionItem = SubscriptionItem(System.currentTimeMillis().toInt()))
+//    }
+//
+//}

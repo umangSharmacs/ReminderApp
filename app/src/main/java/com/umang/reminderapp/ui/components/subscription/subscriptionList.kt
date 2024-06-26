@@ -55,11 +55,11 @@ fun SubscriptionList(
 fun SubscriptionListPreview() {
 
     val itemList = listOf(
-        SubscriptionItem(System.currentTimeMillis().toInt()),
-        SubscriptionItem(System.currentTimeMillis().toInt()),
-        SubscriptionItem(System.currentTimeMillis().toInt()),
-        SubscriptionItem(System.currentTimeMillis().toInt()),
-        SubscriptionItem(System.currentTimeMillis().toInt())
+        SubscriptionItem(),
+        SubscriptionItem(),
+        SubscriptionItem(),
+        SubscriptionItem(),
+        SubscriptionItem()
     )
     ReminderAppTheme {
         SubscriptionList(

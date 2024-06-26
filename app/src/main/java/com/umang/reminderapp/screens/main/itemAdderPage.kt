@@ -103,28 +103,6 @@ fun AdderScreenContent(
     paddingValues: PaddingValues = PaddingValues(0.dp,0.dp)
 ) {
 
-    Log.d("EditorPage","Recomposed")
-
-//    var optionalTitle: String = ""
-//    var optionalDescription: String = ""
-//    var optionalPriority: Int = 3
-//    var optionalDueDate: LocalDateTime? = null
-//    var optionalReminders: List<LocalDateTime> = emptyList()
-//    var optionalTags: List<String> = emptyList()
-//    if(editMode && optionalID != null) {
-//
-//        val todoItem = optionalID.let { todoViewModel.getToDoItem(it) }
-//        todoItem?.let {
-//            optionalTitle = it.title
-//            optionalDescription = it.description
-//            optionalPriority = it.priority
-//            optionalDueDate = LocalDateTime.parse(it.dueDate)
-//            optionalReminders = it.reminders.map{ reminder -> LocalDateTime.parse(reminder) }
-//            optionalTags = it.tags
-//        }
-//    }
-
-
     // Check Notifications Permission
     var hasNotificationPermission = false
     val permissionLauncher = rememberLauncherForActivityResult(

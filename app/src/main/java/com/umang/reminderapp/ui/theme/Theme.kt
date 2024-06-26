@@ -67,8 +67,8 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Color(0xFFe0523e),
     onTertiary = Color(0xFFfbebe9),
 
-    tertiaryContainer = Color(0xFFea887b),
-    onTertiaryContainer = Color(0xFFfcebe9),
+    tertiaryContainer = Color(0xFFf8d7d3),
+    onTertiaryContainer = Color(0xFF58170e),
 
     error = red40,
     onError = red10,

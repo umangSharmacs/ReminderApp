@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
@@ -28,6 +30,7 @@ import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.AllRemindersPage
 import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
+import com.umang.reminderapp.screens.main.SubscriptionAdder
 import com.umang.reminderapp.ui.components.AlarmPage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import kotlinx.coroutines.launch
@@ -159,6 +162,14 @@ class MainActivity : ComponentActivity() {
                                     editMode = true
                                 )
                             }
+                        }
+
+                        // Subscription Adder Screen
+                        composable(route = "SubscriptionAdderScreen"){
+                            SubscriptionAdder(
+                                paddingValues = PaddingValues(0.dp),
+                                tagViewModel = tagViewModel
+                            )
                         }
                     }
                 }
