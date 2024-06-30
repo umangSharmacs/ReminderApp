@@ -47,7 +47,8 @@ object SubscriptionManager {
         startDate: String,
         endDate: String,
         tags: List<String>,
-        billingPeriod: BillingPeriod
+        billingPeriod: BillingPeriod,
+        cost: Double
     ): SubscriptionItem {
 
         val subscriptionItem = SubscriptionItem(
@@ -58,7 +59,8 @@ object SubscriptionManager {
             endDate = endDate,
             isActive = true,
             tags = tags,
-            billingPeriod = billingPeriod
+            billingPeriod = billingPeriod,
+            cost = cost
         )
 
         Firebase.firestore
@@ -78,6 +80,7 @@ object SubscriptionManager {
         updatedEndDate: String,
         updatedTags: List<String>,
         updatedBillingPeriod: BillingPeriod,
+        updatedCost: Double,
         toUpdateID: Int
     ): SubscriptionItem? {
 
@@ -90,6 +93,7 @@ object SubscriptionManager {
             toUpdateSubscriptionItem.endDate = updatedEndDate
             toUpdateSubscriptionItem.tags = updatedTags
             toUpdateSubscriptionItem.billingPeriod = updatedBillingPeriod
+            toUpdateSubscriptionItem.cost = updatedCost
 
             Firebase.firestore.collection("subscriptions_"+Firebase.auth.currentUser!!.uid)
                 .document(toUpdateID.toString()).set(toUpdateSubscriptionItem)

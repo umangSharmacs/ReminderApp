@@ -1,5 +1,6 @@
 package com.umang.reminderapp.ui.components.subscription
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -14,9 +15,18 @@ import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 
 @Composable
-fun subscriptionCard(modifier: Modifier = Modifier, subscriptionItem: SubscriptionItem) {
+fun subscriptionCard(
+    modifier: Modifier = Modifier,
+    subscriptionItem: SubscriptionItem,
+    onClick: () -> Unit
+) {
 
-    Card(modifier = Modifier.fillMaxWidth().padding(10.dp)){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        onClick = { onClick() }
+    ){
 
         Text(
             text = subscriptionItem.subscriptionName,

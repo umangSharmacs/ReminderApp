@@ -20,6 +20,7 @@ import com.google.firebase.FirebaseApp
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.BottomBarNavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
+import com.umang.reminderapp.data.models.SubscriptionViewModel
 import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.screens.Placeholder.ComingSoon
@@ -31,6 +32,7 @@ import com.umang.reminderapp.screens.main.AllRemindersPage
 import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.screens.main.SubscriptionAdder
+import com.umang.reminderapp.screens.main.SubscriptionAdderScreen
 import com.umang.reminderapp.ui.components.AlarmPage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import kotlinx.coroutines.launch
@@ -41,10 +43,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        var startDestination = "SignUpLanding"
+        var startDestination: String
 
         // Start todoViewModel
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
+        // Start SubscriptionViewModel
+        val subscriptionViewModel = ViewModelProvider(this)[SubscriptionViewModel::class.java]
 
         val tagViewModel = ViewModelProvider(this)[TagViewModel::class.java]
 
@@ -110,7 +114,7 @@ class MainActivity : ComponentActivity() {
 
                         // Subscriptions
                         composable(route = BottomBarNavigationItem.Subscriptions.navRoute){
-                            AllSubscriptionsPage(Modifier, navController)
+                            AllSubscriptionsPage(Modifier, navController, subscriptionViewModel)
                         }
 
                         // Profile
@@ -166,11 +170,36 @@ class MainActivity : ComponentActivity() {
 
                         // Subscription Adder Screen
                         composable(route = "SubscriptionAdderScreen"){
-                            SubscriptionAdder(
-                                paddingValues = PaddingValues(0.dp),
-                                tagViewModel = tagViewModel
+                            SubscriptionAdderScreen(
+                                navController = navController,
+                                subscriptionViewModel = subscriptionViewModel,
+                                tagViewModel = tagViewModel,
+                                scheduler = scheduler,
+                                editMode = false
                             )
                         }
+
+                        // Subscription Editor Screen
+                        composable(
+                            route = "SubscriptionEditorScreen?id={id}",
+                            arguments = listOf(
+                                navArgument("id"){
+                                    type = NavType.IntType}
+                            )
+                        ){
+                            val id = it.arguments?.getInt("id")
+                            if(id!=null){
+                                SubscriptionAdderScreen(
+                                    navController = navController,
+                                    subscriptionViewModel = subscriptionViewModel,
+                                    tagViewModel = tagViewModel,
+                                    scheduler = scheduler,
+                                    optionalID = id,
+                                    editMode = true
+                                )
+                            }
+                        }
+
                     }
                 }
             }

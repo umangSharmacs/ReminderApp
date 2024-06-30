@@ -26,6 +26,16 @@ class AlarmReceiver: BroadcastReceiver() {
         notificationManager?.notify(1, notification)
     }
 
+    private fun showSubscriptionNotification(context: Context?, message: String) {
+        val notification = context?.let {
+            NotificationCompat.Builder(it,"Subscription Notifications")
+                .setContentText(message)
+                .setContentTitle("Memento")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .build()
+        }
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
 
         Log.d("Alarm Receiver","Alarm Received")
@@ -33,15 +43,26 @@ class AlarmReceiver: BroadcastReceiver() {
         // Check if User has notification Permission
         val hasNotificationPermission = context?.let { NotificationManagerCompat.from(it).areNotificationsEnabled() }
 
-        val message = intent?.getStringExtra("EXTRA_MESSAGE") ?: return
-        val dueDate = intent.getStringExtra("EXTRA_DUEDATE") ?: return
-        println("ALARM TRIGGERED: $message")
+        val action = intent?.action
 
-        if(hasNotificationPermission == true){
-            showNotification(context, message, dueDate)
-        } else {
-            println("No Notification")
+        when(action){
+            "TodoItem" -> {
+                val message = intent.getStringExtra("EXTRA_MESSAGE") ?: return
+                val dueDate = intent.getStringExtra("EXTRA_DUEDATE") ?: return
+                if(hasNotificationPermission == true){
+                    showNotification(context, message, dueDate)
+                } else {
+                    println("No Notification")
+                }
+            }
+            "SubscriptionItem" -> {
+                val message = intent.getStringExtra("EXTRA_MESSAGE") ?: return
+                if(hasNotificationPermission == true){
+                    showSubscriptionNotification(context , message)
+                } else {
+                    println("No Notification")
+                }
+            }
         }
     }
-
 }

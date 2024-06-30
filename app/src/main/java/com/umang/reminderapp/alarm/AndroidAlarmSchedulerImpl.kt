@@ -6,7 +6,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.umang.reminderapp.data.classes.SubscriptionItem
 import com.umang.reminderapp.data.classes.TodoItem
+import com.umang.reminderapp.util.getAlarms
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -26,6 +29,7 @@ class AndroidAlarmSchedulerImpl(
             context,
             AlarmReceiver::class.java
         ).apply {
+            action = "TodoItem"
             putExtra("EXTRA_MESSAGE", item.title)
                 .putExtra("EXTRA_DUEDATE", item.dueDate)
         }
@@ -72,8 +76,65 @@ class AndroidAlarmSchedulerImpl(
         }
     }
 
-    override fun cancelAlarm(item: TodoItem, hashcode: Int) {
+    override fun scheduleSubscriptionAlarm(
+        subscriptionItem: SubscriptionItem,
+        alarmsList: List<LocalDate>
+    ) {
+        val intent = Intent(
+            context,
+            AlarmReceiver::class.java
+        ).apply {
+            action = "SubscriptionItem"
+            putExtra("EXTRA_MESSAGE", subscriptionItem.subscriptionName)
+        }
 
+        for(alarm in alarmsList){
+            // If alarm before current time, do not set
+            if(alarm.isBefore( LocalDate.now() ) ){
+                continue
+            }
+            Log.d("Subscription Alarm", "Scheduling subscription alarm for ${subscriptionItem.subscriptionName} at ${alarm.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000}")
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                alarm.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                PendingIntent.getBroadcast(
+                    context,
+                    subscriptionItem.hashCode()+alarm.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        }
+
+    }
+
+    override fun cancelAllSubscriptionAlarms(
+        subscriptionItem: SubscriptionItem,
+        alarmsList: List<LocalDate>
+    ) {
+        val intent = Intent(
+            context,
+            AlarmReceiver::class.java
+        ).apply {
+            action = "SubscriptionItem"
+            putExtra("EXTRA_MESSAGE", subscriptionItem.subscriptionName)
+        }
+
+        for(alarm in alarmsList){
+
+            Log.d("Subscription Alarm", "Scheduling subscription alarm for ${subscriptionItem.subscriptionName} at ${alarm.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000}")
+            alarmManager.cancel(
+                PendingIntent.getBroadcast(
+                    context,
+                    subscriptionItem.hashCode()+alarm.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        }
+    }
+
+    override fun cancelAlarm(item: TodoItem, hashcode: Int) {
 
         alarmManager.cancel(
             PendingIntent.getBroadcast(

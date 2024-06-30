@@ -38,7 +38,8 @@ class SubscriptionViewModel: ViewModel() {
         startDate: String,
         endDate: String,
         tags: List<String>,
-        billingPeriod: BillingPeriod
+        billingPeriod: BillingPeriod,
+        cost: Double
     ): SubscriptionItem {
         val subscriptionItem = SubscriptionManager.addSubscriptionItem(
             subscriptionName,
@@ -46,7 +47,8 @@ class SubscriptionViewModel: ViewModel() {
             startDate,
             endDate,
             tags,
-            billingPeriod
+            billingPeriod,
+            cost
         )
         this.viewModelScope.launch { getAllSubscriptions() }
         return subscriptionItem
@@ -59,6 +61,7 @@ class SubscriptionViewModel: ViewModel() {
         updatedEndDate: String,
         updatedTags: List<String>,
         updatedBillingPeriod: BillingPeriod,
+        updatedCost: Double,
         toUpdateID: Int
     ): SubscriptionItem? {
 
@@ -69,6 +72,7 @@ class SubscriptionViewModel: ViewModel() {
             updatedEndDate,
             updatedTags,
             updatedBillingPeriod,
+            updatedCost,
             toUpdateID
         )
         this.viewModelScope.launch { getAllSubscriptions() }

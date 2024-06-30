@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,8 +38,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,22 +51,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
+import com.umang.reminderapp.data.classes.BillingPeriod
+import com.umang.reminderapp.data.models.SubscriptionViewModel
 import com.umang.reminderapp.data.models.TagViewModel
-import com.umang.reminderapp.ui.components.TagDialog
+import com.umang.reminderapp.ui.components.DurationUnitBox
+import com.umang.reminderapp.ui.components.tags.TagDialog
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
-import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.util.daysToYMWD
+import com.umang.reminderapp.util.getAlarms
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Date
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,9 +83,16 @@ import kotlin.time.Duration.Companion.days
 fun SubscriptionAdder(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
+    navController: NavHostController,
+    scheduler: AndroidAlarmSchedulerImpl,
+    subscriptionViewModel: SubscriptionViewModel,
     tagViewModel: TagViewModel,
+    optionalID: Int?,
     optionalName: String = "",
-    optionalStartDate: LocalDate = LocalDate.now(),
+    optionalCost: Double?,
+    optionalStartDate: LocalDate? = null,
+    optionalEndDate: LocalDate?= null,
+    optionalBillingPeriod: BillingPeriod?,
     optionalTags: List<String> = emptyList(),
     editMode: Boolean = false,
 ) {
@@ -86,6 +103,16 @@ fun SubscriptionAdder(
 
     // Name
     var NameInputText by remember { mutableStateOf(optionalName) }
+
+    // Cost
+
+    var selectedCost by remember { mutableDoubleStateOf(0.0) }
+
+    if(editMode){
+        if (optionalCost != null) {
+            selectedCost = optionalCost
+        }
+    }
 
     // Start Date picker
     var showStartDatePicker by remember {
@@ -99,17 +126,45 @@ fun SubscriptionAdder(
     var startDateState = rememberDatePickerState(
         initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
+
     var startDateSelectedCounter by remember {
         mutableStateOf(0)
     }
 
-    // Duration
-    var selectedDuration by remember {
-        mutableStateOf(Duration.ZERO)
+    if(editMode){
+        startDateSelectedCounter = 1
     }
-    var numDuration by remember { mutableStateOf(1) }
-    var DurationUnit by remember { mutableStateOf("") }
 
+    // End date
+    var selectedEndDate by remember {
+        mutableStateOf(optionalEndDate)
+    }
+    // Duration
+
+    var durationYears by remember { mutableStateOf(0) }
+    var durationMonths by remember { mutableStateOf(0) }
+    var durationWeeks by remember { mutableStateOf(0) }
+    var durationDays by remember { mutableStateOf(0) }
+
+    var editDurationCalculation by remember {
+        mutableStateOf(true)
+    }
+
+    if(editMode && selectedStartDate!=null && selectedEndDate!=null && editDurationCalculation){
+
+        Log.d("StartDate",selectedStartDate.toString())
+        Log.d("EndDate",selectedEndDate.toString())
+        val durationInYMWD = daysToYMWD(selectedStartDate!!, selectedEndDate!!)
+
+        durationYears = durationInYMWD[0].toInt()
+        durationWeeks = durationInYMWD[1].toInt()
+        durationDays = durationInYMWD[2].toInt()
+
+        editDurationCalculation = false
+
+        Log.d("Duration", "$durationYears $durationMonths $durationWeeks $durationDays")
+
+    }
 
     // Tags variables
     LaunchedEffect(Unit) {
@@ -133,8 +188,14 @@ fun SubscriptionAdder(
         }
     }
 
+    // Billing Period
 
-        // UI
+    var selectedBillingPeriod by remember {
+        mutableStateOf(BillingPeriod.MONTHLY)
+    }
+
+
+    // UI
 
     Surface(
         modifier = Modifier
@@ -174,6 +235,25 @@ fun SubscriptionAdder(
                 thickness = 2.dp,
                 color = Color.Gray
             )
+            // Cost
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(start = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                // TODO FIX COST
+                Text(text = "Cost", modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(5.dp),
+                    value = selectedCost.toString(),
+                    onValueChange = { selectedCost = it.toDouble() },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+            }
+
             // Start Date
             Row(
                 modifier = Modifier
@@ -192,113 +272,70 @@ fun SubscriptionAdder(
                     ),
                     modifier = Modifier.weight(2f)
                 ) {
-                    Text(
-                        text = if (startDateSelectedCounter == 0) "Enter a Date"
-                        else {
-                            val formattedString = selectedStartDate.format(dateFormatter)
-                            formattedString
-                        },
-                    )
-                }
-            }
-
-            // Duration
-            Row(
-                modifier = Modifier
-//                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(text = "Duration", modifier = Modifier.weight(1f))
-                Row(
-                    modifier = Modifier.weight(2f),
-                    horizontalArrangement = Arrangement.End
-                ){
-                    OutlinedTextField(
-                        modifier = Modifier.width(50.dp),
-                        value = numDuration.toString(),
-                        onValueChange = {
-                            if(it!="") {
-                                numDuration = it.toInt()
-                            } else {
-                                // TODO Toast that duration cannot be less than 1.
-                                numDuration = 1
-                            }
-                            Log.d("Subscription Adder", "numDuration: $numDuration")
-                        }
-                    )
-                    var expandedDropdown by remember { mutableStateOf(false) }
-                    var selectedText by remember { mutableStateOf("Duration") }
-
-                    ExposedDropdownMenuBox(
-                        modifier = Modifier
-                            .weight(2f),
-                        expanded = expandedDropdown,
-                        onExpandedChange = {expandedDropdown = !expandedDropdown}
-                    ) {
-                        TextField(
-                            value = selectedText,
-                            onValueChange = {},
-                            readOnly = true,
-                            modifier = Modifier
-                                .menuAnchor()
-                                .weight(2f),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            textStyle = TextStyle.Default.copy(
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                    (if (startDateSelectedCounter == 0) "Enter a Date"
+                    else {
+                        val formattedString = selectedStartDate?.format(dateFormatter)
+                        formattedString
+                    })?.let {
+                        Text(
+                            text = it,
                         )
-
-                        ExposedDropdownMenu(
-                            expanded = expandedDropdown,
-                            onDismissRequest = { expandedDropdown = !expandedDropdown}
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("Day"+if(numDuration>1) "s" else "") },
-                                onClick = {
-                                    selectedText="Day"+if(numDuration>1) "s" else ""
-                                    DurationUnit = "Days"
-                                    selectedDuration = numDuration.days
-                                    expandedDropdown = !expandedDropdown
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Week"+if(numDuration>1) "s" else "") },
-                                onClick = {
-                                    selectedText = "Week"+if(numDuration>1) "s" else ""
-                                    selectedDuration = (numDuration*7).days
-                                    expandedDropdown = !expandedDropdown
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Month"+if(numDuration>1) "s" else "") },
-                                onClick = {
-                                    selectedText = "Month"+if(numDuration>1) "s" else ""
-                                    DurationUnit = "Months"
-                                    selectedDuration = (numDuration*28).days
-                                    expandedDropdown = !expandedDropdown
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Year"+if(numDuration>1) "s" else "") },
-                                onClick = {
-                                    selectedText = "Year"+if(numDuration>1) "s" else ""
-                                    DurationUnit = "Years"
-                                    selectedDuration = (numDuration*365).days
-                                    expandedDropdown = !expandedDropdown
-                                }
-                            )
-                        }
                     }
                 }
             }
+
+
+
+            // Duration
+            Column(modifier = Modifier.padding(12.dp)){
+                Text("Enter a Duration")
+                Row(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ){
+//                Text(text = "Duration", modifier = Modifier.weight(1f))
+                    DurationUnitBox(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .weight(1f),
+                        unit = "Years",
+                        initialValue = durationYears.toString()
+                    ) {
+                        durationYears = if (it!="") it.toInt() else 0
+                    }
+                    DurationUnitBox(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .weight(1f),
+                        unit = "Months",
+                        initialValue = durationMonths.toString()
+                    ) {
+                        durationMonths = if (it!="") it.toInt() else 0
+                    }
+                    DurationUnitBox(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .weight(1f),
+                        unit = "Weeks",
+                        initialValue = durationWeeks.toString()
+                    ) {
+                        durationWeeks = if (it!="") it.toInt() else 0
+                    }
+                    DurationUnitBox(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .weight(1f),
+                        unit = "Days",
+                        initialValue = durationDays.toString()
+                    ) {
+                        durationDays = if (it!="") it.toInt() else 0
+                    }
+                }
+            }
+
 
             // End Date
 
@@ -308,9 +345,15 @@ fun SubscriptionAdder(
                     .padding(start = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Text("End Date", modifier = Modifier.weight(1f))
-                Text(selectedStartDate.plusDays(selectedDuration.inWholeDays).toString(), modifier = Modifier.weight(2f), textAlign = TextAlign.Center)
+                Text("Subscription End Date ", modifier = Modifier.weight(1f))
+                selectedEndDate = selectedStartDate
+                    ?.plusYears(durationYears.toLong())
+                    ?.plusMonths(durationMonths.toLong())
+                    ?.plusWeeks(durationWeeks.toLong())
+                    ?.plusDays(durationDays.toLong())
+                    ?.plusDays(durationDays.toLong())
 
+                selectedEndDate?.let { Text(it.format(dateFormatter), modifier = Modifier.weight(2f), textAlign = TextAlign.Center) }
             }
 
             // Tags
@@ -395,7 +438,6 @@ fun SubscriptionAdder(
 
             // Billing Period
 
-            // Start Date
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -406,6 +448,17 @@ fun SubscriptionAdder(
 
                 var expandedBillingDropdown by remember { mutableStateOf(false) }
                 var selectedBillingText by remember { mutableStateOf("Select a Period") }
+                var userInteractedBilling by remember { mutableStateOf(false) }
+                if(editMode and !userInteractedBilling){
+                    selectedBillingText = when(optionalBillingPeriod){
+                        BillingPeriod.DAILY -> "Daily"
+                        BillingPeriod.WEEKLY -> "Weekly"
+                        BillingPeriod.MONTHLY -> "Monthly"
+                        BillingPeriod.YEARLY -> "Yearly"
+                        else -> "Select a Period"
+                    }
+                    userInteractedBilling = true
+                }
 
                 ExposedDropdownMenuBox(
                     modifier = Modifier
@@ -441,6 +494,7 @@ fun SubscriptionAdder(
                             text = { Text("Daily" ) },
                             onClick = {
                                 selectedBillingText = "Daily"
+                                selectedBillingPeriod = BillingPeriod.DAILY
                                 expandedBillingDropdown = !expandedBillingDropdown
                             }
                         )
@@ -448,6 +502,7 @@ fun SubscriptionAdder(
                             text = { Text("Weekly") },
                             onClick = {
                                 selectedBillingText = "Weekly"
+                                selectedBillingPeriod = BillingPeriod.WEEKLY
                                 expandedBillingDropdown = !expandedBillingDropdown
                             }
                         )
@@ -455,6 +510,7 @@ fun SubscriptionAdder(
                             text = { Text("Monthly") },
                             onClick = {
                                 selectedBillingText = "Monthly"
+                                selectedBillingPeriod = BillingPeriod.MONTHLY
                                 expandedBillingDropdown = !expandedBillingDropdown
                             }
                         )
@@ -462,6 +518,7 @@ fun SubscriptionAdder(
                             text = { Text("Yearly") },
                             onClick = {
                                 selectedBillingText = "Yearly"
+                                selectedBillingPeriod = BillingPeriod.YEARLY
                                 expandedBillingDropdown = !expandedBillingDropdown
                             }
                         )
@@ -501,23 +558,23 @@ fun SubscriptionAdder(
                                 ).show()
                             } else {
 
-//                                val todoItem = todoViewModel.addTodoItem(
-//                                    title = titleInputText,
-//                                    description = descriptionInputText,
-//                                    dueDate = selectedDateTime.toString(),
-//                                    reminders = remindersList.map{it.toString()},
-//                                    tags = selectedTagsList,
-//                                    priority = selectedPriority
-//                                )
-//                                println(todoItem)
-//                                // Add alarms for the reminders
-//                                todoItem.let(scheduler::scheduleAlarm)
-//                                Log.d("AdderPage","ScheduleAlarm called")
-////                            todoItem.let(scheduler::scheduleAlarm)
-//
-//                                navController.popBackStack()
-                            }
+                                val selectedDuration =  ChronoUnit.DAYS.between(selectedEndDate,selectedStartDate).toDuration(DurationUnit.DAYS)
 
+                                val subscriptionItem = subscriptionViewModel.addSubscriptionItem(
+                                    subscriptionName = NameInputText,
+                                    duration = selectedDuration.toString(),
+                                    startDate = selectedStartDate.toString(),
+                                    endDate = selectedEndDate.toString(),
+                                    tags = selectedTagsList,
+                                    billingPeriod = selectedBillingPeriod,
+                                    cost = selectedCost
+                                )
+
+                                // Get all the alarms that need to be set
+                                val alarmsList = getAlarms(selectedStartDate!!, selectedEndDate!!, selectedBillingPeriod)
+                                scheduler.scheduleSubscriptionAlarm(subscriptionItem, alarmsList)
+                                navController.popBackStack()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -527,10 +584,7 @@ fun SubscriptionAdder(
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     ) {
-                        Text(
-                            text = "Add",
-                        )
-
+                        Text(text = "Add")
                     }
                 } else{
                     ElevatedButton(
@@ -549,32 +603,35 @@ fun SubscriptionAdder(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                // Edit TodoItem
 
                                 // Cancel all Current alarms for this item
-//                                if (optionalID != null) {
-//                                    todoViewModel.getToDoItem(optionalID)
-//                                        ?.let { scheduler.cancelAllAlarms(it) }
-//                                }
-//
-//                                val updatedTodoItem = optionalID?.let {
-//                                    todoViewModel.updateTodoItem(
-//                                        updatedTodoTitle = titleInputText,
-//                                        updatedTodoDescription = descriptionInputText,
-//                                        updatedTodoDueDate = selectedDateTime.toString(),
-//                                        updatedReminders = remindersList.map{it.toString()},
-//                                        updatedTodoTags = selectedTagsList,
-//                                        updatedPriority = selectedPriority,
-//                                        toUpdateTodoItemID = it
-//                                    )
-//                                }
+                                val oldAlarmsList = getAlarms(optionalStartDate!!, optionalEndDate!!, optionalBillingPeriod!!)
+
+                                if ( optionalID != null) {
+                                    subscriptionViewModel.getSubscriptionItem(optionalID)
+                                        ?.let { scheduler.cancelAllSubscriptionAlarms(it, oldAlarmsList) }
+                                }
+
+                                val selectedDuration =  ChronoUnit.DAYS.between(selectedEndDate,selectedStartDate).toDuration(DurationUnit.DAYS)
+
+                                val updatedSubscriptionItem = optionalID?.let {
+                                    subscriptionViewModel.updateSubscriptionItem(
+                                        updatedSubscriptionName = NameInputText,
+                                        updatedDuration = selectedDuration.toString(),
+                                        updatedStartDate = selectedStartDate.toString(),
+                                        updatedEndDate = selectedEndDate.toString(),
+                                        updatedTags = selectedTagsList,
+                                        updatedBillingPeriod = selectedBillingPeriod,
+                                        updatedCost = selectedCost,
+                                        toUpdateID = optionalID
+                                    )
+                                }
 ////                                // Set alarms for the reminders again
-//
-//                                if (updatedTodoItem != null) {
-//                                    scheduler.scheduleAlarm(updatedTodoItem)
-//                                }
-//                                Log.d("EditorPage","ScheduleAlarm called")
-//                                navController.popBackStack()
+                                val newAlarmsList = getAlarms(selectedStartDate!!, selectedEndDate!!, selectedBillingPeriod!!)
+                                if (updatedSubscriptionItem != null) {
+                                    scheduler.scheduleSubscriptionAlarm(updatedSubscriptionItem, newAlarmsList)
+                                }
+                                navController.popBackStack()
                             }
                         },
                         modifier = Modifier
@@ -649,13 +706,36 @@ fun SubscriptionAdder(
 @Composable
 fun SubscriptionAdderScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    subscriptionViewModel: SubscriptionViewModel,
+    tagViewModel: TagViewModel,
+    scheduler: AndroidAlarmSchedulerImpl,
+    optionalID: Int? = null,
+    editMode: Boolean
 ) {
+
+    var optionalName = ""
+    var optionalCost = 0.0
+    var optionalStartDate = LocalDate.now()
+    var optionalEndDate = LocalDate.now()
+    var optionalTags = emptyList<String>()
+    var optionalBillingPeriod = BillingPeriod.MONTHLY
+
+    if (editMode && optionalID != null){
+        val editSubscriptionItem = subscriptionViewModel.getSubscriptionItem(optionalID)
+        optionalName = editSubscriptionItem?.subscriptionName.toString()
+        optionalCost = editSubscriptionItem?.cost!!
+        optionalStartDate = LocalDate.parse(editSubscriptionItem.startDate)
+        optionalEndDate = LocalDate.parse(editSubscriptionItem.endDate)
+        optionalTags = editSubscriptionItem.tags!!
+        optionalBillingPeriod = editSubscriptionItem.billingPeriod
+    }
+
 
     Scaffold(
         topBar = @Composable {
             TopAppBarScaffold(
-                header = "Add a Subscription",
+                header = if(!editMode) "Add a Subscription" else "Edit your Subscription",
                 navigateBack = {navController.popBackStack()}
             )
 
@@ -664,16 +744,18 @@ fun SubscriptionAdderScreen(
         SubscriptionAdder(
             modifier = modifier,
             paddingValues = paddingValues,
-            TagViewModel()
+            navController = navController,
+            scheduler = scheduler,
+            subscriptionViewModel = subscriptionViewModel,
+            tagViewModel = tagViewModel,
+            optionalID = optionalID,
+            optionalName = optionalName,
+            optionalCost = optionalCost,
+            optionalStartDate = optionalStartDate,
+            optionalEndDate = optionalEndDate,
+            optionalTags = optionalTags,
+            optionalBillingPeriod = optionalBillingPeriod,
+            editMode = editMode
         )
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewSubscriptionAdder() {
-
-    ReminderAppTheme {
-        SubscriptionAdderScreen(Modifier,NavHostController(context = LocalContext.current))
     }
 }

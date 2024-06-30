@@ -10,7 +10,8 @@ data class SubscriptionItem(
     var endDate: String,
     val isActive: Boolean,
     var tags: List<String>,
-    var billingPeriod: BillingPeriod
+    var billingPeriod: BillingPeriod,
+    var cost: Double
 ){
     constructor(): this(
         id = 0,
@@ -20,7 +21,8 @@ data class SubscriptionItem(
         endDate = "",
         isActive = true,
         tags = emptyList(),
-        billingPeriod = BillingPeriod.MONTHLY
+        billingPeriod = BillingPeriod.MONTHLY,
+        cost = 0.0
     )
 }
 

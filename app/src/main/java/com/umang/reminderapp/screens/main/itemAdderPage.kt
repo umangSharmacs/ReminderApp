@@ -46,7 +46,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -67,7 +66,7 @@ import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.ui.components.TagDialog
+import com.umang.reminderapp.ui.components.tags.TagDialog
 import com.umang.reminderapp.ui.components.TimePickerDialog
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 //import com.vanpra.composematerialdialogs.MaterialDialog
