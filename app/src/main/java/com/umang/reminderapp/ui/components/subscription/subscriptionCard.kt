@@ -81,7 +81,7 @@ fun subscriptionCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(
-                    text = "INR ${subscriptionItem.cost}",
+                    text = "₹ ${subscriptionItem.cost}",
                     style = MaterialTheme.typography.titleLarge
                 )
             }
