@@ -1,6 +1,8 @@
 package com.umang.reminderapp.util
 
+import android.util.Log
 import com.umang.reminderapp.data.classes.BillingPeriod
+import com.umang.reminderapp.data.classes.SubscriptionItem
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -30,6 +32,27 @@ fun getAlarms(startDate: LocalDate, endDate: LocalDate, billingPeriod: BillingPe
         alarmsList.add(tempDate)
     }
 
+
+
     return alarmsList
+
+}
+
+
+fun getNextBillingAlarmInDays(subscriptionItem: SubscriptionItem): Int {
+    val alarmsList = getAlarms(
+        LocalDate.parse(subscriptionItem.startDate),
+        LocalDate.parse(subscriptionItem.endDate),
+        subscriptionItem.billingPeriod
+    )
+
+    Log.d("Alarms List", alarmsList.toString())
+
+    val nearestDate = alarmsList.filter {
+        it.isAfter(LocalDate.now())
+    }.minByOrNull { ChronoUnit.DAYS.between(LocalDate.now(), it) }
+
+    return ChronoUnit.DAYS.between(LocalDate.now(), nearestDate).toInt()
+
 
 }
