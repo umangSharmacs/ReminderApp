@@ -106,7 +106,7 @@ fun SubscriptionAdder(
 
     // Cost
 
-    var selectedCost by remember { mutableDoubleStateOf(0.0) }
+    var selectedCost by remember { mutableStateOf<Double?>(null) }
 
     if(editMode){
         if (optionalCost != null) {
@@ -236,20 +236,34 @@ fun SubscriptionAdder(
                 color = Color.Gray
             )
             // Cost
+
+            var UICost by remember { mutableStateOf("") }
+
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(start = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
-                // TODO FIX COST
                 Text(text = "Cost", modifier = Modifier.weight(1f))
                 OutlinedTextField(
+                    leadingIcon = { Text(text = "₹") },
                     modifier = Modifier
                         .weight(2f)
                         .padding(5.dp),
-                    value = selectedCost.toString(),
-                    onValueChange = { selectedCost = it.toDouble() },
+                    value = UICost,
+                    onValueChange = { it ->
+                        UICost = it
+                        if(UICost!=null && UICost!=""){
+                            selectedCost = UICost.toDouble()
+                        } },
+                    placeholder = {
+                                  if(editMode){
+                                      Text(selectedCost.toString())
+                                  }else{
+                                      Text("Enter a Cost")
+                                  }
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
@@ -560,19 +574,23 @@ fun SubscriptionAdder(
 
                                 val selectedDuration =  ChronoUnit.DAYS.between(selectedEndDate,selectedStartDate).toDuration(DurationUnit.DAYS)
 
-                                val subscriptionItem = subscriptionViewModel.addSubscriptionItem(
-                                    subscriptionName = NameInputText,
-                                    duration = selectedDuration.toString(),
-                                    startDate = selectedStartDate.toString(),
-                                    endDate = selectedEndDate.toString(),
-                                    tags = selectedTagsList,
-                                    billingPeriod = selectedBillingPeriod,
-                                    cost = selectedCost
-                                )
+                                val subscriptionItem = selectedCost?.let {
+                                    subscriptionViewModel.addSubscriptionItem(
+                                        subscriptionName = NameInputText,
+                                        duration = selectedDuration.toString(),
+                                        startDate = selectedStartDate.toString(),
+                                        endDate = selectedEndDate.toString(),
+                                        tags = selectedTagsList,
+                                        billingPeriod = selectedBillingPeriod,
+                                        cost = it
+                                    )
+                                }
 
                                 // Get all the alarms that need to be set
                                 val alarmsList = getAlarms(selectedStartDate!!, selectedEndDate!!, selectedBillingPeriod)
-                                scheduler.scheduleSubscriptionAlarm(subscriptionItem, alarmsList)
+                                if (subscriptionItem != null) {
+                                    scheduler.scheduleSubscriptionAlarm(subscriptionItem, alarmsList)
+                                }
                                 navController.popBackStack()
                             }
                         },
@@ -615,16 +633,18 @@ fun SubscriptionAdder(
                                 val selectedDuration =  ChronoUnit.DAYS.between(selectedEndDate,selectedStartDate).toDuration(DurationUnit.DAYS)
 
                                 val updatedSubscriptionItem = optionalID?.let {
-                                    subscriptionViewModel.updateSubscriptionItem(
-                                        updatedSubscriptionName = NameInputText,
-                                        updatedDuration = selectedDuration.toString(),
-                                        updatedStartDate = selectedStartDate.toString(),
-                                        updatedEndDate = selectedEndDate.toString(),
-                                        updatedTags = selectedTagsList,
-                                        updatedBillingPeriod = selectedBillingPeriod,
-                                        updatedCost = selectedCost,
-                                        toUpdateID = optionalID
-                                    )
+                                    selectedCost?.let { it1 ->
+                                        subscriptionViewModel.updateSubscriptionItem(
+                                            updatedSubscriptionName = NameInputText,
+                                            updatedDuration = selectedDuration.toString(),
+                                            updatedStartDate = selectedStartDate.toString(),
+                                            updatedEndDate = selectedEndDate.toString(),
+                                            updatedTags = selectedTagsList,
+                                            updatedBillingPeriod = selectedBillingPeriod,
+                                            updatedCost = it1,
+                                            toUpdateID = optionalID
+                                        )
+                                    }
                                 }
 ////                                // Set alarms for the reminders again
                                 val newAlarmsList = getAlarms(selectedStartDate!!, selectedEndDate!!, selectedBillingPeriod!!)
