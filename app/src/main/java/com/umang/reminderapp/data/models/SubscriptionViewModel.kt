@@ -83,4 +83,11 @@ class SubscriptionViewModel: ViewModel() {
         SubscriptionManager.deleteSubscriptionItem(id)
         this.viewModelScope.launch { getAllSubscriptions() }
     }
+
+    fun getSubscriptionsCost(calculationPeriod: BillingPeriod): Double {
+        this.viewModelScope.launch { getAllSubscriptions() }
+        return SubscriptionManager.getSubscriptionsCost(calculationPeriod)
+
+    }
+
 }

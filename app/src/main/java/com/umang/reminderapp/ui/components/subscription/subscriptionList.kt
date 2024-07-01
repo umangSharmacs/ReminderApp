@@ -7,15 +7,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.classes.SubscriptionItem
+import com.umang.reminderapp.data.models.SubscriptionViewModel
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 @Composable
@@ -23,15 +30,21 @@ fun SubscriptionList(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     navHost: NavHostController,
-    subscriptionItemList: List<SubscriptionItem>
+    subscriptionViewModel : SubscriptionViewModel
 ) {
 
+    val subscriptionItemList by subscriptionViewModel.subscriptionList.observeAsState()
 
     Column(modifier = modifier
         .fillMaxWidth()
-        .padding(top = paddingValues.calculateTopPadding()-15.dp, bottom = paddingValues.calculateBottomPadding()),
+        .padding(
+            top = paddingValues.calculateTopPadding(),
+            bottom = paddingValues.calculateBottomPadding()
+        ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        // Show subscriptions
         subscriptionItemList.let {
             LazyColumn(
                 modifier = Modifier
@@ -40,21 +53,23 @@ fun SubscriptionList(
                     .padding(start = 15.dp, end = 15.dp),
                 contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp)
             ) {
-                itemsIndexed(it) { index: Int, item: SubscriptionItem ->
 
-                    subscriptionCard(
-                        modifier = Modifier,
-                        subscriptionItem = item,
-                        onClick = {
-                            Log.d("Subscription Screen", "SubscriptionList: ${item.id}")
-                            navHost.navigate("SubscriptionEditorScreen?id=${item.id}") }
-                    )
+                if (it != null) {
+                    itemsIndexed(items = it.toList()) { index: Int, item: SubscriptionItem ->
+
+                        subscriptionCard(
+                            modifier = Modifier,
+                            subscriptionItem = item,
+                            onEdit = { navHost.navigate("SubscriptionEditorScreen?id=${item.id}") },
+                            onDelete = { subscriptionViewModel.deleteSubscriptionItem(item.id) }
+                        )
+                    }
                 }
             }
         }
 
-        if(subscriptionItemList.isEmpty()){
-            Text(text = "No items")
+        if(subscriptionItemList?.isEmpty() == true){
+            Text(text = "No subscriptions")
         }
     }
 }

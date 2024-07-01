@@ -33,7 +33,6 @@ import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.screens.main.SubscriptionAdder
 import com.umang.reminderapp.screens.main.SubscriptionAdderScreen
-import com.umang.reminderapp.ui.components.AlarmPage
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime

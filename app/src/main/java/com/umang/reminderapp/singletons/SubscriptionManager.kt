@@ -7,7 +7,11 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.umang.reminderapp.data.classes.BillingPeriod
 import com.umang.reminderapp.data.classes.SubscriptionItem
+import com.umang.reminderapp.util.getNextBillingAlarmInDays
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 import kotlin.coroutines.cancellation.CancellationException
 
 object SubscriptionManager {
@@ -109,4 +113,83 @@ object SubscriptionManager {
         Firebase.firestore.collection("subscriptions_"+Firebase.auth.currentUser!!.uid)
             .document(toDeleteID.toString()).delete()
     }
+
+    fun getSubscriptionsCost(calculationPeriod: BillingPeriod): Double {
+
+        var totalCost = 0.0
+
+        // Get all the subscriptions which are
+
+        for (subscription in subscriptionList){
+
+            if(!subscription.isActive){ continue }
+
+            // Get the nearest alarm
+            val nearestAlarm = LocalDate.now().plusDays(getNextBillingAlarmInDays(subscription).toLong())
+
+            when(calculationPeriod){
+                BillingPeriod.MONTHLY -> {
+                    if(nearestAlarm.month == LocalDate.now().month){
+                        totalCost += when(subscription.billingPeriod){
+                            BillingPeriod.WEEKLY -> {
+                                (subscription.cost * 4)
+                            }
+                            BillingPeriod.DAILY -> {
+                                (subscription.cost * 28)
+                            }
+                            else -> {
+                                subscription.cost
+                            }
+                        }
+                    }
+                }
+                BillingPeriod.YEARLY -> {
+                    if(nearestAlarm.year == LocalDate.now().year){
+                        totalCost += when(subscription.billingPeriod){
+                            BillingPeriod.MONTHLY -> {
+                                (subscription.cost * 12)
+                            }
+                            BillingPeriod.WEEKLY -> {
+                                (subscription.cost * 52)
+                            }
+                            BillingPeriod.DAILY -> {
+                                (subscription.cost * 365)
+                            }
+                            else -> {
+                                subscription.cost
+                            }
+                        }
+                    }
+                }
+                BillingPeriod.WEEKLY -> {
+
+                    val currentWeek = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+                    val currentYear = LocalDate.now().year
+
+                    val testWeek = nearestAlarm.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+                    val testYear = nearestAlarm.year
+
+                    if( currentWeek==testWeek && currentYear==testYear){
+                        totalCost += when(subscription.billingPeriod){
+                            BillingPeriod.DAILY -> {
+                                (subscription.cost * 7)
+                            }
+                            else -> { subscription.cost }
+                        }
+                    }
+                }
+
+                BillingPeriod.DAILY -> {
+                    if(nearestAlarm == LocalDate.now()){
+                        totalCost += subscription.cost
+                    }
+                }
+                else -> totalCost += 0.0
+            }
+        }
+
+        return totalCost
+    }
+
+
 }
