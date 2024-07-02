@@ -34,6 +34,7 @@ fun BottomBarScaffold(modifier: Modifier = Modifier,
         BottomBarNavigationItem.Home,
         BottomBarNavigationItem.AllReminders,
         BottomBarNavigationItem.Subscriptions,
+        BottomBarNavigationItem.Medicines,
         BottomBarNavigationItem.Profile
     )
 

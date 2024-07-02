@@ -32,6 +32,13 @@ sealed class BottomBarNavigationItem(
         navRoute = "Subscriptions"
     )
 
+    data object Medicines : BottomBarNavigationItem(
+        title = "Medicines",
+        selectedIcon = R.drawable.filled_medication,
+        unselectedIcon = R.drawable.filled_medication,
+        navRoute = "MedicinesScreen"
+    )
+
     data object Profile : BottomBarNavigationItem(
         title = "Profile",
         selectedIcon = R.drawable.user,

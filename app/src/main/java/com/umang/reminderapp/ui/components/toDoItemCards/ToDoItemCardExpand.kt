@@ -32,6 +32,7 @@ fun ToDoItemCardExpand(
 ) {
 
     Card(
+        modifier = modifier.padding(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,

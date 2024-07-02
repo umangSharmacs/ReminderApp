@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ import com.google.firebase.FirebaseApp
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.BottomBarNavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
+import com.umang.reminderapp.data.models.MedicineViewModel
 import com.umang.reminderapp.data.models.SubscriptionViewModel
 import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
@@ -31,6 +33,7 @@ import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.AllRemindersPage
 import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
+import com.umang.reminderapp.screens.main.MedicineScreen
 import com.umang.reminderapp.screens.main.SubscriptionAdder
 import com.umang.reminderapp.screens.main.SubscriptionAdderScreen
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
@@ -48,7 +51,10 @@ class MainActivity : ComponentActivity() {
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
         // Start SubscriptionViewModel
         val subscriptionViewModel = ViewModelProvider(this)[SubscriptionViewModel::class.java]
+        // Start MedicineViewModel
+        val medicineViewModel = ViewModelProvider(this)[MedicineViewModel::class.java]
 
+        // Start TagViewModel
         val tagViewModel = ViewModelProvider(this)[TagViewModel::class.java]
 
         // Start AuthViewModel
@@ -113,7 +119,12 @@ class MainActivity : ComponentActivity() {
 
                         // Subscriptions
                         composable(route = BottomBarNavigationItem.Subscriptions.navRoute){
-                            AllSubscriptionsPage(Modifier, navController, subscriptionViewModel)
+                            AllSubscriptionsPage(Modifier, navController, subscriptionViewModel, scheduler)
+                        }
+
+                        // Medicines
+                        composable(route = BottomBarNavigationItem.Medicines.navRoute){
+                            MedicineScreen(Modifier,medicineViewModel,scheduler, navController)
                         }
 
                         // Profile

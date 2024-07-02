@@ -21,16 +21,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.SubscriptionItem
 import com.umang.reminderapp.data.models.SubscriptionViewModel
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.util.getAlarms
+import java.time.LocalDate
 
 @Composable
 fun SubscriptionList(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     navHost: NavHostController,
-    subscriptionViewModel : SubscriptionViewModel
+    subscriptionViewModel : SubscriptionViewModel,
+    scheduler: AndroidAlarmSchedulerImpl
 ) {
 
     val subscriptionItemList by subscriptionViewModel.subscriptionList.observeAsState()
@@ -61,7 +65,17 @@ fun SubscriptionList(
                             modifier = Modifier,
                             subscriptionItem = item,
                             onEdit = { navHost.navigate("SubscriptionEditorScreen?id=${item.id}") },
-                            onDelete = { subscriptionViewModel.deleteSubscriptionItem(item.id) }
+                            onDelete = {
+                                // Delete alarms
+                                val alarmsList = getAlarms(
+                                    LocalDate.parse(item.startDate),
+                                    LocalDate.parse(item.endDate),
+                                    item.billingPeriod
+                                )
+                                scheduler.cancelAllSubscriptionAlarms(item, alarmsList)
+                                // Delete items
+                                subscriptionViewModel.deleteSubscriptionItem(item.id)
+                            }
                         )
                     }
                 }
@@ -73,23 +87,3 @@ fun SubscriptionList(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun SubscriptionListPreview() {
-//
-//    val itemList = listOf(
-//        SubscriptionItem(),
-//        SubscriptionItem(),
-//        SubscriptionItem(),
-//        SubscriptionItem(),
-//        SubscriptionItem()
-//    )
-//    ReminderAppTheme {
-//        SubscriptionList(
-//            paddingValues = PaddingValues(15.dp),
-//            subscriptionItemList = itemList
-//        )
-//    }
-//
-//}
