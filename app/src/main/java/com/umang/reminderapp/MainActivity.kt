@@ -1,31 +1,24 @@
 package com.umang.reminderapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.firebase.FirebaseApp
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
-import com.umang.reminderapp.data.classes.BottomBarNavigationItem
+import com.umang.reminderapp.data.classes.NavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.MedicineViewModel
 import com.umang.reminderapp.data.models.SubscriptionViewModel
 import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.screens.Placeholder.ComingSoon
 import com.umang.reminderapp.screens.bottomBarScreens.ProfileScreen
 import com.umang.reminderapp.screens.login.LogInScreen
 import com.umang.reminderapp.screens.login.SignUpScreen
@@ -34,11 +27,8 @@ import com.umang.reminderapp.screens.main.AllRemindersPage
 import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
 import com.umang.reminderapp.screens.main.MedicineScreen
-import com.umang.reminderapp.screens.main.SubscriptionAdder
 import com.umang.reminderapp.screens.main.SubscriptionAdderScreen
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
-import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         route = "Main"
                     ){
                         // HomePage
-                        composable(route = BottomBarNavigationItem.Home.navRoute){
+                        composable(route = NavigationItem.Home.navRoute){
                             HomePage(
                                 todoViewModel = todoViewModel,
                                 tagViewModel = tagViewModel,
@@ -108,7 +98,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // Reminders
-                        composable(route = BottomBarNavigationItem.AllReminders.navRoute){
+                        composable(route = NavigationItem.AllReminders.navRoute){
                             AllRemindersPage(
                                 todoViewModel = todoViewModel,
                                 navController = navController,
@@ -118,17 +108,17 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // Subscriptions
-                        composable(route = BottomBarNavigationItem.Subscriptions.navRoute){
+                        composable(route = NavigationItem.Subscriptions.navRoute){
                             AllSubscriptionsPage(Modifier, navController, subscriptionViewModel, scheduler)
                         }
 
                         // Medicines
-                        composable(route = BottomBarNavigationItem.Medicines.navRoute){
+                        composable(route = NavigationItem.Medicines.navRoute){
                             MedicineScreen(Modifier,medicineViewModel,scheduler, navController)
                         }
 
                         // Profile
-                        composable(route = BottomBarNavigationItem.Profile.navRoute){
+                        composable(route = NavigationItem.Profile.navRoute){
                             ProfileScreen(Modifier, navController, authViewModel)
 //                        AlarmPage(scheduler = scheduler)
                         }

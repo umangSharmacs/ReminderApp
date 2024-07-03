@@ -1,7 +1,7 @@
 package com.umang.reminderapp.ui.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -12,16 +12,15 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.umang.reminderapp.R
-import com.umang.reminderapp.ui.theme.ReminderAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarScaffold(modifier: Modifier = Modifier, header : String = "Memento", backIcon: Boolean = false,
-                      navigateBack: () -> Unit) {
+fun TopAppBarScaffold(
+    modifier: Modifier = Modifier,
+    header: String = "Memento",
+    navigateIcon: () -> Unit
+) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp),
@@ -31,15 +30,11 @@ fun TopAppBarScaffold(modifier: Modifier = Modifier, header : String = "Memento"
 
         title = {
             Text(text = header)
+        },
+        navigationIcon = {
+            IconButton(onClick =  navigateIcon ) {
+                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+            }
         }
     )
 }
-
-//
-//@Preview
-//@Composable
-//fun TopAppBarPreview() {
-//    ReminderAppTheme {
-//        TopAppBarScaffold()
-//    }
-//}

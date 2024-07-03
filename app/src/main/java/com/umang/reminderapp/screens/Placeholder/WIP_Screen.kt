@@ -17,7 +17,6 @@ import com.umang.reminderapp.data.classes.MedicineMealType
 import com.umang.reminderapp.ui.components.BottomBarScaffold
 import com.umang.reminderapp.ui.components.FloatingActionButton
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
-import com.umang.reminderapp.ui.components.medicine.MedicineCard
 
 @Composable
 fun ComingSoon(modifier: Modifier = Modifier,navController: NavHostController) {
@@ -25,7 +24,7 @@ fun ComingSoon(modifier: Modifier = Modifier,navController: NavHostController) {
     Scaffold(
         topBar = @Composable {
             TopAppBarScaffold(
-                navigateBack = {navController.popBackStack()}
+                navigateIcon = {navController.popBackStack()}
             )
         },
         floatingActionButton = {
