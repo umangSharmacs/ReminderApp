@@ -16,7 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -69,6 +72,7 @@ import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.tags.TagDialog
 import com.umang.reminderapp.ui.components.TimePickerDialog
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
+import kotlinx.coroutines.launch
 //import com.vanpra.composematerialdialogs.MaterialDialog
 //import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 //import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -891,7 +895,14 @@ fun AdderScreen(
         topBar = @Composable {
             TopAppBarScaffold(
                 header = if(editMode) "Edit" else "Add",
-                navigateIcon = {navController.popBackStack()}
+                navigateIcon = {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft , contentDescription = "Back")
+                    }
+
+                }
             )
         }
     )

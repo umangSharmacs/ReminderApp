@@ -9,8 +9,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -25,6 +28,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
@@ -32,7 +37,6 @@ import com.umang.reminderapp.data.classes.NavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.ui.components.BottomBarScaffold
 import com.umang.reminderapp.ui.components.CustomFloatingActionButton
 import com.umang.reminderapp.ui.components.MinimalToDoList
 import com.umang.reminderapp.ui.components.tags.TagGrid
@@ -78,7 +82,13 @@ fun HomePage(
                 TopAppBarScaffold(
                     header = "Memento",
                     navigateIcon = {
-                        scope.launch { drawerState.open() }
+
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } }
+                        ) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                        }
+
                     }
                 )
             },
@@ -90,7 +100,7 @@ fun HomePage(
                     fabIcon = Icons.Filled.Add,
                     onSubscriptionClick = { navController.navigate("SubscriptionAdderScreen") },
                     onTagClick = { },
-                    onMedicineClick = { },
+                    onMedicineClick = { navController.navigate("MedicineAdderScreen") },
                     onReminderClick = {navController.navigate("AdderScreen")}
 
 
@@ -110,8 +120,6 @@ fun HomePage(
 
             val tags by tagViewModel.tagList.observeAsState()
             val tagsList = tags?.toMutableList()
-//        Log.d("Tags", tagsList!!.toList().toString())
-//        Log.d("Tags List", tagsList.toString())
 
             Column(
                 modifier = Modifier
@@ -141,9 +149,10 @@ fun HomePage(
                 if (dueTodayList != null && remindersTodayList != null) {
                     if(dueTodayList.isEmpty() && remindersTodayList.isEmpty()){
                         Text(
-                            text = "Wohoo! No reminders or deadlines today",
+                            text = "Relax. No reminders or deadlines today.",
                             color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding( 15.dp )
+                            modifier = Modifier.padding( 15.dp ),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

@@ -26,6 +26,7 @@ import com.umang.reminderapp.screens.main.AdderScreen
 import com.umang.reminderapp.screens.main.AllRemindersPage
 import com.umang.reminderapp.screens.main.AllSubscriptionsPage
 import com.umang.reminderapp.screens.main.HomePage
+import com.umang.reminderapp.screens.main.MedicineAdderPage
 import com.umang.reminderapp.screens.main.MedicineScreen
 import com.umang.reminderapp.screens.main.SubscriptionAdderScreen
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
@@ -198,6 +199,12 @@ class MainActivity : ComponentActivity() {
                                     editMode = true
                                 )
                             }
+                        }
+
+
+                        // Medicine Adder Screen
+                        composable(route = "MedicineAdderScreen"){
+                            MedicineAdderPage(modifier = Modifier, navController = navController, editMode = false)
                         }
 
                     }

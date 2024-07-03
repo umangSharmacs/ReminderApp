@@ -155,7 +155,7 @@ fun CustomFloatingActionButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp)
-                        .clickable { },
+                        .clickable { onMedicineClick() },
                     horizontalArrangement = Arrangement.Start,
                 ){
                     Icon(
@@ -164,7 +164,7 @@ fun CustomFloatingActionButton(
                         contentDescription = "Medicine",
                         tint = MaterialTheme.colorScheme.onTertiaryContainer
                     )
-                    Text("Add Medicine (WIP)",color = MaterialTheme.colorScheme.onTertiaryContainer)
+                    Text("Add Medicine",color = MaterialTheme.colorScheme.onTertiaryContainer)
                 }
                 Row(
                     modifier = Modifier

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun TopAppBarScaffold(
     modifier: Modifier = Modifier,
     header: String = "Memento",
-    navigateIcon: () -> Unit
+    navigateIcon: @Composable () -> Unit
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -31,10 +31,9 @@ fun TopAppBarScaffold(
         title = {
             Text(text = header)
         },
-        navigationIcon = {
-            IconButton(onClick =  navigateIcon ) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
-            }
+        navigationIcon = @Composable {
+            navigateIcon()
+
         }
     )
 }

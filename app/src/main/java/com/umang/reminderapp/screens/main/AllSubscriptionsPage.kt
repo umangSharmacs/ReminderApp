@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
@@ -62,7 +65,11 @@ fun AllSubscriptionsPage(
                 TopAppBarScaffold(
                     header = "Subscriptions",
                     navigateIcon = {
-                        scope.launch { drawerState.open() }
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } }
+                        ) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                        }
                     }
                 )
             },
@@ -74,7 +81,7 @@ fun AllSubscriptionsPage(
                     fabIcon = Icons.Filled.Add,
                     onSubscriptionClick = { navController.navigate("SubscriptionAdderScreen") },
                     onTagClick = { },
-                    onMedicineClick = { },
+                    onMedicineClick = { navController.navigate("MedicineAdderScreen") },
                     onReminderClick = {navController.navigate("AdderScreen")}
                 )
             },

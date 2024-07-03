@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +27,8 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -63,6 +68,7 @@ import com.umang.reminderapp.ui.components.tags.TagDialog
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 import com.umang.reminderapp.util.daysToYMWD
 import com.umang.reminderapp.util.getAlarms
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -774,11 +780,16 @@ fun SubscriptionAdderScreen(
         topBar = @Composable {
             TopAppBarScaffold(
                 header = if(!editMode) "Add a Subscription" else "Edit your Subscription",
-                navigateIcon = {navController.popBackStack()}
+                navigateIcon = {
+                    IconButton(
+                        onClick = {navController.popBackStack()}
+                    ) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Back")
+                    }
+                }
             )
-
-        })
-    { paddingValues ->
+        }
+    ) { paddingValues ->
         SubscriptionAdder(
             modifier = modifier,
             paddingValues = paddingValues,
