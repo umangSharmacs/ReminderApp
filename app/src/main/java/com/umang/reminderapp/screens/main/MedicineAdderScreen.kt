@@ -2,6 +2,7 @@ package com.umang.reminderapp.screens.main
 
 import android.graphics.Color
 import android.util.Log
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
@@ -63,6 +65,7 @@ import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.BillingPeriod
 import com.umang.reminderapp.data.classes.MedicineIntakeTime
 import com.umang.reminderapp.data.classes.MedicineMealType
+import com.umang.reminderapp.data.classes.NavigationItem
 import com.umang.reminderapp.data.models.MedicineViewModel
 import com.umang.reminderapp.ui.components.DurationUnitBox
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
@@ -73,15 +76,19 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import kotlin.math.exp
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicineAdderScreen(
     modifier: Modifier = Modifier,
-//    medicineViewModel: MedicineViewModel,
-//    scheduler: AndroidAlarmSchedulerImpl,
-//    navController: NavHostController,
+    medicineViewModel: MedicineViewModel,
+    scheduler: AndroidAlarmSchedulerImpl,
+    navController: NavHostController,
+    optionalID: Int? = null,
     optionalName: String? = null,
     optionDuration: Int? = null,
     optionPrescriptionStart: String? = null,
@@ -153,6 +160,18 @@ fun MedicineAdderScreen(
     var dinnerChecked by remember {
         mutableStateOf(false)
     }
+    var editModeOptionallyChecked by remember { mutableStateOf(true) }
+
+    if(editMode && editModeOptionallyChecked){
+        val currentBreakfastChecked = optionWhenToTake?.get(MedicineMealType.BREAKFAST.value)!=MedicineIntakeTime.NONE.value
+        val currentLunchChecked = optionWhenToTake?.get(MedicineMealType.LUNCH.value)!=MedicineIntakeTime.NONE.value
+        val currentDinnerChecked = optionWhenToTake?.get(MedicineMealType.DINNER.value)!=MedicineIntakeTime.NONE.value
+        breakFastChecked = currentBreakfastChecked
+        lunchChecked = currentLunchChecked
+        dinnerChecked = currentDinnerChecked
+        editModeOptionallyChecked = false
+    }
+
 
     // Expiry
     var showExpiryDatePicker by remember { mutableStateOf(false) }
@@ -165,6 +184,8 @@ fun MedicineAdderScreen(
         if (optionalExpiry == null) mutableStateOf("") else mutableStateOf(optionalExpiry)
     }
 
+    // Medicine Intake
+    var medicineIntake by remember { mutableStateOf("Select") }
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
@@ -430,19 +451,24 @@ fun MedicineAdderScreen(
                         Text(text = "Medicine Intake", modifier = Modifier.weight(1f))
 
                         var expandedMedicineIntake by remember { mutableStateOf(false) }
-                        var medicineIntake by remember { mutableStateOf("Select") }
 
                         ExposedDropdownMenuBox(
                             modifier = Modifier
                                 .weight(2f),
-                            expanded = expandedMedicineIntake,
+                            expanded = true,
                             onExpandedChange = {
                                 expandedMedicineIntake = !expandedMedicineIntake
                                 Log.d("MedicineIntake", "expandedMedicineIntake: $expandedMedicineIntake")
                             }
                         ) {
                             TextField(
-                                value = medicineIntake,
+                                value = when(medicineIntake){
+                                    "Select" -> "Select"
+                                    MedicineIntakeTime.BEFORE.value -> "Before a meal"
+                                    MedicineIntakeTime.WITH.value -> "With a meal"
+                                    MedicineIntakeTime.AFTER.value -> "After a meal"
+                                    else -> "Select"
+                                },
                                 onValueChange = {},
                                 readOnly = true,
                                 modifier = Modifier
@@ -497,6 +523,195 @@ fun MedicineAdderScreen(
 
             }
 
+            // Add/ Edit button
+
+            // Add Button
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                if(!editMode){
+                    ElevatedButton(
+                        onClick = {
+                            // Checks
+                            if( medicineName == "" ){
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a Name",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if( !isActive && prescriptionStart == "" ){
+                                Toast.makeText(
+                                    context,
+                                    "Please select a start date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if( expiryDate == "" ){
+                                Toast.makeText(
+                                    context,
+                                    "Please select an expiry date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if( !isActive && duration==0 ){
+                                Toast.makeText(
+                                    context,
+                                    "Please select a duration",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+
+                                var whenToTakeMap = mutableMapOf<String, String?>()
+
+                                if(medicineIntake!="Select" && isActive){
+                                    whenToTakeMap = mutableMapOf(
+                                        if(breakFastChecked){
+                                            MedicineMealType.BREAKFAST.value to medicineIntake
+                                        } else {
+                                            MedicineMealType.BREAKFAST.value to MedicineIntakeTime.NONE.value
+                                        },
+                                        if(lunchChecked){
+                                            MedicineMealType.LUNCH.value to medicineIntake
+                                        } else {
+                                            MedicineMealType.LUNCH.value to MedicineIntakeTime.NONE.value
+                                        },
+                                        if(dinnerChecked){
+                                            MedicineMealType.DINNER.value to medicineIntake
+                                        } else {
+                                            MedicineMealType.DINNER.value to MedicineIntakeTime.NONE.value
+                                        }
+                                    )
+                                } else {
+                                    whenToTakeMap = mutableMapOf(
+                                        MedicineMealType.BREAKFAST.value to MedicineIntakeTime.NONE.value,
+                                        MedicineMealType.LUNCH.value to MedicineIntakeTime.NONE.value,
+                                        MedicineMealType.DINNER.value to MedicineIntakeTime.NONE.value,
+                                    )
+                                }
+
+                                val defaultTakenMap = mutableMapOf(
+                                    MedicineMealType.BREAKFAST.value to false,
+                                    MedicineMealType.LUNCH.value to false,
+                                    MedicineMealType.DINNER.value to false,
+                                )
+
+                                // Add item
+                                val medicineItem = medicineViewModel.addMedicineItem(
+                                    name = medicineName,
+                                    prescriptionStart = prescriptionStart,
+                                    duration = duration.toDuration(DurationUnit.DAYS).toString(),
+                                    prescriptionEnd = prescriptionEnd,
+                                    whenToTake = whenToTakeMap,
+                                    takenMap = defaultTakenMap,
+                                    isActive = isActive,
+                                    expiry = expiryDate
+                                )
+                                // Create alarms
+
+                                // Navigate back
+                                navController.navigate(NavigationItem.Medicines.navRoute)
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ){
+                        Text(text = "Add")
+                    }
+                } else {
+
+                    ElevatedButton(
+                        onClick = {
+                            // Checks
+                            if( medicineName == "" ){
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a Name",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if( !isActive && prescriptionStart == "" ){
+                                Toast.makeText(
+                                    context,
+                                    "Please select a start date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if( expiryDate == "" ){
+                                Toast.makeText(
+                                    context,
+                                    "Please select an expiry date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if( !isActive && duration==0 ){
+                                Toast.makeText(
+                                    context,
+                                    "Please select a duration",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+
+                                var whenToTakeMap = mutableMapOf<String, String?>()
+
+                                if(medicineIntake!="Select" && isActive){
+                                    whenToTakeMap = mutableMapOf(
+                                        MedicineMealType.BREAKFAST.value to medicineIntake,
+                                        MedicineMealType.LUNCH.value to medicineIntake,
+                                        MedicineMealType.DINNER.value to medicineIntake,
+                                    )
+                                } else {
+                                    whenToTakeMap = mutableMapOf(
+                                        MedicineMealType.BREAKFAST.value to MedicineIntakeTime.BEFORE.value,
+                                        MedicineMealType.LUNCH.value to MedicineIntakeTime.BEFORE.value,
+                                        MedicineMealType.DINNER.value to MedicineIntakeTime.BEFORE.value,
+                                    )
+                                }
+
+                                val defaultTakenMap = mutableMapOf(
+                                    MedicineMealType.BREAKFAST.value to false,
+                                    MedicineMealType.LUNCH.value to false,
+                                    MedicineMealType.DINNER.value to false,
+                                )
+
+                                // Cancel all current alarms
+
+                                // Update item
+                                if(optionalID!=null){
+                                    val updatedMedicineItem = medicineViewModel.updateMedicineItem(
+                                        toUpdateName = medicineName,
+                                        toUpdatePrescriptionStart = prescriptionStart,
+                                        toUpdateDuration = duration.toDuration(DurationUnit.DAYS).toString(),
+                                        toUpdatePrescriptionEnd = prescriptionEnd,
+                                        toUpdateWhenToTake = whenToTakeMap,
+                                        toUpdateTakenMap = defaultTakenMap,
+                                        toUpdateIsActive = isActive,
+                                        toUpdateExpiry = expiryDate,
+                                        toUpdateMedicineItemID = optionalID
+                                    )
+                                }
+
+                                // Create new alarms
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ){
+                        Text(text = "Edit")
+                    }
+
+
+
+
+                }
+            }
         }
     }
 
@@ -569,18 +784,17 @@ fun MedicineAdderScreen(
             )
         }
     }
-
-
-
 }
 
 
 @Composable
 fun MedicineAdderPage(
     modifier: Modifier,
+    medicineViewModel: MedicineViewModel,
+    scheduler: AndroidAlarmSchedulerImpl,
     navController: NavHostController,
+    optionalID: Int? = null,
     editMode: Boolean
-
 ){
 
     Scaffold(
@@ -600,21 +814,29 @@ fun MedicineAdderPage(
     ){
         paddingValues ->
         MedicineAdderScreen(
-            modifier.padding( top = paddingValues.calculateTopPadding()),
+            modifier = modifier.padding( top = paddingValues.calculateTopPadding()),
+            medicineViewModel = medicineViewModel,
+            scheduler = scheduler,
+            navController = navController,
+            optionalID = optionalID,
+            optionalName = null,
+            optionDuration = null,
+            optionPrescriptionStart = null,
+            optionPrescriptionEnd = null,
             editMode = editMode
         )
     }
 }
 
 
-@Preview
-@Composable
-fun MedicineAdderScreenPreview() {
-    ReminderAppTheme {
-        MedicineAdderPage(
-            modifier =  Modifier,
-            navController = NavHostController(LocalContext.current),
-            editMode = false
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun MedicineAdderScreenPreview() {
+//    ReminderAppTheme {
+//        MedicineAdderPage(
+//            modifier =  Modifier,
+//            navController = NavHostController(LocalContext.current),
+//            editMode = false
+//        )
+//    }
+//}

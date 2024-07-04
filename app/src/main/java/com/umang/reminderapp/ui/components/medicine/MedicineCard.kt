@@ -1,18 +1,27 @@
 package com.umang.reminderapp.ui.components.medicine
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,7 +33,10 @@ import com.umang.reminderapp.data.classes.MedicineItem
 import com.umang.reminderapp.data.classes.MedicineMealType
 import com.umang.reminderapp.data.models.MedicineViewModel
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import kotlin.math.exp
 
 @Composable
 fun MedicineCard(
@@ -33,18 +45,22 @@ fun MedicineCard(
     viewModel: MedicineViewModel
 ) {
 
+    var expandedState by remember { mutableStateOf(false) }
+
     val BREAKFAST_TIME = LocalTime.of(9, 0)
     val LUNCH_TIME = LocalTime.of(13, 0)
     val DINNER_TIME = LocalTime.of(21, 0)
 
-    var medicineTaken = remember {
+    var medicineTaken = rememberSaveable {
         mutableStateOf(true)
     }
 
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+
     Card(
         modifier = Modifier.padding(top=10.dp, bottom = 10.dp),
-        shape = MaterialTheme.shapes.extraLarge
-
+        shape = MaterialTheme.shapes.extraLarge,
+        onClick = { expandedState = !expandedState }
     ){
         Row(
             modifier = modifier
@@ -112,21 +128,54 @@ fun MedicineCard(
             viewModel = viewModel
         )
 
+        AnimatedVisibility(visible = expandedState) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                onClick = { expandedState = !expandedState },
+                shape = MaterialTheme.shapes.large,
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 3.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+            ){
+                // Expiry Date
+                Text(
+                    modifier = Modifier.padding(10.dp),
+                    text = "Expiry - ${LocalDate.parse(item.expiry).format(dateFormatter)}"
+                )
+                // Edit , Delete
+
+                Row(modifier = modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ){
+                    // EDIT
+                    ElevatedAssistChip(
+                        modifier = Modifier.padding(5.dp),
+                        onClick = { } ,
+                        leadingIcon = { Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit") },
+                        label = { Text(text = "Edit") }
+                    )
+                    // DELETE
+                    ElevatedAssistChip(
+                        modifier = Modifier.padding(5.dp),
+                        onClick = { } ,
+                        leadingIcon = { Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete") },
+                        label = { Text(text = "Delete") }
+                    )
+                }
+
+                Text("hello World")
+            }
+        }
+
     }
 }
 
-
-//@Preview
-//@Composable
-//fun MedicineCardPreview() {
-//
-//    val item = MedicineItem()
-//
-//    item.whenToTake[MedicineMealType.BREAKFAST.value] = MedicineIntakeTime.BEFORE.value
-//    item.whenToTake[MedicineMealType.LUNCH.value] = MedicineIntakeTime.AFTER.value
-//    item.whenToTake[MedicineMealType.DINNER.value] = MedicineIntakeTime.AFTER.value
-//
-//    ReminderAppTheme {
-//        MedicineCard(item = item)
-//    }
-//}

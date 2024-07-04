@@ -52,8 +52,9 @@ fun AllSubscriptionsPage(
     // Nav Drawer State
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
     var selectedIndex by rememberSaveable {
-        mutableIntStateOf(0)
+        mutableIntStateOf(navigationItems.indexOf(navigationItems.find {it == NavigationItem.Subscriptions}))
     }
 
     ModalNavigationDrawer(

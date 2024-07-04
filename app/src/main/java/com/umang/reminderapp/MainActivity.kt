@@ -204,7 +204,13 @@ class MainActivity : ComponentActivity() {
 
                         // Medicine Adder Screen
                         composable(route = "MedicineAdderScreen"){
-                            MedicineAdderPage(modifier = Modifier, navController = navController, editMode = false)
+                            MedicineAdderPage(
+                                modifier = Modifier,
+                                navController = navController,
+                                medicineViewModel = medicineViewModel,
+                                scheduler = scheduler,
+                                editMode = false
+                            )
                         }
 
                     }

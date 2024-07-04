@@ -49,8 +49,10 @@ fun AllRemindersPage(
     // Nav Drawer State
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    // Give index of RemindersPage
     var selectedIndex by rememberSaveable {
-        mutableIntStateOf(0)
+        mutableIntStateOf(navigationItems.indexOf(navigationItems.find {it == NavigationItem.AllReminders}))
     }
 
     ModalNavigationDrawer(
