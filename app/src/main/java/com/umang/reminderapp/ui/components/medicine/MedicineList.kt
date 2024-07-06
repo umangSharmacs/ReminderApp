@@ -61,7 +61,7 @@ fun MedicineList(
                                     viewModel = medicineViewModel
                                 )
                             },
-                            onEdit = {},
+                            onEdit = { navController.navigate("MedicineEditorScreen?id=${item.id}") },
                             onDelete = { medicineViewModel.deleteMedicineItem(item.id) }
                         )
                     }

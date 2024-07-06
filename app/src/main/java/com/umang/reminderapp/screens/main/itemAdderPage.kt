@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Delete
@@ -237,6 +240,7 @@ fun AdderScreenContent(
         modifier = Modifier
 //            .background(color = Color.White)
             .padding(top = paddingValues.calculateTopPadding())
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
@@ -319,7 +323,8 @@ fun AdderScreenContent(
             // 2. TAGS
             Row(
                 modifier = Modifier
-                    .padding(start = 12.dp),
+                    .padding(start = 12.dp)
+                    .height(100.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -400,7 +405,8 @@ fun AdderScreenContent(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .padding(start = 12.dp),
+                    .padding(start = 12.dp)
+                    .height(150.dp),
 
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -560,12 +566,13 @@ fun AdderScreenContent(
                     unfocusedBorderColor = Color.Transparent,
                 )
             )
-            // Add button
 
+            Spacer(modifier = Modifier.height(50.dp))
+
+            // Add button
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if(!editMode){

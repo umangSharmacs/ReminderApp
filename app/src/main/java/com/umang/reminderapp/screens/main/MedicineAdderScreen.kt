@@ -7,6 +7,7 @@ import android.widget.ToggleButton
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
@@ -136,14 +139,14 @@ fun MedicineAdderScreen(
     )
     var startDatePickedCounter by remember { mutableIntStateOf(0) }
     var prescriptionStart by remember {
-        if (optionPrescriptionStart == null) mutableStateOf(
+        if (optionPrescriptionStart == null || !editMode) mutableStateOf(
             LocalDate.now().toString()
         ) else mutableStateOf(optionPrescriptionStart)
     }
 
     // End date
     var prescriptionEnd by remember {
-        if (optionPrescriptionEnd == null) mutableStateOf("") else mutableStateOf(
+        if (optionPrescriptionEnd == null || !editMode) mutableStateOf("") else mutableStateOf(
             optionPrescriptionEnd
         )
     }
@@ -180,6 +183,10 @@ fun MedicineAdderScreen(
     )
     var expiryDatePickedCounter by remember { mutableIntStateOf(0) }
 
+    if(editMode){
+        expiryDatePickedCounter+=1
+    }
+
     var expiryDate by remember {
         if (optionalExpiry == null) mutableStateOf("") else mutableStateOf(optionalExpiry)
     }
@@ -187,15 +194,25 @@ fun MedicineAdderScreen(
     // Medicine Intake
     var medicineIntake by remember { mutableStateOf("Select") }
 
+    if(editMode){
+        medicineIntake = when(optionWhenToTake?.get(MedicineMealType.BREAKFAST.value)){
+            MedicineIntakeTime.BEFORE.value -> MedicineIntakeTime.BEFORE.value
+            MedicineIntakeTime.WITH.value -> MedicineIntakeTime.WITH.value
+            MedicineIntakeTime.AFTER.value -> MedicineIntakeTime.AFTER.value
+            else -> "Select"
+        }
+    }
+
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
     // UI
     Surface(
-        modifier = modifier
+        modifier = modifier.verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+
         ) {
 
             OutlinedTextField(
@@ -315,7 +332,7 @@ fun MedicineAdderScreen(
                             modifier = Modifier.weight(2f)
                         ) {
                             Text(
-                                text = if (startDatePickedCounter == 0) "Enter a Date"
+                                text = if (startDatePickedCounter == 0 && !editMode ) "Enter a Date"
                                 else {
                                     val formattedString = prescriptionStart.format(dateFormatter)
                                     formattedString
@@ -440,83 +457,52 @@ fun MedicineAdderScreen(
 
                     // Med Timings
 
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(start = 12.dp, top = 12.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "Medicine Intake", modifier = Modifier.weight(1f))
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = "Medicine Intake",
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
-                        var expandedMedicineIntake by remember { mutableStateOf(false) }
-
-                        ExposedDropdownMenuBox(
+                    Column{
+                        Row(
                             modifier = Modifier
-                                .weight(2f),
-                            expanded = true,
-                            onExpandedChange = {
-                                expandedMedicineIntake = !expandedMedicineIntake
-                                Log.d("MedicineIntake", "expandedMedicineIntake: $expandedMedicineIntake")
-                            }
-                        ) {
-                            TextField(
-                                value = when(medicineIntake){
-                                    "Select" -> "Select"
-                                    MedicineIntakeTime.BEFORE.value -> "Before a meal"
-                                    MedicineIntakeTime.WITH.value -> "With a meal"
-                                    MedicineIntakeTime.AFTER.value -> "After a meal"
-                                    else -> "Select"
-                                },
-                                onValueChange = {},
-                                readOnly = true,
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .weight(2f),
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                                    disabledContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                                    focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-                                    unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent
-                                ),
-                                textStyle = TextStyle.Default.copy(
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.SemiBold
-                                )
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text("Before a Meal")
+                            RadioButton(
+                                selected = medicineIntake==MedicineIntakeTime.BEFORE.value,
+                                onClick = { medicineIntake = MedicineIntakeTime.BEFORE.value }
                             )
-
-                            ExposedDropdownMenu(
-                                expanded = expandedMedicineIntake,
-                                onDismissRequest = {
-                                    expandedMedicineIntake = !expandedMedicineIntake
-                                }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text("Before a meal") },
-                                    onClick = {
-                                        medicineIntake = MedicineIntakeTime.BEFORE.value
-                                        expandedMedicineIntake = !expandedMedicineIntake
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("With a meal") },
-                                    onClick = {
-                                        medicineIntake = MedicineIntakeTime.WITH.value
-                                        expandedMedicineIntake = !expandedMedicineIntake
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("After a meal") },
-                                    onClick = {
-                                        medicineIntake = MedicineIntakeTime.AFTER.value
-                                        expandedMedicineIntake = !expandedMedicineIntake
-                                    }
-                                )
-                            }
                         }
-
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text("With a Meal")
+                            RadioButton(
+                                selected = medicineIntake==MedicineIntakeTime.WITH.value,
+                                onClick = { medicineIntake = MedicineIntakeTime.WITH.value }
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text("After a Meal")
+                            RadioButton(
+                                selected = medicineIntake==MedicineIntakeTime.AFTER.value,
+                                onClick = { medicineIntake = MedicineIntakeTime.AFTER.value }
+                            )
+                        }
                     }
 
                 }
@@ -529,7 +515,7 @@ fun MedicineAdderScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 if(!editMode){
@@ -542,7 +528,7 @@ fun MedicineAdderScreen(
                                     "Please enter a Name",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                            } else if( !isActive && prescriptionStart == "" ){
+                            } else if( isActive && prescriptionStart == "" ){
                                 Toast.makeText(
                                     context,
                                     "Please select a start date",
@@ -554,7 +540,7 @@ fun MedicineAdderScreen(
                                     "Please select an expiry date",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                            } else if( !isActive && duration==0 ){
+                            } else if( isActive && duration==0 ){
                                 Toast.makeText(
                                     context,
                                     "Please select a duration",
@@ -658,9 +644,21 @@ fun MedicineAdderScreen(
 
                                 if(medicineIntake!="Select" && isActive){
                                     whenToTakeMap = mutableMapOf(
-                                        MedicineMealType.BREAKFAST.value to medicineIntake,
-                                        MedicineMealType.LUNCH.value to medicineIntake,
-                                        MedicineMealType.DINNER.value to medicineIntake,
+                                        if(breakFastChecked){
+                                            MedicineMealType.BREAKFAST.value to medicineIntake
+                                        } else {
+                                            MedicineMealType.BREAKFAST.value to MedicineIntakeTime.NONE.value
+                                        },
+                                        if(lunchChecked){
+                                            MedicineMealType.LUNCH.value to medicineIntake
+                                        } else {
+                                            MedicineMealType.LUNCH.value to MedicineIntakeTime.NONE.value
+                                        },
+                                        if(dinnerChecked){
+                                            MedicineMealType.DINNER.value to medicineIntake
+                                        } else {
+                                            MedicineMealType.DINNER.value to MedicineIntakeTime.NONE.value
+                                        }
                                     )
                                 } else {
                                     whenToTakeMap = mutableMapOf(
@@ -694,6 +692,10 @@ fun MedicineAdderScreen(
                                 }
 
                                 // Create new alarms
+
+                                // Navigate Back
+                                navController.navigate(NavigationItem.Medicines.navRoute)
+
                             }
                         },
                         modifier = Modifier
@@ -797,6 +799,27 @@ fun MedicineAdderPage(
     editMode: Boolean
 ){
 
+    var optionalName = ""
+    var optionalDuration = 0
+    var optionPrescriptionStart = ""
+    var optionPrescriptionEnd = ""
+    var optionWhenToTake = emptyMap<String, String?>().toMutableMap()
+    var optionalIsActive = false
+    var optionalExpiry = ""
+
+    if(editMode && optionalID!=null){
+
+        val medicineItem = medicineViewModel.getMedicineItem(optionalID)
+
+        optionalName = medicineItem?.name.toString()
+        optionalDuration = medicineItem?.duration?.removeSuffix("d")?.toInt()!!
+        optionPrescriptionStart = medicineItem.prescriptionStart.toString()
+        optionPrescriptionEnd = medicineItem.prescriptionEnd.toString()
+        optionWhenToTake = medicineItem.whenToTake
+        optionalIsActive = medicineItem.isActive == true
+        optionalExpiry = medicineItem.expiry.toString()
+    }
+
     Scaffold(
         topBar = @Composable {
             TopAppBarScaffold(
@@ -819,24 +842,14 @@ fun MedicineAdderPage(
             scheduler = scheduler,
             navController = navController,
             optionalID = optionalID,
-            optionalName = null,
-            optionDuration = null,
-            optionPrescriptionStart = null,
-            optionPrescriptionEnd = null,
+            optionalName = optionalName,
+            optionDuration = optionalDuration,
+            optionPrescriptionStart = optionPrescriptionStart,
+            optionPrescriptionEnd = optionPrescriptionEnd,
+            optionWhenToTake = optionWhenToTake,
+            optionalIsActive = optionalIsActive,
+            optionalExpiry = optionalExpiry,
             editMode = editMode
         )
     }
 }
-
-
-//@Preview
-//@Composable
-//fun MedicineAdderScreenPreview() {
-//    ReminderAppTheme {
-//        MedicineAdderPage(
-//            modifier =  Modifier,
-//            navController = NavHostController(LocalContext.current),
-//            editMode = false
-//        )
-//    }
-//}

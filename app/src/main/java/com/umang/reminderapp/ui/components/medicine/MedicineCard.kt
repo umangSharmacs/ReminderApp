@@ -49,6 +49,7 @@ import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import kotlin.math.exp
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
@@ -99,16 +100,24 @@ fun MedicineCard(
                     text = item.name,
                     style = MaterialTheme.typography.titleLarge
                 )
-                Text(
-                    modifier = Modifier.padding(start = 16.dp, bottom = 5.dp),
-                    text = "Ongoing Prescription - ${item.duration} left",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                if(item.isActive){
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp, bottom = 5.dp),
+                        text = "Ongoing Prescription - ${ ChronoUnit.DAYS.between( LocalDate.now(), LocalDate.parse(item.prescriptionEnd) ) } left",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = "Next dose in", // TODO
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "Next dose in",
+                    text = "Expires on ${ LocalDate.parse(item.expiry).format(dateFormatter) }",
                     style = MaterialTheme.typography.bodyMedium
                 )
+
             }
             Column(
                 modifier = Modifier
@@ -117,35 +126,38 @@ fun MedicineCard(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                if(medicineTaken.value){
+                if(item.isActive && medicineTaken.value){
                     Icon(
                         painter = painterResource(R.drawable.check_square_icon),
                         contentDescription = "Taken",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(75.dp)
                     )
-                } else {
+                } else if(item.isActive && !medicineTaken.value){
                     Icon(
                         painter = painterResource(R.drawable.exclamationmark_square),
                         contentDescription = "Not taken",
                         tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(75.dp)
                     )
+                } else {
+                    Text("INACTIVE")
                 }
-
 
             }
         }
 
-        MedicineTrackerUIComponent(
-            modifier = Modifier,
-            medicineItem = item,
-            BREAKFAST_TIME = BREAKFAST_TIME,
-            LUNCH_TIME = LUNCH_TIME,
-            DINNER_TIME = DINNER_TIME,
-            medicineTaken = medicineTaken,
-            viewModel = viewModel
-        )
+        if(item.isActive){
+            MedicineTrackerUIComponent(
+                modifier = Modifier,
+                medicineItem = item,
+                BREAKFAST_TIME = BREAKFAST_TIME,
+                LUNCH_TIME = LUNCH_TIME,
+                DINNER_TIME = DINNER_TIME,
+                medicineTaken = medicineTaken,
+                viewModel = viewModel
+            )
+        }
     }
 }
 

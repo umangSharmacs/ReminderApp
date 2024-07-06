@@ -125,7 +125,6 @@ class MainActivity : ComponentActivity() {
                         }
 
 
-
                         // Main
                         composable(route = "Home"){
                             HomePage(
@@ -213,6 +212,26 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        // Medicine Editor Screen
+                        composable(
+                            route = "MedicineEditorScreen?id={id}",
+                            arguments = listOf(
+                                navArgument("id"){
+                                    type = NavType.IntType}
+                            )
+                        ){
+                            val id = it.arguments?.getInt("id")
+                            if(id!=null){
+                                MedicineAdderPage(
+                                    modifier = Modifier,
+                                    navController = navController,
+                                    medicineViewModel = medicineViewModel,
+                                    scheduler = scheduler,
+                                    optionalID = id,
+                                    editMode = true
+                                )
+                            }
+                        }
                     }
                 }
             }
