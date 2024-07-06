@@ -1,4 +1,4 @@
-package com.umang.reminderapp.ui.components.toDoItemCards
+package com.umang.reminderapp.ui.components.toDoItem
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -49,38 +49,7 @@ fun ToDoItemCardExpand(
                 text = item.description
             )
         }
-
-        // EDIT AND DELETE
-        Row(modifier = modifier
-            .fillMaxWidth()
-            .padding(5.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-
-            ){
-            Spacer(modifier = Modifier.weight(1f))
-
-            Row(modifier = Modifier.weight(6f)) {
-                // EDIT
-                ElevatedAssistChip(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = onEdit ,
-                    leadingIcon = {Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")},
-                    label = { Text(text = "Edit") }
-                )
-                // DELETE
-                ElevatedAssistChip(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = onDelete ,
-                    leadingIcon = {Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")},
-                    label = { Text(text = "Delete") }
-                )
-            }
-        }
-
     }
-
-
 }
 
 

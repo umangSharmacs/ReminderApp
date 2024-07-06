@@ -1,6 +1,7 @@
 package com.umang.reminderapp.ui.components.subscription
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,10 +25,12 @@ import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.SubscriptionItem
 import com.umang.reminderapp.data.models.SubscriptionViewModel
+import com.umang.reminderapp.ui.components.swiping.BehindMotionSwipe
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import com.umang.reminderapp.util.getAlarms
 import java.time.LocalDate
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SubscriptionList(
     modifier: Modifier = Modifier,
@@ -59,11 +62,18 @@ fun SubscriptionList(
             ) {
 
                 if (it != null) {
-                    itemsIndexed(items = it.toList()) { index: Int, item: SubscriptionItem ->
+                    itemsIndexed(
+                        items = it.toList(),
+                        key = { index, item -> item.id }
+                    ) { index: Int, item: SubscriptionItem ->
 
-                        subscriptionCard(
-                            modifier = Modifier,
-                            subscriptionItem = item,
+                        BehindMotionSwipe(
+                            content = {
+                                subscriptionCard(
+                                    modifier = Modifier.animateItemPlacement(),
+                                    subscriptionItem = item
+                                )
+                            },
                             onEdit = { navHost.navigate("SubscriptionEditorScreen?id=${item.id}") },
                             onDelete = {
                                 // Delete alarms
@@ -77,6 +87,8 @@ fun SubscriptionList(
                                 subscriptionViewModel.deleteSubscriptionItem(item.id)
                             }
                         )
+
+
                     }
                 }
             }

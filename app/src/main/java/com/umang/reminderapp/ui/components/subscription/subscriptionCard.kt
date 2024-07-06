@@ -44,8 +44,6 @@ import kotlin.math.exp
 fun subscriptionCard(
     modifier: Modifier = Modifier,
     subscriptionItem: SubscriptionItem,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
 ) {
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
@@ -141,16 +139,18 @@ fun subscriptionCard(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
-            ){
+            ) {
                 // Start Date
                 Text(
                     modifier = Modifier.padding(10.dp),
-                    text = "Start date - ${LocalDate.parse(subscriptionItem.startDate).format(dateFormatter)}",
+                    text = "Start date - ${
+                        LocalDate.parse(subscriptionItem.startDate).format(dateFormatter)
+                    }",
                     style = MaterialTheme.typography.bodyMedium,
                 )
 
                 // Tags
-                Row(){
+                Row() {
                     // Tags row
                     LazyRow(
                         contentPadding = PaddingValues(
@@ -167,30 +167,6 @@ fun subscriptionCard(
                             )
                         }
                     }
-                }
-
-
-                // Edit, Delete
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ){
-                    // EDIT
-                    ElevatedAssistChip(
-                        modifier = Modifier.padding(5.dp),
-                        onClick = onEdit ,
-                        leadingIcon = { Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit") },
-                        label = { Text(text = "Edit") }
-                    )
-                    // DELETE
-                    ElevatedAssistChip(
-                        modifier = Modifier.padding(5.dp),
-                        onClick = onDelete ,
-                        leadingIcon = { Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete") },
-                        label = { Text(text = "Delete") }
-                    )
                 }
             }
         }
@@ -217,8 +193,6 @@ fun subscriptionCardPreview() {
     ReminderAppTheme {
         subscriptionCard(
             subscriptionItem = item,
-            onEdit = {},
-            onDelete = {}
         )
     }
 

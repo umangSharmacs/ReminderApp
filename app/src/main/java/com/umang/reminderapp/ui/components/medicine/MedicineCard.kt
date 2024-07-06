@@ -1,16 +1,27 @@
 package com.umang.reminderapp.ui.components.medicine
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.DraggableAnchors
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.Icon
@@ -24,8 +35,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.umang.reminderapp.R
 import com.umang.reminderapp.data.classes.MedicineIntakeTime
@@ -37,7 +50,10 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.exp
-
+import kotlin.math.roundToInt
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MedicineCard(
     modifier: Modifier = Modifier,
@@ -58,12 +74,15 @@ fun MedicineCard(
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
     Card(
-        modifier = Modifier.padding(top=10.dp, bottom = 10.dp),
+        modifier = modifier
+            .padding(top=10.dp, bottom = 10.dp)
+        ,
         shape = MaterialTheme.shapes.extraLarge,
         onClick = { expandedState = !expandedState }
+
     ){
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -127,55 +146,8 @@ fun MedicineCard(
             medicineTaken = medicineTaken,
             viewModel = viewModel
         )
-
-        AnimatedVisibility(visible = expandedState) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                onClick = { expandedState = !expandedState },
-                shape = MaterialTheme.shapes.large,
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 3.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-            ){
-                // Expiry Date
-                Text(
-                    modifier = Modifier.padding(10.dp),
-                    text = "Expiry - ${LocalDate.parse(item.expiry).format(dateFormatter)}"
-                )
-                // Edit , Delete
-
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ){
-                    // EDIT
-                    ElevatedAssistChip(
-                        modifier = Modifier.padding(5.dp),
-                        onClick = { } ,
-                        leadingIcon = { Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit") },
-                        label = { Text(text = "Edit") }
-                    )
-                    // DELETE
-                    ElevatedAssistChip(
-                        modifier = Modifier.padding(5.dp),
-                        onClick = { } ,
-                        leadingIcon = { Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete") },
-                        label = { Text(text = "Delete") }
-                    )
-                }
-
-                Text("hello World")
-            }
-        }
-
     }
 }
+
+
 

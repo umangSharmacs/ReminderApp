@@ -1,11 +1,7 @@
-package com.umang.reminderapp.ui.components.toDoItemCards
+package com.umang.reminderapp.ui.components.toDoItem
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,19 +26,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.math.exp
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -188,7 +180,6 @@ fun ToDoItemCard(
                 LazyRow(
                     modifier = Modifier.weight(6f),
                     contentPadding = PaddingValues(
-
                         end = 12.dp,
                         bottom = 16.dp
                     )
@@ -207,21 +198,21 @@ fun ToDoItemCard(
                     }
                 }
             }
-            AnimatedVisibility(expandedState){
-                ToDoItemCardExpand(
-                    item = item,
-                    onClick = { },
-                    onEdit = {
-//                        Log.d("Edit Screen","EditScreen?id=${item.id}&title=${item.title}&description=${item.description}&priority=${item.priority}&dueDate=${item.dueDate}&reminders=${item.reminders}&tags=${item.tags}")
-                        navHostController.navigate(route = "EditScreen?id=${item.id}")
-                             },
-                    onDelete = {
-                        // Cancel it's alarms
-                        scheduler.cancelAllAlarms(item)
-                        viewModel.deleteTodoItem(item.id)
-                    }
-                )
-            }
+//            AnimatedVisibility(expandedState){
+//                ToDoItemCardExpand(
+//                    item = item,
+//                    onClick = { },
+//                    onEdit = {
+////                        Log.d("Edit Screen","EditScreen?id=${item.id}&title=${item.title}&description=${item.description}&priority=${item.priority}&dueDate=${item.dueDate}&reminders=${item.reminders}&tags=${item.tags}")
+//                        navHostController.navigate(route = "EditScreen?id=${item.id}")
+//                             },
+//                    onDelete = {
+//                        // Cancel it's alarms
+//                        scheduler.cancelAllAlarms(item)
+//                        viewModel.deleteTodoItem(item.id)
+//                    }
+//                )
+//            }
 
         }
     }

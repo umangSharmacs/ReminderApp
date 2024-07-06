@@ -1,6 +1,7 @@
-package com.umang.reminderapp.ui.components
+package com.umang.reminderapp.ui.components.toDoItem
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +21,10 @@ import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.data.models.AuthViewModel
-import com.umang.reminderapp.data.models.TagViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.ui.components.toDoItemCards.ToDoItemCard
+import com.umang.reminderapp.ui.components.swiping.BehindMotionSwipe
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TodoList(
     modifier: Modifier = Modifier,
@@ -46,7 +47,10 @@ fun TodoList(
 
     Column(modifier = modifier
         .fillMaxWidth()
-        .padding(top = paddingValues.calculateTopPadding()-15.dp, bottom = paddingValues.calculateBottomPadding()),
+        .padding(
+            top = paddingValues.calculateTopPadding() - 15.dp,
+            bottom = paddingValues.calculateBottomPadding()
+        ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         todoList?.let {
@@ -54,19 +58,30 @@ fun TodoList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
-                    .padding(start=15.dp, end=15.dp),
+                    .padding(start = 15.dp, end = 15.dp),
                 contentPadding = PaddingValues(top=15.dp, bottom = 15.dp)
             ) {
-                itemsIndexed(it) { index:Int, todoItem: TodoItem ->
+                itemsIndexed(
+                    items = it,
+                    key = {index, item -> item.id }
+                ) { index:Int, todoItem: TodoItem ->
 
-                    ToDoItemCard(
-                        Modifier.padding(top = 10.dp, bottom = 10.dp),
-                        item = todoItem,
-                        viewModel = viewModel,
-                        navHostController = navHost,
-                        scheduler = scheduler,
-                        onClick = {}
+                    BehindMotionSwipe(
+                        content = {
+                            ToDoItemCard(
+                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp).animateItemPlacement(),
+                                item = todoItem,
+                                viewModel = viewModel,
+                                navHostController = navHost,
+                                scheduler = scheduler,
+                                onClick = {}
+                            )
+                        },
+                        onEdit = { navHost.navigate(route = "EditScreen?id=${todoItem.id}") },
+                        onDelete = { viewModel.deleteTodoItem(todoItem.id) },
                     )
+
+
                 }
             }
         }

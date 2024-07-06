@@ -48,7 +48,7 @@ fun ProfileScreen(
     var selectedIndex by rememberSaveable {
         mutableIntStateOf(navigationItems.indexOf(navigationItems.find {it == NavigationItem.Profile}))
     }
-    
+
     ModalNavigationDrawer(
         drawerContent = { NavDrawerContent(navigationItems, selectedIndex, navHost, scope, drawerState) },
         drawerState = drawerState
@@ -67,7 +67,6 @@ fun ProfileScreen(
                 )
             },
             floatingActionButton = {
-//            FloatingActionButton(onClick = { navHost.navigate("AdderScreen") })
                 CustomFloatingActionButton(
                     expandable = true,
                     onFabClick = { /*TODO*/ },

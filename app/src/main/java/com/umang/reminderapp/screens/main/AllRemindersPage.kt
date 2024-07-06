@@ -21,10 +21,9 @@ import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.NavigationItem
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
-import com.umang.reminderapp.ui.components.BottomBarScaffold
 import com.umang.reminderapp.ui.components.CustomFloatingActionButton
 import com.umang.reminderapp.ui.components.NavDrawerContent
-import com.umang.reminderapp.ui.components.TodoList
+import com.umang.reminderapp.ui.components.toDoItem.TodoList
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 import kotlinx.coroutines.launch
 
