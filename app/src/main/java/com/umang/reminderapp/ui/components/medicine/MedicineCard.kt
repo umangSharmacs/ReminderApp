@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -130,7 +131,7 @@ fun MedicineCard(
                     Icon(
                         painter = painterResource(R.drawable.check_square_icon),
                         contentDescription = "Taken",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(75.dp)
                     )
                 } else if(item.isActive && !medicineTaken.value){
@@ -141,7 +142,22 @@ fun MedicineCard(
                         modifier = Modifier.size(75.dp)
                     )
                 } else {
-                    Text("INACTIVE")
+                    Column(
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Icon(
+                            painter = painterResource(R.drawable.pause_icon),
+                            contentDescription = "Inactive",
+                            tint = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(75.dp)
+                        )
+                        Text(
+                            text ="INACTIVE",
+                            modifier = Modifier.padding(top = 5.dp),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
                 }
 
             }

@@ -80,6 +80,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import kotlin.math.exp
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -193,14 +194,33 @@ fun MedicineAdderScreen(
 
     // Medicine Intake
     var medicineIntake by remember { mutableStateOf("Select") }
+    var userInteractIntake by remember { mutableStateOf(true) }
 
-    if(editMode){
-        medicineIntake = when(optionWhenToTake?.get(MedicineMealType.BREAKFAST.value)){
-            MedicineIntakeTime.BEFORE.value -> MedicineIntakeTime.BEFORE.value
-            MedicineIntakeTime.WITH.value -> MedicineIntakeTime.WITH.value
-            MedicineIntakeTime.AFTER.value -> MedicineIntakeTime.AFTER.value
-            else -> "Select"
+    if(editMode && userInteractIntake){
+        userInteractIntake = false
+        if(breakFastChecked){
+            medicineIntake = when(optionWhenToTake?.get(MedicineMealType.BREAKFAST.value)){
+                MedicineIntakeTime.BEFORE.value -> MedicineIntakeTime.BEFORE.value
+                MedicineIntakeTime.WITH.value -> MedicineIntakeTime.WITH.value
+                MedicineIntakeTime.AFTER.value -> MedicineIntakeTime.AFTER.value
+                else -> "Select"
+            }
+        } else if( lunchChecked ){
+            medicineIntake = when(optionWhenToTake?.get(MedicineMealType.LUNCH.value)){
+                MedicineIntakeTime.BEFORE.value -> MedicineIntakeTime.BEFORE.value
+                MedicineIntakeTime.WITH.value -> MedicineIntakeTime.WITH.value
+                MedicineIntakeTime.AFTER.value -> MedicineIntakeTime.AFTER.value
+                else -> "Select"
+            }
+        } else if( dinnerChecked ){
+            medicineIntake = when(optionWhenToTake?.get(MedicineMealType.DINNER.value)){
+                MedicineIntakeTime.BEFORE.value -> MedicineIntakeTime.BEFORE.value
+                MedicineIntakeTime.WITH.value -> MedicineIntakeTime.WITH.value
+                MedicineIntakeTime.AFTER.value -> MedicineIntakeTime.AFTER.value
+                else -> "Select"
+            }
         }
+
     }
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
@@ -812,7 +832,7 @@ fun MedicineAdderPage(
         val medicineItem = medicineViewModel.getMedicineItem(optionalID)
 
         optionalName = medicineItem?.name.toString()
-        optionalDuration = medicineItem?.duration?.removeSuffix("d")?.toInt()!!
+        optionalDuration = Duration.parse(medicineItem?.duration!!).toInt(DurationUnit.DAYS)
         optionPrescriptionStart = medicineItem.prescriptionStart.toString()
         optionPrescriptionEnd = medicineItem.prescriptionEnd.toString()
         optionWhenToTake = medicineItem.whenToTake
