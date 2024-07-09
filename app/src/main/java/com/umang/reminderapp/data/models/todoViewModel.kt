@@ -67,6 +67,7 @@ class TodoViewModel: ViewModel() {
         updatedTodoTags : List<String>,
         updatedPriority : Int,
         updatedReminders : List<String>,
+        updatedCompletedFlag: Boolean,
         toUpdateTodoItemID: Int
     ): TodoItem? {
         val updatedItem = TodoManager.updateTodoItem(
@@ -76,6 +77,7 @@ class TodoViewModel: ViewModel() {
             updatedTodoTags = updatedTodoTags,
             updatedPriority = updatedPriority,
             updatedReminders = updatedReminders,
+            updatedCompletedFlag = updatedCompletedFlag,
             toUpdateTodoItemID = toUpdateTodoItemID
         )
         this.viewModelScope.launch { getAllToDo() }

@@ -12,14 +12,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
-import com.umang.reminderapp.data.classes.TodoItem
+import com.umang.reminderapp.ui.components.TodoCategoryHeader
+import com.umang.reminderapp.data.classes.UICategoryClasses.TodoDataClass
 import com.umang.reminderapp.data.models.AuthViewModel
 import com.umang.reminderapp.data.models.TodoViewModel
 import com.umang.reminderapp.ui.components.swiping.BehindMotionSwipe
@@ -38,7 +41,22 @@ fun TodoList(
     LaunchedEffect(Unit) {
         viewModel.getAllToDo()
     }
+
     val todoList by viewModel.todoList.observeAsState()
+
+    val groupedList by remember {
+        derivedStateOf {
+            todoList?.groupBy { it.completed }?.map{
+                TodoDataClass(
+                    name = if(it.key) "Completed" else "Ongoing",
+                    items = it.value
+                )
+            }
+        }
+    }
+    val sortedGroupedList by remember {
+        derivedStateOf { groupedList?.sortedBy { it.name }?.reversed() }
+    }
 
     Log.d("TodoList", todoList?.toList().toString())
 
@@ -53,38 +71,81 @@ fun TodoList(
         ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        todoList?.let {
+
+        sortedGroupedList?.let{
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
                     .padding(start = 15.dp, end = 15.dp),
                 contentPadding = PaddingValues(top=15.dp, bottom = 15.dp)
-            ) {
-                itemsIndexed(
-                    items = it,
-                    key = {index, item -> item.id }
-                ) { index:Int, todoItem: TodoItem ->
+            ){
+                sortedGroupedList!!.forEach { group ->
+                    stickyHeader {
+                        TodoCategoryHeader(text = group.name)
+                    }
 
-                    BehindMotionSwipe(
-                        content = {
-                            ToDoItemCard(
-                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp).animateItemPlacement(),
-                                item = todoItem,
-                                viewModel = viewModel,
-                                navHostController = navHost,
-                                scheduler = scheduler,
-                                onClick = {}
-                            )
-                        },
-                        onEdit = { navHost.navigate(route = "EditScreen?id=${todoItem.id}") },
-                        onDelete = { viewModel.deleteTodoItem(todoItem.id) },
-                    )
-
-
+                    itemsIndexed(
+                        items = group.items,
+                        key = {index, item -> item.id }
+                    ){
+                        index, todoItem ->
+                        BehindMotionSwipe(
+                            content = {
+                                ToDoItemCard(
+                                    modifier = Modifier
+                                        .padding(top = 10.dp, bottom = 10.dp)
+                                        .animateItemPlacement(),
+                                    item = todoItem,
+                                    viewModel = viewModel,
+                                    navHostController = navHost,
+                                    scheduler = scheduler,
+                                    onClick = {}
+                                )
+                            },
+                            onEdit = { navHost.navigate(route = "EditScreen?id=${todoItem.id}") },
+                            onDelete = { viewModel.deleteTodoItem(todoItem.id) },
+                        )
+                    }
                 }
             }
         }
+
+
+//        todoList?.let {
+//            LazyColumn(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .wrapContentWidth(Alignment.CenterHorizontally)
+//                    .padding(start = 15.dp, end = 15.dp),
+//                contentPadding = PaddingValues(top=15.dp, bottom = 15.dp)
+//            ) {
+//                itemsIndexed(
+//                    items = it,
+//                    key = {index, item -> item.id }
+//                ) { index:Int, todoItem: TodoItem ->
+//
+//                    BehindMotionSwipe(
+//                        content = {
+//                            ToDoItemCard(
+//                                modifier = Modifier
+//                                    .padding(top = 10.dp, bottom = 10.dp)
+//                                    .animateItemPlacement(),
+//                                item = todoItem,
+//                                viewModel = viewModel,
+//                                navHostController = navHost,
+//                                scheduler = scheduler,
+//                                onClick = {}
+//                            )
+//                        },
+//                        onEdit = { navHost.navigate(route = "EditScreen?id=${todoItem.id}") },
+//                        onDelete = { viewModel.deleteTodoItem(todoItem.id) },
+//                    )
+//
+//
+//                }
+//            }
+//        }
 
         if(todoList?.size==0){
             Text(text = "No items")

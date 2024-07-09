@@ -4,6 +4,7 @@ import com.umang.reminderapp.data.classes.MealTiming
 import com.umang.reminderapp.data.classes.MedicineIntakeTime
 import com.umang.reminderapp.data.classes.MedicineItem
 import com.umang.reminderapp.data.classes.MedicineMealType
+import com.umang.reminderapp.data.models.MedicineViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -95,4 +96,29 @@ fun getNextIntakeTime(
     val nextAlarm = reminders.min()
 
     return ChronoUnit.HOURS.between(LocalDateTime.now(), nextAlarm)
+}
+
+
+fun resetMedicineTaken(
+    medicineItem: MedicineItem,
+    medicineViewModel: MedicineViewModel
+){
+    val defaultTakenMap = mutableMapOf(
+        MedicineMealType.BREAKFAST.value to false,
+        MedicineMealType.LUNCH.value to false,
+        MedicineMealType.DINNER.value to false,
+    )
+
+    val updatedItem = medicineViewModel.updateMedicineItem(
+        toUpdateName = medicineItem.name,
+        toUpdateIsActive = medicineItem.isActive,
+        toUpdateTakenMap = defaultTakenMap,
+        toUpdatePrescriptionStart = medicineItem.prescriptionStart,
+        toUpdatePrescriptionEnd = medicineItem.prescriptionEnd,
+        toUpdateDuration = medicineItem.duration,
+        toUpdateExpiry = medicineItem.expiry,
+        toUpdateMedicineItemID = medicineItem.id,
+        toUpdateWhenToTake = medicineItem.whenToTake
+    )
+
 }

@@ -85,7 +85,22 @@ fun ToDoItemCard(
                     onCheckedChange = {
                         checkBoxState = !checkBoxState
                         item.completed = checkBoxState
-                        // TODO Update Item Completion
+
+                        val updatedItem = viewModel.updateTodoItem(
+                            updatedTodoTitle = item.title,
+                            updatedTodoDescription = item.description,
+                            updatedPriority = item.priority,
+                            updatedTodoDueDate = item.dueDate,
+                            updatedReminders = item.reminders,
+                            updatedTodoTags = item.tags,
+                            updatedCompletedFlag = checkBoxState,
+                            toUpdateTodoItemID = item.id
+                        )
+                        // Cancel its remaining alarms
+                        if (updatedItem != null) {
+                            scheduler.cancelAllAlarms(updatedItem)
+                        }
+
                     },
                     colors = CheckboxDefaults.colors(
                         checkedColor = MaterialTheme.colorScheme.primary,

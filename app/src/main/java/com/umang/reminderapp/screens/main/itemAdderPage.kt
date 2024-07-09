@@ -689,6 +689,7 @@ fun AdderScreenContent(
                                         updatedReminders = remindersList.map{it.toString()},
                                         updatedTodoTags = selectedTagsList,
                                         updatedPriority = selectedPriority,
+                                        updatedCompletedFlag = false,
                                         toUpdateTodoItemID = it
                                     )
                                 }

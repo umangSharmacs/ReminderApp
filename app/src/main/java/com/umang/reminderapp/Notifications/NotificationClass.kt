@@ -18,6 +18,5 @@ class NotificationClass: Application() {
             )
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(todoItemChannel)
-
     }
 }
