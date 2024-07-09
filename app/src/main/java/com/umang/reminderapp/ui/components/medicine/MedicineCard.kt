@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,11 +43,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.umang.reminderapp.R
+import com.umang.reminderapp.data.classes.MealTiming
 import com.umang.reminderapp.data.classes.MedicineIntakeTime
 import com.umang.reminderapp.data.classes.MedicineItem
 import com.umang.reminderapp.data.classes.MedicineMealType
 import com.umang.reminderapp.data.models.MedicineViewModel
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.util.getNextIntakeTime
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -65,15 +68,27 @@ fun MedicineCard(
 
     var expandedState by remember { mutableStateOf(false) }
 
-    val BREAKFAST_TIME = LocalTime.of(9, 0)
-    val LUNCH_TIME = LocalTime.of(13, 0)
-    val DINNER_TIME = LocalTime.of(21, 0)
+    val BREAKFAST_TIME = LocalTime.parse(MealTiming.BREAKFAST.time)
+    val LUNCH_TIME = LocalTime.parse(MealTiming.LUNCH.time)
+    val DINNER_TIME = LocalTime.parse(MealTiming.DINNER.time)
 
     var medicineTaken = rememberSaveable {
         mutableStateOf(true)
     }
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+
+    var nextDose by remember {
+        mutableLongStateOf(0)
+    }
+
+    val mealTimings = mutableMapOf(
+        MedicineMealType.BREAKFAST.value to MealTiming.BREAKFAST.time,
+        MedicineMealType.LUNCH.value to MealTiming.LUNCH.time,
+        MedicineMealType.DINNER.value to MealTiming.DINNER.time
+    )
+
+    try { nextDose = getNextIntakeTime(item,mealTimings) } catch (_: Exception) {  }
 
     Card(
         modifier = modifier
@@ -109,7 +124,7 @@ fun MedicineCard(
                     )
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
-                        text = "Next dose in", // TODO
+                        text = "Next dose in ${nextDose} hours",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

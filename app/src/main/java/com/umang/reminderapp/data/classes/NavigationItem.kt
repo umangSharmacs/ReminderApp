@@ -18,22 +18,22 @@ sealed class NavigationItem(
 
     data object AllReminders : NavigationItem(
         title = "Reminders",
-        selectedIcon = R.drawable.tag_filled,
-        unselectedIcon = R.drawable.tag_filled,
+        selectedIcon = R.drawable.reminder_icon ,
+        unselectedIcon = R.drawable.reminder_icon ,
         navRoute = "All Reminders"
     )
 
     data object Subscriptions : NavigationItem(
         title = "Subscriptions",
-        selectedIcon = R.drawable.baseline_subscription_filled,
-        unselectedIcon = R.drawable.outline_subsriptions,
+        selectedIcon = R.drawable.subscription ,
+        unselectedIcon = R.drawable.subscription,
         navRoute = "Subscriptions"
     )
 
     data object Medicines : NavigationItem(
         title = "Medicines",
-        selectedIcon = R.drawable.filled_medication,
-        unselectedIcon = R.drawable.filled_medication,
+        selectedIcon = R.drawable.medicine_icon ,
+        unselectedIcon = R.drawable.medicine_icon ,
         navRoute = "MedicinesScreen"
     )
 

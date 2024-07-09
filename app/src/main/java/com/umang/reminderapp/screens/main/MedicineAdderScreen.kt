@@ -66,6 +66,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.alarm.AndroidAlarmSchedulerImpl
 import com.umang.reminderapp.data.classes.BillingPeriod
+import com.umang.reminderapp.data.classes.MealTiming
 import com.umang.reminderapp.data.classes.MedicineIntakeTime
 import com.umang.reminderapp.data.classes.MedicineMealType
 import com.umang.reminderapp.data.classes.NavigationItem
@@ -74,6 +75,7 @@ import com.umang.reminderapp.ui.components.DurationUnitBox
 import com.umang.reminderapp.ui.components.TopAppBarScaffold
 import com.umang.reminderapp.ui.components.medicine.MedicineTrackerUIComponent
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
+import com.umang.reminderapp.util.getMedicineReminderTimes
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -613,7 +615,23 @@ fun MedicineAdderScreen(
                                     isActive = isActive,
                                     expiry = expiryDate
                                 )
-                                // Create alarms
+                                // Create alarms if active
+
+                                if(medicineItem.isActive){
+                                    val mealTimings = mutableMapOf(
+                                        MedicineMealType.BREAKFAST.value to MealTiming.BREAKFAST.time,
+                                        MedicineMealType.LUNCH.value to MealTiming.LUNCH.time,
+                                        MedicineMealType.DINNER.value to MealTiming.DINNER.time
+                                    )
+
+                                    val remindersList = getMedicineReminderTimes(
+                                        medicineItem,
+                                        mealTimings
+                                    )
+
+                                    // Add alarms
+                                    scheduler.scheduleMedicineAlarm(medicineItem,remindersList)
+                                }
 
                                 // Navigate back
                                 navController.navigate(NavigationItem.Medicines.navRoute)
@@ -696,6 +714,26 @@ fun MedicineAdderScreen(
 
                                 // Cancel all current alarms
 
+                                if ( optionalID != null ) {
+                                    val oldItem = medicineViewModel.getMedicineItem(optionalID)
+
+                                    val mealTimings = mutableMapOf(
+                                        MedicineMealType.BREAKFAST.value to MealTiming.BREAKFAST.time,
+                                        MedicineMealType.LUNCH.value to MealTiming.LUNCH.time,
+                                        MedicineMealType.DINNER.value to MealTiming.DINNER.time
+                                    )
+
+                                    val oldReminders = oldItem?.let {
+                                        getMedicineReminderTimes(
+                                            it,
+                                            mealTimings
+                                        )
+                                    }
+
+                                    if (oldItem != null && oldReminders != null) {
+                                        scheduler.cancelAllMedicineAlarms(oldItem, oldReminders)
+                                    }
+                                }
                                 // Update item
                                 if(optionalID!=null){
                                     val updatedMedicineItem = medicineViewModel.updateMedicineItem(
@@ -709,9 +747,26 @@ fun MedicineAdderScreen(
                                         toUpdateExpiry = expiryDate,
                                         toUpdateMedicineItemID = optionalID
                                     )
-                                }
 
-                                // Create new alarms
+                                    if (updatedMedicineItem != null) {
+                                        if(updatedMedicineItem.isActive){
+                                            val mealTimings = mutableMapOf(
+                                                MedicineMealType.BREAKFAST.value to MealTiming.BREAKFAST.time,
+                                                MedicineMealType.LUNCH.value to MealTiming.LUNCH.time,
+                                                MedicineMealType.DINNER.value to MealTiming.DINNER.time
+                                            )
+
+                                            val remindersList = getMedicineReminderTimes(
+                                                updatedMedicineItem,
+                                                mealTimings
+                                            )
+
+                                            // Add alarms
+                                            scheduler.scheduleMedicineAlarm(updatedMedicineItem,remindersList)
+                                        }
+                                    }
+
+                                }
 
                                 // Navigate Back
                                 navController.navigate(NavigationItem.Medicines.navRoute)

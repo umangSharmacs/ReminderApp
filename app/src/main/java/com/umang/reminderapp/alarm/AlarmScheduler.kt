@@ -1,8 +1,10 @@
 package com.umang.reminderapp.alarm
 
+import com.umang.reminderapp.data.classes.MedicineItem
 import com.umang.reminderapp.data.classes.SubscriptionItem
 import com.umang.reminderapp.data.classes.TodoItem
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface AlarmScheduler {
 
@@ -15,6 +17,9 @@ interface AlarmScheduler {
     fun scheduleSubscriptionAlarm(subscriptionItem: SubscriptionItem, alarmsList: List<LocalDate>)
 
     fun cancelAllSubscriptionAlarms(subscriptionItem: SubscriptionItem, alarmsList: List<LocalDate>)
+
+    fun scheduleMedicineAlarm(medicineItem: MedicineItem, alarmsList: List<LocalDateTime>)
+    fun cancelAllMedicineAlarms(medicineItem: MedicineItem, alarmsList: List<LocalDateTime>)
 
 }
 

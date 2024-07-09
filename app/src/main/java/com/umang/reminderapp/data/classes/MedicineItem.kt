@@ -1,8 +1,15 @@
 package com.umang.reminderapp.data.classes
 
 import java.time.LocalDate
+import java.time.LocalTime
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+
+sealed class MealTiming(val time: String){
+    data object BREAKFAST: MealTiming(LocalTime.parse("09:00").toString())
+    data object LUNCH: MealTiming(LocalTime.parse("13:00").toString())
+    data object DINNER: MealTiming(LocalTime.parse("21:00").toString())
+}
 
 sealed class MedicineMealType(val value: String){
     data object BREAKFAST: MedicineMealType("BREAKFAST")

@@ -141,11 +141,12 @@ fun CustomFloatingActionButton(
                         .fillMaxWidth()
                         .padding(4.dp)
                         .clickable { onSubscriptionClick() },
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Start ,
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Icon(
                         modifier = Modifier.padding(5.dp),
-                        painter = painterResource(R.drawable.baseline_subscription_filled),
+                        painter = painterResource(R.drawable.subscription),
                         contentDescription = "Subscription",
                         tint = MaterialTheme.colorScheme.onTertiaryContainer
                     )
@@ -157,40 +158,43 @@ fun CustomFloatingActionButton(
                         .padding(4.dp)
                         .clickable { onMedicineClick() },
                     horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Icon(
                         modifier = Modifier.padding(5.dp),
-                        painter = painterResource(R.drawable.filled_medication),
+                        painter = painterResource(R.drawable.medicine_icon),
                         contentDescription = "Medicine",
                         tint = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                     Text("Add Medicine",color = MaterialTheme.colorScheme.onTertiaryContainer)
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp)
-                        .clickable {  },
-                    horizontalArrangement = Arrangement.Start,
-                ){
-                    Icon(
-                        modifier = Modifier.padding(5.dp),
-                        painter = painterResource(R.drawable.baseline_subscription_filled),
-                        contentDescription = "Subscription",
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                    Text("Add Tag (WIP)", color = MaterialTheme.colorScheme.onTertiaryContainer)
-                }
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(4.dp)
+//                        .clickable {  },
+//                    horizontalArrangement = Arrangement.Start,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ){
+//                    Icon(
+//                        modifier = Modifier.padding(5.dp),
+//                        painter = painterResource(R.drawable.baseline_subscription_filled),
+//                        contentDescription = "Subscription",
+//                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+//                    )
+//                    Text("Add Tag (WIP)", color = MaterialTheme.colorScheme.onTertiaryContainer)
+//                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp)
                         .clickable { onReminderClick() },
                     horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Icon(
                         modifier = Modifier.padding(5.dp),
-                        painter = painterResource(R.drawable.tag_filled),
+                        painter = painterResource(R.drawable.reminder_icon),
                         contentDescription = "Reminder",
                         tint = MaterialTheme.colorScheme.onTertiaryContainer
                     )

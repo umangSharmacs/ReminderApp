@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.umang.reminderapp.data.classes.MedicineItem
 import com.umang.reminderapp.data.classes.SubscriptionItem
 import com.umang.reminderapp.data.classes.TodoItem
 import com.umang.reminderapp.util.getAlarms
@@ -180,4 +181,62 @@ class AndroidAlarmSchedulerImpl(
         Log.d("AlarmScheduler", "Cancelled all alarms for ${item.title}")
 
     }
+
+    // Medicine Alarms
+    override fun scheduleMedicineAlarm(
+        medicineItem: MedicineItem,
+        alarmsList: List<LocalDateTime>
+    ){
+
+        val intent = Intent(
+            context,
+            AlarmReceiver::class.java
+        ).apply {
+            putExtra("EXTRA_MESSAGE", medicineItem.name)
+        }
+
+        for(alarm in alarmsList){
+            // If alarm before current time, do not set
+            if(alarm.isBefore( LocalDateTime.now() ) ){
+                continue
+            }
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                alarm.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                PendingIntent.getBroadcast(
+                    context,
+                    medicineItem.hashCode()+alarm.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        }
+    }
+
+    override fun cancelAllMedicineAlarms(
+        medicineItem: MedicineItem,
+        alarmsList: List<LocalDateTime>
+    ) {
+
+        val intent = Intent(
+            context,
+            AlarmReceiver::class.java
+        ).apply {
+            putExtra("EXTRA_MESSAGE", medicineItem.name)
+        }
+
+        for(alarm in alarmsList){
+
+            alarmManager.cancel(
+                PendingIntent.getBroadcast(
+                    context,
+                    medicineItem.hashCode()+alarm.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        }
+    }
 }
+
