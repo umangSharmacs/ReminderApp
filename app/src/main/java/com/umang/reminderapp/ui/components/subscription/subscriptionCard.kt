@@ -28,11 +28,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.umang.reminderapp.data.classes.BillingPeriod
 import com.umang.reminderapp.data.classes.SubscriptionItem
+import com.umang.reminderapp.ui.drawings.drawingTest
 import com.umang.reminderapp.ui.theme.ReminderAppTheme
 import com.umang.reminderapp.util.getNextBillingAlarmInDays
 import java.time.LocalDate
@@ -65,6 +68,7 @@ fun subscriptionCard(
             defaultElevation = 3.dp
         )
     ) {
+
 
         Row(
             modifier = Modifier.padding(10.dp),

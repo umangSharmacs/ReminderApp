@@ -1,10 +1,19 @@
 package com.umang.reminderapp.screens.main
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -20,14 +29,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,6 +63,7 @@ import com.umang.reminderapp.ui.components.NavDrawerContent
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.math.roundToInt
 
 @Composable
 fun HomePage(
@@ -93,7 +110,6 @@ fun HomePage(
                 )
             },
             floatingActionButton = {
-//            FloatingActionButton(onClick = { navController.navigate("AdderScreen") } )
                 CustomFloatingActionButton(
                     expandable = true,
                     onFabClick = { /*TODO*/ },
@@ -104,11 +120,6 @@ fun HomePage(
                     onReminderClick = {navController.navigate("AdderScreen")}
                 )
             },
-//            bottomBar = {
-//                BottomBarScaffold(
-//                    navHost = navController
-//                )
-//            }
         ) {
                 innerPadding ->
 
@@ -239,7 +250,4 @@ fun HomePage(
             }
         }
     }
-
-
-
 }

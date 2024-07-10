@@ -1,5 +1,6 @@
 package com.umang.reminderapp.ui.components.medicine
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,7 +45,8 @@ fun MedicineList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
-                    .padding(start = 15.dp, end = 15.dp),
+                    .padding(start = 15.dp, end = 15.dp)
+                    .animateContentSize(),
                 contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp)
             ){
                 if(it!=null){
