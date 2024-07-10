@@ -75,7 +75,7 @@ fun HomePage(
     }
     ModalNavigationDrawer(
         drawerContent = { NavDrawerContent(navigationItems, selectedIndex, navController, scope, drawerState) },
-        drawerState = drawerState
+        drawerState = drawerState,
     ) {
         Scaffold(
             topBar = @Composable {
@@ -102,8 +102,6 @@ fun HomePage(
                     onTagClick = { },
                     onMedicineClick = { navController.navigate("MedicineAdderScreen") },
                     onReminderClick = {navController.navigate("AdderScreen")}
-
-
                 )
             },
 //            bottomBar = {

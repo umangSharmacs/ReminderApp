@@ -1,9 +1,14 @@
 package com.umang.reminderapp.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -19,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.umang.reminderapp.data.classes.NavigationItem
+import com.umang.reminderapp.ui.theme.Shapes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -34,16 +40,26 @@ fun NavDrawerContent(
         mutableStateOf(currentIndex)
     }
 
-    ModalDrawerSheet {
+    ModalDrawerSheet(
+        modifier = Modifier
+            .width(300.dp),
+        drawerShape = Shapes.extraLarge,
+    ) {
+        Text(
+            text = "Memento",
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.titleLarge,
+            color = if(!isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+        )
         Spacer(modifier = Modifier.padding(16.dp))
         navigationItems.forEachIndexed { index, item ->
             NavigationDrawerItem(
                 label = { Text(item.title) },
                 selected = index == selectedIndex,
                 onClick = {
+                    scope.launch { drawerState.close() }
                     navController.navigate(item.navRoute)
                     selectedIndex = index
-                    scope.launch { drawerState.close() }
                 },
                 icon = {
                     Icon(
