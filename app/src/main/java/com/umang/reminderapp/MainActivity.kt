@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavType
@@ -65,7 +68,35 @@ class MainActivity : ComponentActivity() {
 
                 // Navigation
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = startDestination){
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                    enterTransition = {
+                         slideIntoContainer(
+                             towards = AnimatedContentTransitionScope.SlideDirection.End,
+                             animationSpec = tween(1000)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.End,
+                            animationSpec = tween(1000)
+                        )
+                    },
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                            animationSpec = tween(1000)
+                        )
+                    },
+                    popExitTransition = {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                            animationSpec = tween(1000)
+                        )
+                    }
+
+                ){
 
                     // AUTH
                     navigation(
